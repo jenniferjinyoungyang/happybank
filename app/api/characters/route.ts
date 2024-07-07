@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+import prisma from "../../../lib/prisma";
 
 export async function GET() {
-  return NextResponse.json({ hello: "test" });
+  const user = await prisma.user.findFirst();
+  return NextResponse.json({ characters: user?.email });
 }
