@@ -17,6 +17,18 @@ model User {
   email         String    @unique
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  password      String    
+  password      String
+  saving        Saving[]
   @@map(name: "users")
+}
+
+model Saving {
+  id            Int       @default(autoincrement()) @id
+  userId        Int
+  user          User      @relation(fields: [userId], references: [id])
+  title         String
+  message       String
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  hashTags      String
+  @@map(name: "savings")
 }
