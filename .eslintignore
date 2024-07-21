@@ -1,0 +1,4 @@
+.eslintrc.*
+lib/
+*.config.js
+*.config.ts
