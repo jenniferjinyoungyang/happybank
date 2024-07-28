@@ -40,4 +40,4 @@ next-env.d.ts
 coverage
 
 # prisma
-seed.js
+prisma/seed.js
