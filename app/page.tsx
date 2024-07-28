@@ -1,7 +1,9 @@
+import SignIn from './components/SignIn';
+
 export default function Home() {
   return (
     <main>
-      <h1 className="text-lg font-bold underline">Hello Happybank</h1>
+      <SignIn />
     </main>
   );
 }
