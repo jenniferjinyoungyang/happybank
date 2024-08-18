@@ -4,13 +4,8 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-rgb: 235, 229, 242;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-  padding: 20px 20px 60px;
-  max-width: 680px;
-  margin: 0 auto;
 }
