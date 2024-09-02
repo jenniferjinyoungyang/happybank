@@ -5,6 +5,7 @@ async function seed() {
   const barbie = await prisma.user.upsert({
     where: { email: 'barbie@happybank.io' },
     create: {
+      id: 'cm0ll6qxq00003b6se4csrall',
       email: 'barbie@happybank.io',
       name: 'Barbie',
       createdAt: new Date('2024-06-17T06:00:00'),
@@ -17,14 +18,14 @@ async function seed() {
   const barbieSavings = await prisma.saving.createMany({
     data: [
       {
-        userId: 1,
+        userId: 'cm0ll6qxq00003b6se4csrall',
         title: 'test post',
         message: 'test message',
         createdAt: new Date('2024-07-27'),
         hashTags: 'test',
       },
       {
-        userId: 1,
+        userId: 'cm0ll6qxq00003b6se4csrall',
         title: 'test post 2',
         message: 'test message 2',
         createdAt: new Date('2024-07-28'),
