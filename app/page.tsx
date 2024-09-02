@@ -1,9 +1,9 @@
 import SignIn from './components/SignIn';
 
-export default function Home() {
-  return (
-    <main>
-      <SignIn />
-    </main>
-  );
-}
+const Home: React.FC = () => (
+  <main>
+    <SignIn />
+  </main>
+);
+
+export default Home;

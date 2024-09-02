@@ -41,3 +41,6 @@ coverage
 
 # prisma
 prisma/seed.js
+
+# vscode
+.vscode
