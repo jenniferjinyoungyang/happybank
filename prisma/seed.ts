@@ -5,7 +5,7 @@ async function seed() {
   const barbie = await prisma.user.upsert({
     where: { email: 'barbie@happybank.io' },
     create: {
-      email: 'babie@happybank.io',
+      email: 'barbie@happybank.io',
       name: 'Barbie',
       createdAt: new Date('2024-06-17T06:00:00'),
       updatedAt: new Date('2024-07-17T06:00:00'),
