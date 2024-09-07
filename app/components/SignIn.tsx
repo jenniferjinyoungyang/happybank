@@ -2,10 +2,12 @@
 
 // importing necessary functions
 import { useSession, signIn, signOut } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
 
 const SignIn: React.FC = () => {
   // extracting data from usesession as session
   const { data: session } = useSession();
+  const { register, handleSubmit } = useForm();
 
   // checking if sessions exists
   if (session) {
@@ -128,30 +130,39 @@ const SignIn: React.FC = () => {
               </div>
 
               <div className="w-3/4 mx-auto">
-                <input
-                  className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                  type="email"
-                  placeholder="Email"
-                />
-                <input
-                  className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-                  type="password"
-                  placeholder="Password"
-                />
-                <p className="mt-2 text-xs text-gray-600 text-right">
-                  <a
-                    href="#"
-                    className="ml-1 border-b border-gray-500 border-dotted"
-                  >
-                    Forgot your password?
-                  </a>
-                </p>
-                <button
-                  type="button"
-                  className="mt-16 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                <form
+                  onSubmit={handleSubmit(async ({ email, password }) => {
+                    signIn('credentials', { email, password });
+                  })}
                 >
-                  <span className="ml-3">Sign in</span>
-                </button>
+                  <input
+                    className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    {...register('email')}
+                    type="email"
+                    placeholder="Email"
+                  />
+                  <input
+                    className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                    {...register('password')}
+                    type="password"
+                    placeholder="Password"
+                  />
+                  <p className="mt-2 text-xs text-gray-600 text-right">
+                    <a
+                      href="#"
+                      className="ml-1 border-b border-gray-500 border-dotted"
+                    >
+                      Forgot your password?
+                    </a>
+                  </p>
+                  <button
+                    type="submit"
+                    className="mt-16 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                  >
+                    <span className="ml-3">Sign in</span>
+                  </button>
+                </form>
+
                 <p className="mt-6 text-xs text-gray-600 text-center">
                   Don&apos;t have an acount?
                   <a
