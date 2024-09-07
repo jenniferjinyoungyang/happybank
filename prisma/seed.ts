@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
 async function seed() {
@@ -10,7 +11,7 @@ async function seed() {
       name: 'Barbie',
       createdAt: new Date('2024-06-17T06:00:00'),
       updatedAt: new Date('2024-07-17T06:00:00'),
-      password: 'barbie123',
+      password: '$2a$10$Z/y1FlZtTMR.zZZnLeLGPOiIsVVR5oV14SW/vCgOK67kek.GnKKDS',
     },
     update: {},
   });

@@ -4,7 +4,7 @@ import * as z from 'zod';
 import prisma from '../../../lib/prisma';
 
 // Define a schema for input validation
-const userSchema = z.object({
+const reqBodySchema = z.object({
   name: z.string().min(1, 'Username is required').max(50),
   email: z.string().min(1, 'Email is required').email('Invalid email'),
   password: z
@@ -13,10 +13,10 @@ const userSchema = z.object({
     .min(6, 'Password must have 6 characters'),
 });
 
-export async function Post(req: Request) {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, name, password } = userSchema.parse(body);
+    const { email, name, password } = reqBodySchema.parse(body);
 
     // check if email already exists
     const existingUserByEmail = await prisma.user.findUnique({
