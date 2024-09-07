@@ -1,0 +1,8 @@
+POST http://localhost:3000/api/sign-up
+Content-Type: applilcation/json
+
+{
+  "email": "amy@happybank.io",
+  "password": "amy123",
+  "name": "Amy"
+}
