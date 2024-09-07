@@ -132,25 +132,7 @@ const SignIn: React.FC = () => {
               <div className="w-3/4 mx-auto">
                 <form
                   onSubmit={handleSubmit(async ({ email, password }) => {
-                    try {
-                      const res = await fetch(
-                        'http://localhost:3000/api/login',
-                        {
-                          method: 'POST',
-                          body: JSON.stringify({ email, password }),
-                          headers: {
-                            'content-type': 'application/json',
-                          },
-                        },
-                      );
-                      if (res.ok) {
-                        console.log('Login successful');
-                      } else {
-                        console.log('Oops! Something is wrong.');
-                      }
-                    } catch (error) {
-                      console.log(error);
-                    }
+                    signIn('credentials', { email, password });
                   })}
                 >
                   <input
