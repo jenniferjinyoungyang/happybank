@@ -22,5 +22,11 @@
     ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "lib", "prisma"]
+  "exclude": [
+    "node_modules",
+    "lib",
+    "prisma/**/*.sql",
+    "prisma/**/*.toml",
+    "prisma/**/*.prisma"
+  ]
 }

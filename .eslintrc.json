@@ -34,5 +34,6 @@
       "files": ["*.test.*", "*.mapper.*", "api/**/*.{ts,tsx}"],
       "rules": { "@typescript-eslint/no-non-null-assertion": "off" }
     }
-  ]
+  ],
+  "ignorePatterns": ["*.sql", "*.toml", "*.prisma"]
 }
