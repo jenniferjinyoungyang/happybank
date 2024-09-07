@@ -35,5 +35,5 @@
       "rules": { "@typescript-eslint/no-non-null-assertion": "off" }
     }
   ],
-  "ignorePatterns": ["*.sql", "*.toml"]
+  "ignorePatterns": ["*.sql", "*.toml", "*.prisma"]
 }
