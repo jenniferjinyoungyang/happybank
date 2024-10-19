@@ -3,6 +3,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import Credentials, { CredentialInput } from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 import { AdapterUser } from 'next-auth/adapters';
+import { AuthType } from '@prisma/client';
 import prisma from '../../../../lib/prisma';
 
 type SignInProps = {
@@ -38,6 +39,7 @@ const handler = NextAuth({
         });
         if (
           user &&
+          user.authType === AuthType.CREDENTIALS &&
           user.password &&
           bcrypt.compareSync(password, user.password)
         ) {
@@ -50,6 +52,8 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }: SignInProps) {
       if (account?.provider === 'google') {
+        console.log('Google provider login');
+        console.log('User Account Profile : ', user, account, profile);
         if (!profile?.email_verified) {
           return false;
         }
@@ -65,8 +69,12 @@ const handler = NextAuth({
                 email: user.email!,
                 password: null,
                 name: user.name,
+                authType: AuthType.GOOGLE,
               },
             });
+          }
+          if (existingUserByEmail?.authType !== AuthType.GOOGLE) {
+            throw new Error('You already have an account with this email');
           }
         } catch {
           return false;

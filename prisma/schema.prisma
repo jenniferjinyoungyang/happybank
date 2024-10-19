@@ -13,12 +13,18 @@ model User {
   name          String?
   email         String          @unique
   password      String?
+  authType      AuthType
   accounts      Account[]
   sessions      Session[]
   savings       Saving[]
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum AuthType { 
+  GOOGLE
+  CREDENTIALS
 }
 
 model Account {

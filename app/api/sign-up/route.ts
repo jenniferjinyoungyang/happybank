@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { hash } from 'bcrypt';
 import * as z from 'zod';
+import { AuthType } from '@prisma/client';
 import prisma from '../../../lib/prisma';
 
 // Define a schema for input validation
@@ -36,6 +37,7 @@ export async function POST(req: Request) {
         email,
         password: hashedPassword,
         name,
+        authType: AuthType.CREDENTIALS,
       },
     });
 
