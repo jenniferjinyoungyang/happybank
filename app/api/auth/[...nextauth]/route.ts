@@ -52,8 +52,6 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }: SignInProps) {
       if (account?.provider === 'google') {
-        console.log('Google provider login');
-        console.log('User Account Profile : ', user, account, profile);
         if (!profile?.email_verified) {
           return false;
         }
