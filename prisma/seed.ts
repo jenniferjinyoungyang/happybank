@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { AuthType, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -12,6 +12,7 @@ async function seed() {
       createdAt: new Date('2024-06-17T06:00:00'),
       updatedAt: new Date('2024-07-17T06:00:00'),
       password: '$2a$10$Z/y1FlZtTMR.zZZnLeLGPOiIsVVR5oV14SW/vCgOK67kek.GnKKDS',
+      authType: AuthType.CREDENTIALS,
     },
     update: {},
   });
