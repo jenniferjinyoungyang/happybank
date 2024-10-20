@@ -1,29 +1,14 @@
 'use client';
 
 // importing necessary functions
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { HappyBankLogo } from './icons/HappyBankLogo';
 import { GoogleLogo } from './icons/GoogleLogo';
 
 const SignIn: React.FC = () => {
   // extracting data from usesession as session
-  const { data: session } = useSession();
   const { register, handleSubmit } = useForm();
-
-  // checking if sessions exists
-  if (session) {
-    // rendering components for logged in users
-    return (
-      <>
-        <p>Welcome {session.user?.name}. Signed In As</p>
-        <p>{session.user?.email}</p>
-        <button type="button" onClick={() => signOut()}>
-          Sign out
-        </button>
-      </>
-    );
-  }
 
   // rendering components for not log
   return (
@@ -42,7 +27,9 @@ const SignIn: React.FC = () => {
               <div className="flex flex-col items-center">
                 <button
                   type="button"
-                  onClick={() => signIn('google')}
+                  onClick={() =>
+                    signIn('google', { callbackUrl: '/dashboard' })
+                  }
                   className="w-3/4 inline-flex items-center justify-center py-4 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                 >
                   <GoogleLogo />
@@ -59,7 +46,11 @@ const SignIn: React.FC = () => {
               <div className="w-3/4 mx-auto">
                 <form
                   onSubmit={handleSubmit(async ({ email, password }) => {
-                    signIn('credentials', { email, password });
+                    signIn('credentials', {
+                      email,
+                      password,
+                      callbackUrl: '/dashboard',
+                    });
                   })}
                 >
                   <input
