@@ -49,8 +49,14 @@ const handler = NextAuth({
       },
     }),
   ],
+  session: {
+    maxAge: 30 * 60,
+  },
+  jwt: {
+    maxAge: 30 * 60,
+  },
   callbacks: {
-    async signIn({ user, account, profile }: SignInProps) {
+    signIn: async ({ user, account, profile }: SignInProps) => {
       if (account?.provider === 'google') {
         if (!profile?.email_verified) {
           return false;
