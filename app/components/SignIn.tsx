@@ -1,16 +1,13 @@
 'use client';
 
-// importing necessary functions
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { HappyBankLogo } from './icons/HappyBankLogo';
 import { GoogleLogo } from './icons/GoogleLogo';
 
 const SignIn: React.FC = () => {
-  // extracting data from usesession as session
   const { register, handleSubmit } = useForm();
 
-  // rendering components for not log
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
       <div className="m-0 bg-white shadow sm:rounded-lg flex justify-center flex-1">
@@ -82,7 +79,7 @@ const SignIn: React.FC = () => {
                 </form>
 
                 <p className="mt-6 text-xs text-gray-600 text-center">
-                  Don&apos;t have an acount?
+                  Don&apos;t have an account?
                   <a
                     href="#"
                     className="ml-1 border-b border-gray-500 border-dotted"
