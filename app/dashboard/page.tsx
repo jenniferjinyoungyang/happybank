@@ -1,11 +1,10 @@
 'use client';
 
-import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import DashboardHeader from './_components/DashboardHeader';
 
 const Dashboard: React.FC = () => {
-  const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   if (status === 'unauthenticated') {
     return <a href="/">Sign in</a>;
@@ -15,20 +14,7 @@ const Dashboard: React.FC = () => {
     return <>Loading your happy memories...</>;
   }
 
-  return (
-    <>
-      <h1>HELLO {session?.user?.name}! YOU&apos;RE SIGNED IN</h1>
-      <button
-        type="button"
-        onClick={async () => {
-          const data = await signOut({ redirect: false, callbackUrl: '/' });
-          router.push(data.url);
-        }}
-      >
-        Sign out
-      </button>
-    </>
-  );
+  return <DashboardHeader />;
 };
 
 export default Dashboard;

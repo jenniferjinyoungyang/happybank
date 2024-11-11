@@ -1,12 +1,7 @@
 import { FC } from 'react';
 
 export const HappyBankLogo: FC = () => (
-  <svg
-    width="176.35974827808292"
-    height="154.915625"
-    viewBox="0 0 250.00000000000003 322.51221625229886"
-    className="looka-1j8o68f"
-  >
+  <svg width="175" height="150" viewBox="0 0 250 325" className="looka-1j8o68f">
     <defs id="SvgjsDefs6021" />
     <g
       id="SvgjsG6022"
