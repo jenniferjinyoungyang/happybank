@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Dialog,
   DialogPanel,
@@ -13,41 +13,54 @@ import {
   PopoverPanel,
 } from '@headlessui/react';
 import {
-  ArrowPathIcon,
   Bars3Icon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
+  UserIcon,
+  Cog6ToothIcon,
+  ArrowRightStartOnRectangleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { HappyBankHeartLogo } from '../../_components/icons/HappyBankHeartLogo';
+import { SvgIcon } from '../../_types/svgIcon';
 
-const products = [
-  {
-    name: 'Profile',
-    description: 'Get a better understanding of your traffic',
-    href: '#',
-    icon: ChartPieIcon,
-  },
-  {
-    name: 'Settings',
-    description: 'Speak directly to your customers',
-    href: '#',
-    icon: CursorArrowRaysIcon,
-  },
-  {
-    name: 'Log out',
-    description: 'Build strategic funnels that will convert',
-    href: '#',
-    icon: ArrowPathIcon,
-  },
-];
+type AccountMenuItem = {
+  readonly name: 'Profile' | 'Settings' | 'Log out';
+  readonly icon: SvgIcon;
+  readonly onClick: () => void;
+};
 
 const DashboardNavBar: React.FC = () => {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const accountMenuItems: AccountMenuItem[] = useMemo(
+    () => [
+      {
+        name: 'Profile',
+        icon: UserIcon,
+        onClick: () => undefined,
+      },
+      {
+        name: 'Settings',
+        icon: Cog6ToothIcon,
+        onClick: () => undefined,
+      },
+      {
+        name: 'Log out',
+        icon: ArrowRightStartOnRectangleIcon,
+        onClick: async () => {
+          const data = await signOut({
+            redirect: false,
+            callbackUrl: '/',
+          });
+          router.push(data.url);
+        },
+      },
+    ],
+    [router],
+  );
 
   return (
     <>
@@ -86,38 +99,27 @@ const DashboardNavBar: React.FC = () => {
 
             <PopoverPanel
               transition
-              className="absolute -right-0 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+              className="absolute -right-0 top-full z-10 mt-3 w-screen max-w-56 overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
             >
               <div className="p-4">
-                {products.map((item) => (
-                  // TODO: make onClick function custom to each item
+                {accountMenuItems.map((item) => (
                   <button
                     type="button"
                     key={item.name}
-                    onClick={async () => {
-                      const data = await signOut({
-                        redirect: false,
-                        callbackUrl: '/',
-                      });
-                      router.push(data.url);
-                    }}
-                    className="group relative flex gap-x-6 rounded-lg p-4 text-sm/6 hover:bg-gray-50"
+                    onClick={item.onClick}
+                    className="group relative size-full flex items-center rounded-lg p-2 text-sm/6 hover:bg-gray-100"
                   >
-                    <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                    <div className="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-gray-100 group-hover:bg-white">
                       <item.icon
                         aria-hidden="true"
                         className="h-6 w-6 text-gray-600 group-hover:text-indigo-600"
                       />
                     </div>
-                    <div className="flex-auto">
-                      <a
-                        href={item.href}
-                        className="block font-semibold text-gray-900"
-                      >
+                    <div className="flex-auto ">
+                      <a href="#" className="block font-semibold text-gray-900">
                         {item.name}
                         <span className="absolute inset-0" />
                       </a>
-                      <p className="mt-1 text-gray-600">{item.description}</p>
                     </div>
                   </button>
                 ))}
@@ -165,12 +167,12 @@ const DashboardNavBar: React.FC = () => {
                     />
                   </DisclosureButton>
                   <DisclosurePanel className="mt-2 space-y-2">
-                    {products.map((item) => (
+                    {accountMenuItems.map((item) => (
                       <DisclosureButton
                         key={item.name}
-                        as="a"
-                        href={item.href}
-                        className="block rounded-lg py-2 pl-6 pr-3 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50"
+                        as="button"
+                        onClick={item.onClick}
+                        className="block w-full text-left rounded-lg py-2 pl-6 pr-3 text-sm/7 font-semibold text-gray-900 hover:bg-gray-100"
                       >
                         {item.name}
                       </DisclosureButton>
