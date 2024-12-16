@@ -30,29 +30,37 @@ const handler = NextAuth({
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
-        if (!credentials) return null;
-        const { email, password } = credentials;
-        // Fetch user and password hash from your database
-        const user = await prisma.user.findUnique({
-          where: { email },
-        });
-        if (
-          user &&
-          user.authType === AuthType.CREDENTIALS &&
-          user.password &&
-          bcrypt.compareSync(password, user.password)
-        ) {
-          return { id: user.id, name: user.name, email: user.email };
+      async authorize(credentials): Promise<User> {
+        try {
+          const { email, password } = credentials!;
+          // Fetch user and password hash from your database
+          const user = await prisma.user.findUnique({
+            where: { email },
+          });
+          if (
+            user &&
+            user.authType === AuthType.CREDENTIALS &&
+            user.password &&
+            bcrypt.compareSync(password, user.password)
+          ) {
+            return {
+              id: user.id,
+              name: user.name!,
+              email: user.email,
+              exp: 0,
+              iat: 0,
+              jti: '',
+            };
+          }
+          throw new Error('Invalid credentials');
+        } catch (err) {
+          throw new Error('Invalid credentials');
         }
-        throw new Error('Invalid credentials');
       },
     }),
   ],
   session: {
-    maxAge: 30 * 60,
-  },
-  jwt: {
+    strategy: 'jwt',
     maxAge: 30 * 60,
   },
   callbacks: {
@@ -85,6 +93,13 @@ const handler = NextAuth({
         }
       }
       return true;
+    },
+    async jwt({ token, user }) {
+      return { ...token, ...user };
+    },
+    async session({ session, token }) {
+      session.user = token as any;
+      return session;
     },
   },
 });
