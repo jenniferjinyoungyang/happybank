@@ -78,6 +78,7 @@ const handler = NextAuth({
           if (!existingUserByEmail) {
             await prisma.user.create({
               data: {
+                id: user.id,
                 email: user.email!,
                 password: null,
                 name: user.name,
@@ -98,7 +99,7 @@ const handler = NextAuth({
       return { ...token, ...user };
     },
     async session({ session, token }) {
-      session.user = token as any;
+      session.user = token as unknown as User;
       return session;
     },
   },
