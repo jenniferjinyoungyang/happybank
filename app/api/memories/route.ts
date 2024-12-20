@@ -21,8 +21,9 @@ export async function POST(req: Request) {
       { status: 405 },
     );
   }
+
   const res = await req.json();
-  console.log('request  - res: ', res);
+
   try {
     const savings = await savingsQuery(res);
     return NextResponse.json({ savings }, { status: 201 });
