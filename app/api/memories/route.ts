@@ -1,10 +1,13 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 import prisma from '../../../lib/prisma';
+
+const secret = process.env.NEXTAUTH_SECRET;
 
 const savingsQuery = (userId: string) =>
   prisma.saving.findMany({
     where: {
-      userId: userId ?? 'cm0ll6qxq00003b6se4csrall',
+      userId,
     },
     select: {
       createdAt: true,
@@ -14,18 +17,11 @@ const savingsQuery = (userId: string) =>
     },
   });
 
-export async function POST(req: Request) {
-  if (req.method !== 'POST') {
-    return NextResponse.json(
-      { message: 'Only POST requests are allowed' },
-      { status: 405 },
-    );
-  }
-
-  const res = await req.json();
+export async function GET(req: NextRequest) {
+  const token = await getToken({ req, secret });
 
   try {
-    const savings = await savingsQuery(res);
+    const savings = await savingsQuery(token?.sub!);
     return NextResponse.json({ savings }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
