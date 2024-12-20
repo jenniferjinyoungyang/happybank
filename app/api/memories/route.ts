@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
   try {
     const savings = await savingsQuery(res);
-    return NextResponse.json({ savings }, { status: 201 });
+    return NextResponse.json({ savings }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: 'Oops! Something went wrong :(' },
