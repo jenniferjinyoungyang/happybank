@@ -5,9 +5,11 @@ const DashboardHeader: React.FC = () => {
   const { data: session } = useSession();
 
   return (
-    <header className="bg-white mx-auto p-6 lg:px-8">
+    <header className="flex flex-col bg-white h-1/6 lg:px-8 border-b-neutral-200 border-2 pt-2 ">
       <DashboardNavBar />
-      <h1 className="py-10">Welcome back, {session?.user?.name}</h1>
+      <div className="flex-1 flex items-center">
+        <div className="text-xl">Welcome back, {session?.user?.name}</div>
+      </div>
     </header>
   );
 };

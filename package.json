@@ -10,6 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint -fix": "next lint --fix --ext .js,.jsx .",
     "test": "jest",
     "test:watch": "jest --watch",
     "prepare": "husky",
