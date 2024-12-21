@@ -2,19 +2,10 @@
 
 import { useSession } from 'next-auth/react';
 import DashboardHeader from './_components/DashboardHeader';
+import { DashboardBody } from './_components/DashboardBody';
 
 const Dashboard: React.FC = () => {
   const { status } = useSession();
-
-  const fetchMemories = async () => {
-    try {
-      const res = await fetch('/api/memories');
-      const data = await res.json();
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   if (status === 'unauthenticated') {
     return <a href="/">Sign in</a>;
@@ -25,17 +16,10 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <>
+    <section className="flex flex-col h-screen">
       <DashboardHeader />
-      <button
-        type="button"
-        onClick={() => {
-          fetchMemories();
-        }}
-      >
-        Click
-      </button>
-    </>
+      <DashboardBody />
+    </section>
   );
 };
 
