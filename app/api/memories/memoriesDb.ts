@@ -3,7 +3,7 @@ import prisma from '../../../lib/prisma';
 
 export declare namespace MemoriesDb {
   type Entity = Omit<Memory, 'id' | 'userId'>;
-  type CreationInputFields = Omit<Memory, 'id' | 'userId' | 'createdAt'>;
+  type CreationInputFields = Omit<Entity, 'createdAt'>;
 }
 
 const findAll = async (userId: string): Promise<MemoriesDb.Entity[]> =>
