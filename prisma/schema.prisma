@@ -14,7 +14,7 @@ model User {
   email         String          @unique
   password      String?
   authType      AuthType
-  savings       Saving[]
+  memories      Memory[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -25,12 +25,13 @@ enum AuthType {
   CREDENTIALS
 }
 
-model Saving {
+model Memory {
   id        Int     @id @default(autoincrement())
   userId    String
   title     String
   message   String
   createdAt DateTime @default(now())
-  hashTags  String
+  hashtag  String @map("hashtag")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+	@@map("Memory")
 }

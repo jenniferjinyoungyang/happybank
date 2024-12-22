@@ -1,0 +1,10 @@
+POST http://localhost:3000/api/memories
+Content-Type: applilcation/json
+//PASTE 'next-auth.session-token' COOKIE FROM THE BROWSER IN THE FORM OF:
+Cookie: next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..EYPXTbdo_u9lAwU1.NzimynDGCeDglV5xM_H3O6Vij4xDKY2q1-46tFBTK4_ZnwqbhfTDFnF4lh9zGN6VKDxN0kr8grcrJmYan4CMzqwWM1FQIlcwElJkpvxXAHzPOrE--uYd3q9yqcc9lCYOk9P9w62923TSbVRLXfteGfTiYcdhNsbdlyUMfPhnaNdklzHv0_fCncZ9Ab1i8Oo_TXwFT-1yfipzYvtAmidzzWsNFoHOfro5CLpphyVrnQNhCGIc0F4mhb79p5h3tRPnxQ.-otipsvoeoaqqNhQGXUstg
+
+{
+  "title": "Moved into a new office!",
+  "message": "Our team finally moved into our brand new office located in the downtown. I am excited for this new start!",
+  "hashtag": "celebration"
+}

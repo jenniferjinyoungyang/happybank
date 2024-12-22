@@ -1,7 +1,0 @@
-POST http://localhost:3000/api/login
-Content-Type: applilcation/json
-
-{
-  "email": "barbie@happybank.io",
-  "password": "barbie123"
-}
