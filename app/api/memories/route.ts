@@ -1,32 +1,17 @@
-import { Prisma, Saving } from '@prisma/client';
-import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import prisma from '../../../lib/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import * as z from 'zod';
+import { MemoriesDb, memoriesDb } from './memoriesDb';
 
 const secret = process.env.NEXTAUTH_SECRET;
 
-type DbMemory = Omit<Saving, 'id' | 'userId'>;
-
-const memoriesQuery = (userId: string): Prisma.PrismaPromise<DbMemory[]> =>
-  prisma.saving.findMany({
-    where: {
-      userId,
-    },
-    select: {
-      createdAt: true,
-      title: true,
-      message: true,
-      hashTags: true,
-    },
-  });
-
-export async function GET(
+export const GET = async (
   req: NextRequest,
-): Promise<NextResponse<DbMemory[] | { message: string }>> {
+): Promise<NextResponse<MemoriesDb.Entity[] | { message: string }>> => {
   const token = await getToken({ req, secret });
 
   try {
-    const memories = await memoriesQuery(token?.sub!);
+    const memories = await memoriesDb.findAll(token?.sub!);
     return NextResponse.json(memories, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -34,4 +19,44 @@ export async function GET(
       { status: 500 },
     );
   }
-}
+};
+
+const createMemorySchema = z.object({
+  title: z.string().min(1, 'Title is required').max(100),
+  message: z.string().min(1, 'Email is required').max(1000),
+  hashtag: z.string().max(20),
+});
+
+export const POST = async (
+  req: NextRequest,
+): Promise<NextResponse<{ message: string }>> => {
+  if (req.method !== 'POST') {
+    return NextResponse.json(
+      { message: 'Only POST requests are allowed' },
+      { status: 405 },
+    );
+  }
+
+  const body = await req.json();
+  const token = await getToken({ req, secret });
+  const { title, message, hashtag } = createMemorySchema.parse(body);
+
+  const inputFields: MemoriesDb.CreationInputFields = {
+    title,
+    message,
+    hashtag,
+  };
+
+  try {
+    await memoriesDb.create(token!.sub!, inputFields);
+    return NextResponse.json(
+      { message: 'successfully created a new memory' },
+      { status: 201 },
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'Oops! Something went wrong :(' },
+      { status: 500 },
+    );
+  }
+};

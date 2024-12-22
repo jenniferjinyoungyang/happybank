@@ -17,27 +17,29 @@ async function seed() {
     update: {},
   });
 
-  const barbieSavings = await prisma.saving.createMany({
+  const memories = await prisma.memory.createMany({
     data: [
       {
         userId: 'cm0ll6qxq00003b6se4csrall',
         title: 'test post',
         message: 'test message',
         createdAt: new Date('2024-07-27'),
-        hashTags: 'test',
+        hashtag: 'test',
       },
       {
         userId: 'cm0ll6qxq00003b6se4csrall',
-        title: 'test post 2',
-        message: 'test message 2',
-        createdAt: new Date('2024-07-28'),
-        hashTags: 'test',
+        title: 'Moved into a new office!',
+        message:
+          'Our team finally moved into our brand new office located in the downtown. I am excited for this new start!',
+        createdAt: new Date('2024-09-14'),
+        hashtag: 'celebration',
       },
     ],
   });
 
-  console.log('seeding : ', { barbie, barbieSavings });
+  console.log('seeding : ', { barbie, memories });
 }
+
 seed()
   .then(async () => {
     await prisma.$disconnect();
