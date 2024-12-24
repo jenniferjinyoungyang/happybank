@@ -41,7 +41,7 @@ export const POST = async (
   const token = await getToken({ req, secret });
   const { title, message, hashtag } = createMemorySchema.parse(body);
 
-  const inputFields: MemoriesDb.CreationInputFields = {
+  const inputFields: MemoriesDb.CreationFields = {
     title,
     message,
     hashtag,

@@ -1,6 +1,5 @@
 'use client';
 
-import { useMemo, useState } from 'react';
 import {
   Dialog,
   DialogPanel,
@@ -12,18 +11,20 @@ import {
   PopoverGroup,
   PopoverPanel,
 } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import {
-  Bars3Icon,
-  UserIcon,
-  Cog6ToothIcon,
   ArrowRightStartOnRectangleIcon,
+  Bars3Icon,
+  Cog6ToothIcon,
+  UserIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { HappyBankHeartLogo } from '../../_components/icons/HappyBankHeartLogo';
-import { SvgIcon } from '../../_types/svgIcon';
+import { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { SvgIcon } from '../_types/svgIcon';
+import { HappyBankHeartLogo } from './icons/HappyBankHeartLogo';
 
 type AccountMenuItem = {
   readonly name: 'Profile' | 'Settings' | 'Log out';
@@ -31,7 +32,7 @@ type AccountMenuItem = {
   readonly onClick: () => void;
 };
 
-const DashboardNavBar: React.FC = () => {
+const PageNavBar: React.FC = () => {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -66,10 +67,10 @@ const DashboardNavBar: React.FC = () => {
     <>
       <nav aria-label="Global" className="flex max-w-full justify-between">
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
+          <Link href="/dashboard" className="-m-1.5 p-1.5">
             <span className="sr-only">Happy Bank</span>
             <HappyBankHeartLogo />
-          </a>
+          </Link>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -188,4 +189,4 @@ const DashboardNavBar: React.FC = () => {
   );
 };
 
-export default DashboardNavBar;
+export default PageNavBar;

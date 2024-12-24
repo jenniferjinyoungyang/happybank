@@ -9,7 +9,7 @@ export const MemoryCard: FC<MemoryCardProps> = ({ memory }) => {
   const { title, message } = memory;
 
   return (
-    <article className="relative flex bg-clip-border rounded-xl bg-white text-gray-700 shadow-md w-4/12 flex-row mr-12">
+    <article className="relative flex bg-clip-border rounded-xl bg-white text-gray-700 shadow-md w-1/3 flex-row mr-12">
       <div className="p-6">
         <h6 className="block mb-4 font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-gray-700 uppercase">
           {title}

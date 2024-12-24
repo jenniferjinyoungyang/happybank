@@ -4,3 +4,5 @@ export type Memory = {
   readonly createdAt: Date;
   readonly hashtag: string;
 };
+
+export type MemoryCreationFields = Omit<Memory, 'createdAt'>;

@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { HappyBankLogo } from './icons/HappyBankLogo';
 import { GoogleLogo } from './icons/GoogleLogo';
+import { Button } from './Button';
 
 const SignIn: React.FC = () => {
   const { register, handleSubmit } = useForm();
@@ -70,12 +71,11 @@ const SignIn: React.FC = () => {
                       Forgot your password?
                     </a>
                   </p>
-                  <button
+                  <Button
                     type="submit"
-                    className="mt-16 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
-                  >
-                    <span className="ml-3">Sign in</span>
-                  </button>
+                    label="Sign in"
+                    cssWrapper="w-full mt-16"
+                  />
                 </form>
 
                 <p className="mt-6 text-xs text-gray-600 text-center">
