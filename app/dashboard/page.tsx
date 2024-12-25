@@ -1,10 +1,10 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import DashboardHeader from './_components/DashboardHeader';
-import { DashboardBody } from './_components/DashboardBody';
+import PageHeader from '../_components/PageHeader';
+import { Dashboard } from './_components/Dashboard';
 
-const Dashboard: React.FC = () => {
+const DashboardPage: React.FC = () => {
   const { status } = useSession();
 
   if (status === 'unauthenticated') {
@@ -17,10 +17,10 @@ const Dashboard: React.FC = () => {
 
   return (
     <section className="flex flex-col h-screen">
-      <DashboardHeader />
-      <DashboardBody />
+      <PageHeader />
+      <Dashboard />
     </section>
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

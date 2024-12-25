@@ -38,6 +38,8 @@
       }
     ],
     "react/jsx-props-no-spreading": ["warn"],
+    "react/button-has-type": ["warn"],
+    "react/require-default-props": ["warn"],
     "no-param-reassign": "off"
   },
   "overrides": [

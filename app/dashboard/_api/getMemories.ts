@@ -1,6 +1,6 @@
 import { Memory } from '../../_types/memory';
 
-const get = async (): Promise<Memory[] | undefined> => {
+export const getMemories = async (): Promise<Memory[] | undefined> => {
   try {
     const res = await fetch('/api/memories');
     const data = await res.json();
@@ -9,8 +9,4 @@ const get = async (): Promise<Memory[] | undefined> => {
     console.log(err); // TODO error handling
     return undefined;
   }
-};
-
-export const memoriesApi = {
-  get,
 };
