@@ -19,7 +19,7 @@ export const Dashboard: FC = () => {
       {memories.length === 0 && <p>You don&apos;t have any memories yet.</p>}
       {memories.length !== 0 && (
         <>
-          <div className="mb-10 text-3xl">{`This is your memory from ${new Date(memories[0].createdAt).toDateString()}`}</div>
+          <h2 className="mb-10 font-medium">{`This is your memory from ${new Date(memories[0].createdAt).toDateString()}`}</h2>
           <div className="flex h-3/4">
             <MemoryCard memory={memories[0]} />
             <MemoryImageCard />

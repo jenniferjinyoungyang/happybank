@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
 import SessionWrapper from './_components/SessionWrapper';
-
-const inter = Inter({ subsets: ['latin'] });
+import { hind, montserrat } from './fonts';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Happy Bank',
@@ -16,11 +14,11 @@ const RootLayout = ({
   children: React.ReactNode;
 }>) => (
   <SessionWrapper>
-    <html lang="en">
+    <html lang="en" className={`${montserrat.variable} ${hind.variable}`}>
       <head>
         <link rel="icon" type="image/png" href="icon.png" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   </SessionWrapper>
 );

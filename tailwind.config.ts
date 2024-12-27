@@ -3,6 +3,10 @@ import type { Config } from 'tailwindcss';
 const config: Config = {
   content: ['app/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
+    fontFamily: {
+      montserrat: ['var(--font-montserrat)'],
+      hind: ['var(--font-hind)'],
+    },
     extend: {
       backgroundImage: {
         'login-image':
