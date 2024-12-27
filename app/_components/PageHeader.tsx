@@ -11,13 +11,11 @@ const PageHeader: React.FC = () => {
     <header className="flex flex-col bg-white h-1/6 lg:px-8 border-b-neutral-200 border-2 pt-2 ">
       <PageNavBar />
       <div className="flex-1 flex items-center">
-        {isDashboard && (
-          <div className="text-xl">Welcome back, {session?.user?.name}</div>
-        )}
+        {isDashboard && <h1>Welcome back, {session?.user?.name}</h1>}
         {!isDashboard && (
-          <div className="text-xl">
+          <h1 className="text-xl">
             {`Save a special memory for ${new Date().toDateString()}`}
-          </div>
+          </h1>
         )}
       </div>
     </header>
