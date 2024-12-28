@@ -6,6 +6,7 @@ const config: Config = {
     fontFamily: {
       montserrat: ['var(--font-montserrat)'],
       hind: ['var(--font-hind)'],
+      permanent_marker: ['var(--font-permanent-marker)'],
     },
     extend: {
       backgroundImage: {
