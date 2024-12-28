@@ -25,6 +25,7 @@ const createMemorySchema = z.object({
   title: z.string().min(1, 'Title is required').max(100),
   message: z.string().min(1, 'Email is required').max(1000),
   hashtag: z.string().max(20),
+  imageId: z.string().max(265).optional(), // taking into account max filename length for Mac/Windows
 });
 
 export const POST = async (
@@ -39,12 +40,18 @@ export const POST = async (
 
   const body = await req.json();
   const token = await getToken({ req, secret });
-  const { title, message, hashtag } = createMemorySchema.parse(body);
+  const {
+    title,
+    message,
+    hashtag,
+    imageId = null,
+  } = createMemorySchema.parse(body);
 
   const inputFields: MemoriesDb.CreationFields = {
     title,
     message,
     hashtag,
+    imageId,
   };
 
   try {

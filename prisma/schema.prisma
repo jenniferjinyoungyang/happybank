@@ -31,7 +31,8 @@ model Memory {
   title     String
   message   String
   createdAt DateTime @default(now())
-  hashtag  String @map("hashtag")
+  hashtag   String @map("hashtag")
+  imageId   String?
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 	@@map("Memory")
 }

@@ -20,7 +20,7 @@ export const Dashboard: FC = () => {
       {memories.length !== 0 && (
         <>
           <h2 className="mb-10 font-medium">{`This is your memory from ${new Date(
-            memories[0].createdAt,
+            memories[memories.length - 1].createdAt,
           ).toLocaleDateString(undefined, {
             weekday: 'long',
             year: 'numeric',
@@ -28,8 +28,8 @@ export const Dashboard: FC = () => {
             day: 'numeric',
           })}`}</h2>
           <div className="flex h-3/4">
-            <MemoryCard memory={memories[0]} />
-            <MemoryImageCard />
+            <MemoryCard memory={memories[memories.length - 1]} />
+            <MemoryImageCard imageId={memories[memories.length - 1].imageId} />
             <DashboardActionPanel />
           </div>
         </>

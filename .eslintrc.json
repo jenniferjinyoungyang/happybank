@@ -37,9 +37,10 @@
         "aspects": ["invalidHref", "preferButton"]
       }
     ],
-    "react/jsx-props-no-spreading": ["warn"],
-    "react/button-has-type": ["warn"],
-    "react/require-default-props": ["warn"],
+    "react/jsx-props-no-spreading": "off",
+    "react/button-has-type": "warn",
+    "react/require-default-props": "warn",
+    "react-hooks/exhaustive-deps": "error",
     "no-param-reassign": "off"
   },
   "overrides": [

@@ -16,6 +16,7 @@ const findAll = async (userId: string): Promise<MemoriesDb.Entity[]> =>
       title: true,
       message: true,
       hashtag: true,
+      imageId: true,
     },
   });
 
