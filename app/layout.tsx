@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import SessionWrapper from './_components/SessionWrapper';
-import { hind, montserrat } from './fonts';
+import { hind, montserrat, permanentMarker } from './fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -14,7 +14,10 @@ const RootLayout = ({
   children: React.ReactNode;
 }>) => (
   <SessionWrapper>
-    <html lang="en" className={`${montserrat.variable} ${hind.variable}`}>
+    <html
+      lang="en"
+      className={`${montserrat.variable} ${hind.variable} ${permanentMarker.variable}`}
+    >
       <head>
         <link rel="icon" type="image/png" href="icon.png" />
       </head>

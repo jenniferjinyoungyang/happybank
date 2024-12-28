@@ -34,14 +34,14 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({
       <div className="mb-5">
         <label
           htmlFor="memory-title"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          className="block mb-2 text-sm font-medium text-gray-900"
         >
           Title
           <input
             type="text"
             id="memory-title"
             className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base
-          focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+          focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             {...register('title', {
               onChange: (e) => onTitleUpdate(e.target.value),
             })}
@@ -51,13 +51,13 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({
       <div className="mb-5 h-1/2 flex flex-col">
         <label
           htmlFor="memory-message"
-          className="flex-1 flex flex-col mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          className="flex-1 flex flex-col mb-2 text-sm font-medium text-gray-900"
         >
           Message
           <textarea
             id="memory-message"
             className="block w-full p-2 flex-1 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base
-          focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
+          focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             {...register('message')}
           />
         </label>
@@ -65,13 +65,13 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({
       <div>
         <label
           htmlFor="memory-hashtag"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          className="block mb-2 text-sm font-medium text-gray-900"
         >
           Hashtag
           <input
             type="text"
             id="memory-hashtag"
-            className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500 "
+            className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 "
             {...register('hashtag')}
           />
         </label>

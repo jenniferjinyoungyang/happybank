@@ -14,7 +14,15 @@ const PageHeader: React.FC = () => {
         {isDashboard && <h1>Welcome back, {session?.user?.name}</h1>}
         {!isDashboard && (
           <h1 className="text-xl">
-            {`Save a special memory for ${new Date().toDateString()}`}
+            {`Save a special memory for ${new Date().toLocaleDateString(
+              undefined,
+              {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              },
+            )}`}
           </h1>
         )}
       </div>
