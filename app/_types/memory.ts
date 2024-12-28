@@ -3,6 +3,7 @@ export type Memory = {
   readonly message: string;
   readonly createdAt: Date;
   readonly hashtag: string;
+  readonly imageId: string;
 };
 
 export type MemoryCreationFields = Omit<Memory, 'createdAt'>;

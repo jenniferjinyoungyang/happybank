@@ -1,36 +1,14 @@
-import { Dispatch, FC, SetStateAction } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FC } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { Button } from '../../_components/Button';
-import { MemoryCreationFields } from '../../_types/memory';
-import { createMemory } from '../_api/createMemory';
 
-type CreateMemoryCardProps = {
-  readonly onTitleUpdate: Dispatch<SetStateAction<string>>;
-};
-export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({
-  onTitleUpdate,
-}) => {
-  const { register, handleSubmit, reset } = useForm<MemoryCreationFields>();
-
-  const onSubmit: SubmitHandler<MemoryCreationFields> = async (data) => {
-    console.log('input data: ', data);
-    try {
-      await createMemory(data);
-      reset({
-        title: '',
-        message: '',
-        hashtag: '',
-      });
-    } catch (err) {
-      console.log('submission error: ', err);
-    }
-  };
-
+export const CreateMemoryCard: FC = () => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
   return (
-    <form
-      className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md p-5"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md p-5">
       <div className="mb-5">
         <label
           htmlFor="memory-title"
@@ -43,10 +21,17 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({
             className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base
           focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             {...register('title', {
-              onChange: (e) => onTitleUpdate(e.target.value),
+              required: 'This is required.',
+              maxLength: {
+                value: 100,
+                message: 'This input exceeds maximum length of 100.',
+              },
             })}
           />
         </label>
+        {errors.title && (
+          <p className="text-red-500">{errors.title.message?.toString()}</p>
+        )}
       </div>
       <div className="mb-5 h-1/2 flex flex-col">
         <label
@@ -58,25 +43,42 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({
             id="memory-message"
             className="block w-full p-2 flex-1 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base
           focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            {...register('message')}
+            {...register('message', {
+              required: 'This is required.',
+              maxLength: {
+                value: 1000,
+                message: 'This input exceeds maximum length of 1000.',
+              },
+            })}
           />
         </label>
+        {errors.message && (
+          <p className="text-red-500">{errors.message.message?.toString()}</p>
+        )}
       </div>
       <div>
         <label
           htmlFor="memory-hashtag"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
-          Hashtag
+          Hashtag #
           <input
             type="text"
             id="memory-hashtag"
             className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 "
-            {...register('hashtag')}
+            {...register('hashtag', {
+              maxLength: {
+                value: 20,
+                message: 'This input exceeds maximum length of 20.',
+              },
+            })}
           />
         </label>
+        {errors.hashtag && (
+          <p className="text-red-500">{errors.hashtag.message?.toString()}</p>
+        )}
       </div>
       <Button type="submit" label="Submit" cssWrapper="mt-auto" />
-    </form>
+    </div>
   );
 };

@@ -1,11 +1,30 @@
+import { CldImage } from 'next-cloudinary';
+import Image from 'next/image';
 import { FC } from 'react';
+import polaroid from '../../../images/polaroid.png';
 
-export const MemoryImageCard: FC = () => (
-  <div className="relative w-1/3 m-0 overflow-hidden text-gray-700 bg-white bg-clip-border rounded-xl shrink-0 mr-12">
-    <img
-      src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1471&amp;q=80"
-      alt="card-image"
-      className="object-cover w-full h-full"
-    />
+type MemoryImageCardProps = {
+  imageId: string;
+};
+
+export const MemoryImageCard: FC<MemoryImageCardProps> = ({ imageId }) => (
+  <div className="relative w-1/3 m-0 overflow-hidden text-gray-700 bg-white bg-clip-border shadow-md rounded-xl shrink-0 mr-12">
+    {!imageId && (
+      <Image
+        src={polaroid.src}
+        alt="polaroid icon"
+        className="bg-white object-scale-down"
+        fill
+      />
+    )}
+    {imageId && (
+      <CldImage
+        src={imageId}
+        sizes="100vw"
+        alt="uploaded image"
+        className="bg-black w-full h-full object-contain"
+        fill
+      />
+    )}
   </div>
 );
