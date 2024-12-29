@@ -20,9 +20,9 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { signOut } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import Link from 'next/link';
 import { SvgIcon } from '../_types/svgIcon';
 import { HappyBankHeartLogo } from './icons/HappyBankHeartLogo';
 
@@ -83,12 +83,6 @@ const PageNavBar: React.FC = () => {
           </button>
         </div>
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-          <a
-            href="#"
-            className="text-sm/6 font-semibold text-gray-900 content-center"
-          >
-            Memories
-          </a>
           <Popover className="relative content-center">
             <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
               Account
@@ -97,7 +91,6 @@ const PageNavBar: React.FC = () => {
                 className="h-5 w-5 flex-none text-gray-400"
               />
             </PopoverButton>
-
             <PopoverPanel
               transition
               className="absolute -right-0 top-full z-10 mt-3 w-screen max-w-56 overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
