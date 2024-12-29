@@ -1,8 +1,7 @@
 import { MemoryCreationFields } from '../../_types/memory';
+import { ApiResult } from '../../_utils/apiResult';
 
-export const createMemory = async (
-  data: MemoryCreationFields,
-): Promise<void> => {
+export const createMemory = async (data: MemoryCreationFields): Promise<ApiResult<null>> => {
   try {
     fetch('/api/memories', {
       method: 'POST',
@@ -11,7 +10,8 @@ export const createMemory = async (
         'Content-type': 'application/json',
       },
     });
+    return { isSuccess: true, data: null };
   } catch (err) {
-    console.log(err);
+    return { isSuccess: false, error: 'unknown error' }; // TODO proper error message
   }
 };

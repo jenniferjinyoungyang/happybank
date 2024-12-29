@@ -10,10 +10,7 @@ export const CreateMemoryCard: FC = () => {
   return (
     <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md p-5">
       <div className="mb-5">
-        <label
-          htmlFor="memory-title"
-          className="block mb-2 text-sm font-medium text-gray-900"
-        >
+        <label htmlFor="memory-title" className="block mb-2 text-sm font-medium text-gray-900">
           Title
           <input
             type="text"
@@ -29,9 +26,7 @@ export const CreateMemoryCard: FC = () => {
             })}
           />
         </label>
-        {errors.title && (
-          <p className="text-red-500">{errors.title.message?.toString()}</p>
-        )}
+        {errors.title && <p className="text-red-500">{errors.title.message?.toString()}</p>}
       </div>
       <div className="mb-5 h-1/2 flex flex-col">
         <label
@@ -52,15 +47,10 @@ export const CreateMemoryCard: FC = () => {
             })}
           />
         </label>
-        {errors.message && (
-          <p className="text-red-500">{errors.message.message?.toString()}</p>
-        )}
+        {errors.message && <p className="text-red-500">{errors.message.message?.toString()}</p>}
       </div>
       <div>
-        <label
-          htmlFor="memory-hashtag"
-          className="block mb-2 text-sm font-medium text-gray-900"
-        >
+        <label htmlFor="memory-hashtag" className="block mb-2 text-sm font-medium text-gray-900">
           Hashtag #
           <input
             type="text"
@@ -74,9 +64,7 @@ export const CreateMemoryCard: FC = () => {
             })}
           />
         </label>
-        {errors.hashtag && (
-          <p className="text-red-500">{errors.hashtag.message?.toString()}</p>
-        )}
+        {errors.hashtag && <p className="text-red-500">{errors.hashtag.message?.toString()}</p>}
       </div>
       <Button type="submit" label="Submit" cssWrapper="mt-auto" />
     </div>
