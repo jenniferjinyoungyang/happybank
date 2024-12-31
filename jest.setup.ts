@@ -5,4 +5,7 @@ import makeResizeObserverMock from './test-helper/resizeObserverMock';
 
 makeResizeObserverMock();
 
-jest.mock('next/navigation', () => nextRouterMock);
+jest.mock('next/navigation', () => ({
+  ...nextRouterMock,
+  usePathname: () => nextRouterMock.memoryRouter.pathname,
+}));
