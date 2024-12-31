@@ -32,7 +32,7 @@ type AccountMenuItem = {
   readonly onClick: () => void;
 };
 
-const PageNavBar: React.FC = () => {
+const PageNav: React.FC = () => {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -86,10 +86,7 @@ const PageNavBar: React.FC = () => {
           <Popover className="relative content-center">
             <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
               Account
-              <ChevronDownIcon
-                aria-hidden="true"
-                className="h-5 w-5 flex-none text-gray-400"
-              />
+              <ChevronDownIcon aria-hidden="true" className="h-5 w-5 flex-none text-gray-400" />
             </PopoverButton>
             <PopoverPanel
               transition
@@ -122,11 +119,7 @@ const PageNavBar: React.FC = () => {
           </Popover>
         </PopoverGroup>
       </nav>
-      <Dialog
-        open={mobileMenuOpen}
-        onClose={setMobileMenuOpen}
-        className="lg:hidden"
-      >
+      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
@@ -182,4 +175,4 @@ const PageNavBar: React.FC = () => {
   );
 };
 
-export default PageNavBar;
+export default PageNav;

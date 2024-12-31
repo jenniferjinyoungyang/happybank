@@ -6,13 +6,17 @@ import { CreateMemoryCard } from './CreateMemoryCard';
 import { UploadImageCard } from './UploadImageCard';
 
 export const CreateMemoryPanel: FC = () => {
-  const methods = useForm<MemoryCreationFields>();
+  const methods = useForm<MemoryCreationFields>({
+    defaultValues: {
+      imageId: null,
+    },
+  });
 
   const onSubmit: SubmitHandler<MemoryCreationFields> = useMemo(
     () => async (data) => {
       createMemory(data).then((result) => {
         if (result.isSuccess) {
-          methods.reset({ title: '', message: '', hashtag: '', imageId: '' });
+          methods.reset({ title: '', message: '', hashtag: '', imageId: null });
         } else {
           console.log('create memory submission error');
         }

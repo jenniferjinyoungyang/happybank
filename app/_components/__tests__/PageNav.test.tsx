@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import * as NextAuthReactModule from 'next-auth/react';
-import PageNavBar from '../PageNavBar';
+import PageNav from '../PageNav';
 
 describe('PageNav', () => {
   let signOutSpy: jest.SpyInstance;
@@ -11,20 +11,18 @@ describe('PageNav', () => {
   });
 
   it('should render correct menu', async () => {
-    render(<PageNavBar />);
+    render(<PageNav />);
 
     const menuButton = screen.getByRole('button', { name: 'Account' });
     await userEvent.click(menuButton);
 
     expect(screen.getByRole('button', { name: 'Profile' })).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Settings' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Log out' })).toBeInTheDocument();
   });
 
   it('should call sign out api when log out button is clicked', async () => {
-    render(<PageNavBar />);
+    render(<PageNav />);
 
     const menuButton = screen.getByRole('button', { name: 'Account' });
     await userEvent.click(menuButton);
