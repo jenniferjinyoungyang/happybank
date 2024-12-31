@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Button } from '../../_components/Button';
+import { Button } from '../../_shared/_components/Button';
 
 export const CreateMemoryCard: FC = () => {
   const {

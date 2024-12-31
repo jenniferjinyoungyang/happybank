@@ -1,4 +1,4 @@
-import SignIn from './_components/SignIn';
+import SignIn from './_shared/_components/SignIn';
 
 const Home: React.FC = () => (
   <main>

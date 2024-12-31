@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { match } from 'ts-pattern';
-import PageHeader from '../_components/PageHeader';
+import PageHeader from '../_shared/_components/PageHeader';
 import { Dashboard } from './_components/Dashboard';
 
 const DashboardPage: React.FC = () => {

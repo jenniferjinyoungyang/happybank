@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Memory } from '../../_types/memory';
+import { Memory } from '../../_shared/_types/memory';
 
 type MemoryCardProps = {
   readonly memory: Memory;
@@ -14,9 +14,7 @@ export const MemoryCard: FC<MemoryCardProps> = ({ memory }) => {
         <h4 className="block mb-4 antialiased leading-snug tracking-normal text-blue-gray-900 uppercase">
           {title}
         </h4>
-        <p className="block mb-8 antialiased leading-relaxed text-gray-700">
-          {message}
-        </p>
+        <p className="block mb-8 antialiased leading-relaxed text-gray-700">{message}</p>
       </div>
     </article>
   );
