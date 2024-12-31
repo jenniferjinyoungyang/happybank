@@ -1,6 +1,6 @@
 import { FC, useMemo } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { MemoryCreationFields } from '../../_types/memory';
+import { MemoryCreationFields } from '../../_shared/_types/memory';
 import { createMemory } from '../_api/createMemory';
 import { CreateMemoryCard } from './CreateMemoryCard';
 import { UploadImageCard } from './UploadImageCard';

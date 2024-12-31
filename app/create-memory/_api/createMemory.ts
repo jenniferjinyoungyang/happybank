@@ -1,5 +1,5 @@
-import { MemoryCreationFields } from '../../_types/memory';
-import { ApiResult } from '../../_utils/apiResult';
+import { MemoryCreationFields } from '../../_shared/_types/memory';
+import { ApiResult } from '../../_shared/_utils/apiResult';
 
 export const createMemory = async (data: MemoryCreationFields): Promise<ApiResult<null>> => {
   try {

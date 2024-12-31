@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import SessionWrapper from './_components/SessionWrapper';
+import SessionWrapper from './_shared/_components/SessionWrapper';
 import { hind, montserrat, permanentMarker } from './fonts';
 import './globals.css';
 

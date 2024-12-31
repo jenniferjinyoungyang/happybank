@@ -1,7 +1,7 @@
-import { Memory } from '../../_types/memory';
-import { ApiResult } from '../../_utils/apiResult';
+import { Memory } from '../../_shared/_types/memory';
+import { ApiResult } from '../../_shared/_utils/apiResult';
 
-export const getMemories = async (): Promise<ApiResult<Memory[]>> => {
+export const getMemory = async (): Promise<ApiResult<Memory[]>> => {
   try {
     const res = await fetch('/api/memories');
     const data = (await res.json()) as Memory[];

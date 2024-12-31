@@ -23,9 +23,7 @@ const SignIn: React.FC = () => {
               <div className="flex flex-col items-center">
                 <button
                   type="button"
-                  onClick={() =>
-                    signIn('google', { callbackUrl: '/dashboard' })
-                  }
+                  onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
                   className="w-3/4 inline-flex items-center justify-center py-4 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                 >
                   <GoogleLogo />
@@ -62,26 +60,16 @@ const SignIn: React.FC = () => {
                     placeholder="Password"
                   />
                   <p className="mt-2 text-xs text-gray-600 text-right">
-                    <a
-                      href="#"
-                      className="ml-1 border-b border-gray-500 border-dotted"
-                    >
+                    <a href="#" className="ml-1 border-b border-gray-500 border-dotted">
                       Forgot your password?
                     </a>
                   </p>
-                  <Button
-                    type="submit"
-                    label="Sign in"
-                    cssWrapper="w-full mt-16"
-                  />
+                  <Button type="submit" label="Sign in" cssWrapper="w-full mt-16" />
                 </form>
 
                 <p className="mt-6 text-xs text-gray-600 text-center">
                   Don&apos;t have an account?
-                  <a
-                    href="#"
-                    className="ml-1 border-b border-gray-500 border-dotted"
-                  >
+                  <a href="#" className="ml-1 border-b border-gray-500 border-dotted">
                     Sign up
                   </a>
                 </p>

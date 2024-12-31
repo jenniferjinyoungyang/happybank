@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import * as NextAuthReactModule from 'next-auth/react';
 import { SessionProvider } from 'next-auth/react';
 import mockRouter from 'next-router-mock';
+import { makeSessionMock } from '../../__mocks__/session.mock';
 import PageHeader from '../PageHeader';
-import { makeSessionMock } from '../__mocks__/sessionMock';
 
 describe('PageHeader', () => {
   beforeEach(() => {
@@ -26,6 +26,8 @@ describe('PageHeader', () => {
   });
 
   it('renders create-memory page header text', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2024-12-30T10:00:00.000-05:00'));
+
     mockRouter.push('/create-memory');
     render(
       <SessionProvider>
@@ -36,6 +38,8 @@ describe('PageHeader', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Save a special memory for Monday, December 30, 2024',
     );
+
+    jest.useRealTimers();
   });
 
   it('renders unknown page header text', () => {

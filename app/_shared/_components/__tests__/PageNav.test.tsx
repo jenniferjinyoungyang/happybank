@@ -4,7 +4,7 @@ import * as NextAuthReactModule from 'next-auth/react';
 import PageNav from '../PageNav';
 
 describe('PageNav', () => {
-  let signOutSpy: jest.SpyInstance;
+  let signOutSpy: jest.SpyInstance<ReturnType<typeof NextAuthReactModule.signOut>>;
 
   beforeEach(() => {
     signOutSpy = jest.spyOn(NextAuthReactModule, 'signOut');
