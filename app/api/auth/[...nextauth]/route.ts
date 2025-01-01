@@ -1,9 +1,9 @@
-import NextAuth, { Account, Profile, User } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import Credentials, { CredentialInput } from 'next-auth/providers/credentials';
-import bcrypt from 'bcrypt';
-import { AdapterUser } from 'next-auth/adapters';
 import { AuthType } from '@prisma/client';
+import bcrypt from 'bcrypt';
+import NextAuth, { Account, Profile, User } from 'next-auth';
+import { AdapterUser } from 'next-auth/adapters';
+import Credentials, { CredentialInput } from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 import prisma from '../../../../lib/prisma';
 
 type SignInProps = {
@@ -59,6 +59,7 @@ const handler = NextAuth({
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
     maxAge: 30 * 60,
