@@ -1,9 +1,5 @@
-import SignIn from './_shared/_components/SignIn';
+import SignInPage from './sign-in/page';
 
-const Home: React.FC = () => (
-  <main>
-    <SignIn />
-  </main>
-);
+const Home: React.FC = () => <SignInPage />;
 
 export default Home;

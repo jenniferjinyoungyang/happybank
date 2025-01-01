@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { MemoryCreationFields } from '../../_shared/_types/memory';
 import { createMemory } from '../_api/createMemory';
@@ -6,6 +6,8 @@ import { CreateMemoryCard } from './CreateMemoryCard';
 import { UploadImageCard } from './UploadImageCard';
 
 export const CreateMemoryPanel: FC = () => {
+  const [isAlert, setIsAlert] = useState(false);
+
   const methods = useForm<MemoryCreationFields>({
     defaultValues: {
       imageId: null,
@@ -18,7 +20,7 @@ export const CreateMemoryPanel: FC = () => {
         if (result.isSuccess) {
           methods.reset({ title: '', message: '', hashtag: '', imageId: null });
         } else {
-          console.log('create memory submission error');
+          setIsAlert(true);
         }
       });
     },
@@ -32,6 +34,8 @@ export const CreateMemoryPanel: FC = () => {
           <CreateMemoryCard />
           <UploadImageCard memoryTitle={methods.watch('title')} />
         </form>
+        {/* TODO create better alert component which user can close */}
+        {isAlert && <p>Error creating memory</p>}
       </FormProvider>
     </main>
   );

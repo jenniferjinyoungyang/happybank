@@ -15,7 +15,10 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle }) => {
   const imageId: string | null = watch('imageId');
 
   return (
-    <div className="relative flex flex-col overflow-hidden text-gray-700 bg-white shadow-md bg-clip-border rounded-xl shrink-0 p-5">
+    <div
+      className="relative flex flex-col overflow-hidden text-gray-700 bg-white shadow-md bg-clip-border rounded-xl shrink-0 p-5"
+      data-testid="upload-image-card"
+    >
       <div className="relative h-4/6">
         {match(imageId)
           .with(P.string, (it) => (

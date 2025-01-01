@@ -3,13 +3,13 @@ import * as NextAuthReactModule from 'next-auth/react';
 import { makeApiErrorMock, makeApiSuccessMock } from '../../../../test-helper/makeMock';
 import { makeMemoryMock } from '../../../_shared/__mocks__/memory.mock';
 import { makeSessionMock } from '../../../_shared/__mocks__/session.mock';
-import * as MemoryModule from '../../_api/getMemory';
+import * as GetMemoryModule from '../../_api/getMemory';
 import { Dashboard } from '../Dashboard';
 
 jest.mock('../../_api/getMemory');
 
 describe('Dashboard', () => {
-  let getMemorySpy: jest.SpyInstance<ReturnType<typeof MemoryModule.getMemory>>;
+  let getMemorySpy: jest.SpyInstance<ReturnType<typeof GetMemoryModule.getMemory>>;
 
   beforeEach(() => {
     jest
@@ -17,7 +17,7 @@ describe('Dashboard', () => {
       .mockReturnValue({ data: makeSessionMock(), status: 'authenticated', update: jest.fn() });
 
     getMemorySpy = jest
-      .spyOn(MemoryModule, 'getMemory')
+      .spyOn(GetMemoryModule, 'getMemory')
       .mockResolvedValue(makeApiSuccessMock([makeMemoryMock()]));
   });
 
