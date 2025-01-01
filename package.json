@@ -9,6 +9,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "postinstall": "prisma generate",
     "lint": "next lint",
     "lint -fix": "next lint --fix --ext .ts,.tsx .",
     "test": "jest",
