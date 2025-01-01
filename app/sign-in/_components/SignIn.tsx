@@ -2,9 +2,9 @@
 
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-import { Button } from './Button';
-import { GoogleLogo } from './icons/GoogleLogo';
-import { HappyBankLogo } from './icons/HappyBankLogo';
+import { Button } from '../../_shared/_components/Button';
+import { GoogleLogo } from '../../_shared/_components/icons/GoogleLogo';
+import { HappyBankLogo } from '../../_shared/_components/icons/HappyBankLogo';
 
 const SignIn: React.FC = () => {
   const { register, handleSubmit } = useForm();
@@ -18,7 +18,7 @@ const SignIn: React.FC = () => {
         <div className="h-screen flex w-1/2 p-6 sm:p-12">
           <div className="flex flex-col items-center inline-block align-middle m-auto">
             <HappyBankLogo />
-            <h2 className="mt-16">Welcome back to Happy bank!</h2>
+            <h2 className="mt-16">Welcome to Happy bank!</h2>
             <div className="w-full flex-1 my-8">
               <div className="flex flex-col items-center">
                 <button
