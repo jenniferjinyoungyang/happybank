@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { match, P } from 'ts-pattern';
-import polaroid from '../../../images/polaroid.png';
+import polaroid from '../../../public/images/polaroid.png';
 
 type UploadImageCardProps = {
   readonly memoryTitle: string;

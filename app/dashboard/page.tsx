@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { match } from 'ts-pattern';
 import PageHeader from '../_shared/_components/PageHeader';
 import { Dashboard } from './_components/Dashboard';
+import { PageFooter } from '../_shared/_components/PageFooter';
 
 const DashboardPage: React.FC = () => {
   const { status } = useSession();
@@ -20,6 +21,7 @@ const DashboardPage: React.FC = () => {
           </section>
         ))
         .exhaustive()}
+      <PageFooter />
     </>
   );
 };
