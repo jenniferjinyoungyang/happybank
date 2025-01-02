@@ -44,4 +44,11 @@ describe('DashboardPage', () => {
       'Welcome back, Barbie Tester',
     );
   });
+
+  it('should render a footer', () => {
+    useSessionSpy.mockReturnValueOnce({ data: null, status: 'unauthenticated', update: jest.fn() });
+
+    render(<DashboardPage />);
+    expect(screen.getByRole('contentinfo')).toHaveTextContent('HappyBank');
+  });
 });

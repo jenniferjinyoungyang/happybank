@@ -30,7 +30,11 @@ export const CreateMemoryPanel: FC = () => {
   return (
     <main className="flex-1 bg-stone-100 px-28 py-12">
       <FormProvider {...methods}>
-        <form className="grid grid-cols-2 gap-x-12 h-3/4" onSubmit={methods.handleSubmit(onSubmit)}>
+        <form
+          aria-label="create-memory-form"
+          className="grid grid-cols-2 gap-x-12 h-3/4"
+          onSubmit={methods.handleSubmit(onSubmit)}
+        >
           <CreateMemoryCard />
           <UploadImageCard memoryTitle={methods.watch('title')} />
         </form>
