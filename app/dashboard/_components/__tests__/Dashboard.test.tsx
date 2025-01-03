@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import * as NextAuthReactModule from 'next-auth/react';
 import { makeApiErrorMock, makeApiSuccessMock } from '../../../../test-helper/makeMock';
 import { makeMemoryMock } from '../../../_shared/__mocks__/memory.mock';
@@ -18,7 +19,7 @@ describe('Dashboard', () => {
 
     getMemorySpy = jest
       .spyOn(GetMemoryModule, 'getMemory')
-      .mockResolvedValue(makeApiSuccessMock([makeMemoryMock()]));
+      .mockResolvedValue(makeApiSuccessMock(makeMemoryMock()));
   });
 
   it('should render an error message when it fails to fetch a memory', async () => {
@@ -35,7 +36,7 @@ describe('Dashboard', () => {
   });
 
   it('should render an empty dashboard when no memory exists', async () => {
-    getMemorySpy.mockResolvedValue(makeApiSuccessMock([]));
+    getMemorySpy.mockResolvedValue(makeApiSuccessMock(null));
 
     render(<Dashboard />);
     expect(await screen.findByText("You don't have any memories yet.")).toBeInTheDocument();
@@ -65,7 +66,7 @@ describe('Dashboard', () => {
   });
 
   it('should render a polaroid icon when successfully fetched memory does not have image id', async () => {
-    getMemorySpy.mockResolvedValue(makeApiSuccessMock([makeMemoryMock({ imageId: null })]));
+    getMemorySpy.mockResolvedValue(makeApiSuccessMock(makeMemoryMock({ imageId: null })));
 
     render(<Dashboard />);
 
@@ -79,5 +80,46 @@ describe('Dashboard', () => {
     );
 
     expect(screen.queryByAltText('uploaded image')).not.toBeInTheDocument();
+  });
+
+  it('should load another memory when recall button is clicked', async () => {
+    render(<Dashboard />);
+
+    expect(
+      await screen.findByRole('heading', {
+        level: 2,
+        name: 'This is your memory from Monday, December 30, 2024',
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: 'Test title' })).toBeInTheDocument();
+    expect(screen.getByText('mock memory for testing purposes')).toBeInTheDocument();
+
+    expect(getMemorySpy).toHaveBeenCalledTimes(1);
+
+    getMemorySpy.mockResolvedValue(
+      makeApiSuccessMock(
+        makeMemoryMock({
+          title: 'Another test memory',
+          message: 'test for recall button',
+          createdAt: new Date('2024-12-27T10:00:00.000-05:00'),
+          imageId: 'test-image',
+        }),
+      ),
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: 'Recall' }));
+
+    expect(
+      await screen.findByRole('heading', {
+        level: 2,
+        name: 'This is your memory from Friday, December 27, 2024',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 4, name: 'Another test memory' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('test for recall button')).toBeInTheDocument();
+
+    expect(getMemorySpy).toHaveBeenCalledTimes(2);
   });
 });
