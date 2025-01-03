@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { match, P } from 'ts-pattern';
 import { Memory } from '../../_shared/_types/memory';
 import { ApiDataStatus, getLoadingStatus } from '../../_shared/_utils/apiData';
@@ -9,17 +9,19 @@ import { MemoryImageCard } from './MemoryImageCard';
 
 const EmptyDashboard: FC = () => <p>You don&apos;t have any memories yet.</p>;
 
-const LoadedDashboard: FC<{ memories: Memory[] }> = ({ memories }) => (
+type LoadedDashboardProps = {
+  readonly memory: Memory | null;
+  readonly loadMemory: () => void;
+};
+
+const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, loadMemory }) => (
   <>
-    {match<Memory[]>(memories)
-      .with(
-        P.when((it) => it.length === 0),
-        () => <EmptyDashboard />,
-      )
-      .otherwise(() => (
+    {match<Memory | null>(memory)
+      .with(null, () => <EmptyDashboard />)
+      .with(P.not(null), (it) => (
         <>
           <h2 className="mb-10 font-medium">{`This is your memory from ${new Date(
-            memories[memories.length - 1].createdAt,
+            it.createdAt,
           ).toLocaleDateString(undefined, {
             weekday: 'long',
             year: 'numeric',
@@ -27,36 +29,43 @@ const LoadedDashboard: FC<{ memories: Memory[] }> = ({ memories }) => (
             day: 'numeric',
           })}`}</h2>
           <div className="flex h-3/4">
-            <MemoryCard memory={memories[memories.length - 1]} />
-            <MemoryImageCard imageId={memories[memories.length - 1].imageId} />
-            <DashboardActionPanel />
+            <MemoryCard memory={it} />
+            <MemoryImageCard imageId={it.imageId} />
+            <DashboardActionPanel handleRecallMemory={loadMemory} />
           </div>
         </>
-      ))}
+      ))
+      .exhaustive()}
   </>
 );
 
 export const Dashboard: FC = () => {
-  const [memoriesStatus, setMemoriesStatus] =
-    useState<ApiDataStatus<Memory[]>>(getLoadingStatus<Memory[]>());
+  const [memoryStatus, setMemoryStatus] =
+    useState<ApiDataStatus<Memory | null>>(getLoadingStatus<Memory | null>());
+
+  const loadMemory = useCallback(
+    () =>
+      getMemory().then((result) => {
+        if (result.isSuccess) {
+          setMemoryStatus({ status: 'loaded', data: result.data, error: null });
+        } else {
+          setMemoryStatus({ status: 'error', data: null, error: 'unknown error' });
+        }
+      }),
+    [],
+  );
 
   useEffect(() => {
-    getMemory().then((result) => {
-      if (result.isSuccess) {
-        setMemoriesStatus({ status: 'loaded', data: result.data, error: null });
-      } else {
-        setMemoriesStatus({ status: 'error', data: null, error: 'unknown error' });
-      }
-    });
-  }, []);
-
-  // TODO how to pick / send random memory from memory[] data - at the  level?
+    loadMemory();
+  }, [loadMemory]);
 
   return (
     <main className="flex-1 bg-stone-100 px-28 py-12">
-      {match(memoriesStatus)
+      {match(memoryStatus)
         .with({ status: 'loading' }, () => <p>loading data...</p>)
-        .with({ status: 'loaded' }, ({ data }) => <LoadedDashboard memories={data} />)
+        .with({ status: 'loaded' }, ({ data }) => (
+          <LoadedDashboard memory={data} loadMemory={loadMemory} />
+        ))
         .with({ status: 'error' }, () => <p>error loading data</p>)
         .exhaustive()}
     </main>

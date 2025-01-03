@@ -7,17 +7,22 @@ const secret = process.env.NEXTAUTH_SECRET;
 
 export const GET = async (
   req: NextRequest,
-): Promise<NextResponse<MemoriesDb.Entity[] | { message: string }>> => {
+): Promise<NextResponse<MemoriesDb.Entity | null | { message: string }>> => {
   const token = await getToken({ req, secret });
 
   try {
     const memories = await memoriesDb.findAll(token?.sub!);
-    return NextResponse.json(memories, { status: 200 });
+
+    if (memories.length === 0) {
+      return NextResponse.json(null, { status: 200 });
+    }
+
+    const randomIndex = Math.floor(Math.random() * memories.length);
+    const memory = memories[randomIndex];
+
+    return NextResponse.json(memory, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { message: 'Oops! Something went wrong :(' },
-      { status: 500 },
-    );
+    return NextResponse.json({ message: 'Oops! Something went wrong :(' }, { status: 500 });
   }
 };
 
@@ -28,24 +33,14 @@ const createMemorySchema = z.object({
   imageId: z.string().max(265).optional(), // taking into account max filename length for Mac/Windows
 });
 
-export const POST = async (
-  req: NextRequest,
-): Promise<NextResponse<{ message: string }>> => {
+export const POST = async (req: NextRequest): Promise<NextResponse<{ message: string }>> => {
   if (req.method !== 'POST') {
-    return NextResponse.json(
-      { message: 'Only POST requests are allowed' },
-      { status: 405 },
-    );
+    return NextResponse.json({ message: 'Only POST requests are allowed' }, { status: 405 });
   }
 
   const body = await req.json();
   const token = await getToken({ req, secret });
-  const {
-    title,
-    message,
-    hashtag,
-    imageId = null,
-  } = createMemorySchema.parse(body);
+  const { title, message, hashtag, imageId = null } = createMemorySchema.parse(body);
 
   const inputFields: MemoriesDb.CreationFields = {
     title,
@@ -56,14 +51,8 @@ export const POST = async (
 
   try {
     await memoriesDb.create(token!.sub!, inputFields);
-    return NextResponse.json(
-      { message: 'successfully created a new memory' },
-      { status: 201 },
-    );
+    return NextResponse.json({ message: 'successfully created a new memory' }, { status: 201 });
   } catch (error) {
-    return NextResponse.json(
-      { message: 'Oops! Something went wrong :(' },
-      { status: 500 },
-    );
+    return NextResponse.json({ message: 'Oops! Something went wrong :(' }, { status: 500 });
   }
 };
