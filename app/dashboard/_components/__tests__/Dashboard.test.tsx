@@ -39,7 +39,18 @@ describe('Dashboard', () => {
     getMemorySpy.mockResolvedValue(makeApiSuccessMock(null));
 
     render(<Dashboard />);
-    expect(await screen.findByText("You don't have any memories yet.")).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', {
+        level: 2,
+        name: "Let's start saving your special memories",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("You don't have any memories yet.")).toBeInTheDocument();
+    expect(screen.getByAltText('polaroid icon')).toHaveAttribute(
+      'src',
+      '/_next/image?url=%2Fimg.jpg&w=3840&q=75',
+    );
+    expect(screen.getByRole('button', { name: 'Recall' })).toBeDisabled();
   });
 
   it('should render a memory card when successfully fetches a memory', async () => {

@@ -4,10 +4,20 @@ import { Memory } from '../../_shared/_types/memory';
 import { ApiDataStatus, getLoadingStatus } from '../../_shared/_utils/apiData';
 import { getMemory } from '../_api/getMemory';
 import { DashboardActionPanel } from './DashboardActionPanel';
+import { EmptyMemoryCard } from './EmptyMemoryCard';
 import { MemoryCard } from './MemoryCard';
 import { MemoryImageCard } from './MemoryImageCard';
 
-const EmptyDashboard: FC = () => <p>You don&apos;t have any memories yet.</p>;
+const EmptyDashboard: FC = () => (
+  <>
+    <h2 className="mb-10 font-medium">Let&apos;s start saving your special memories</h2>
+    <div className="flex h-3/4">
+      <EmptyMemoryCard />
+      <MemoryImageCard imageId={null} />
+      <DashboardActionPanel />
+    </div>
+  </>
+);
 
 type LoadedDashboardProps = {
   readonly memory: Memory | null;
