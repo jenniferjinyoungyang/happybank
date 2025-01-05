@@ -1,7 +1,8 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { match, P } from 'ts-pattern';
+import { FullComponentSpinner } from '../../_shared/_components/FullComponentSpinner';
 import { Memory } from '../../_shared/_types/memory';
-import { ApiDataStatus, getLoadingStatus } from '../../_shared/_utils/apiData';
+import { ApiData, getInitialApiDataStatus, setLoadingStatus } from '../../_shared/_utils/apiData';
 import { getMemory } from '../_api/getMemory';
 import { DashboardActionPanel } from './DashboardActionPanel';
 import { EmptyMemoryCard } from './EmptyMemoryCard';
@@ -21,10 +22,10 @@ const EmptyDashboard: FC = () => (
 
 type LoadedDashboardProps = {
   readonly memory: Memory | null;
-  readonly loadMemory: () => void;
+  readonly recallMemory: () => void;
 };
 
-const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, loadMemory }) => (
+const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory }) => (
   <>
     {match<Memory | null>(memory)
       .with(null, () => <EmptyDashboard />)
@@ -41,7 +42,7 @@ const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, loadMemory }) => (
           <div className="flex h-3/4">
             <MemoryCard memory={it} />
             <MemoryImageCard imageId={it.imageId} />
-            <DashboardActionPanel handleRecallMemory={loadMemory} />
+            <DashboardActionPanel handleRecallMemory={recallMemory} />
           </div>
         </>
       ))
@@ -51,30 +52,30 @@ const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, loadMemory }) => (
 
 export const Dashboard: FC = () => {
   const [memoryStatus, setMemoryStatus] =
-    useState<ApiDataStatus<Memory | null>>(getLoadingStatus<Memory | null>());
+    useState<ApiData<Memory | null>>(getInitialApiDataStatus<Memory | null>());
 
-  const loadMemory = useCallback(
-    () =>
-      getMemory().then((result) => {
-        if (result.isSuccess) {
-          setMemoryStatus({ status: 'loaded', data: result.data, error: null });
-        } else {
-          setMemoryStatus({ status: 'error', data: null, error: 'unknown error' });
-        }
-      }),
-    [],
-  );
+  const loadMemory = useCallback((currentStatus?: ApiData<Memory | null>) => {
+    setMemoryStatus(setLoadingStatus(currentStatus));
+    getMemory().then((result) => {
+      if (result.isSuccess) {
+        setMemoryStatus({ status: 'loaded', data: result.data, error: null, isLoading: false });
+      } else {
+        setMemoryStatus({ status: 'error', data: null, error: 'unknown error' });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     loadMemory();
   }, [loadMemory]);
 
   return (
-    <main className="flex-1 bg-stone-100 px-28 py-12">
+    <main className="flex-1 bg-stone-100 px-28 pt-12 pb-24">
       {match(memoryStatus)
-        .with({ status: 'loading' }, () => <p>loading data...</p>)
+        .with({ status: 'not loaded', isLoading: false }, () => null)
+        .with({ status: 'not loaded', isLoading: true }, () => <FullComponentSpinner />)
         .with({ status: 'loaded' }, ({ data }) => (
-          <LoadedDashboard memory={data} loadMemory={loadMemory} />
+          <LoadedDashboard memory={data} recallMemory={() => loadMemory(memoryStatus)} />
         ))
         .with({ status: 'error' }, () => <p>error loading data</p>)
         .exhaustive()}
