@@ -4,12 +4,14 @@ import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { match, P } from 'ts-pattern';
 import polaroid from '../../../public/images/polaroid.png';
+import { Overlay } from '../../_shared/_components/Overlay';
 
 type UploadImageCardProps = {
   readonly memoryTitle: string;
+  readonly isLoading: boolean;
 };
 
-export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle }) => {
+export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle, isLoading }) => {
   const { setValue, watch } = useFormContext();
 
   const imageId: string | null = watch('imageId');
@@ -19,6 +21,7 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle }) => {
       className="relative flex flex-col overflow-hidden text-gray-700 bg-white shadow-md bg-clip-border rounded-xl shrink-0 p-5"
       data-testid="upload-image-card"
     >
+      {isLoading && <Overlay />}
       <div className="relative h-4/6">
         {match(imageId)
           .with(P.string, (it) => (

@@ -1,14 +1,25 @@
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Button } from '../../_shared/_components/Button';
+import { FullComponentSpinner } from '../../_shared/_components/FullComponentSpinner';
+import { Overlay } from '../../_shared/_components/Overlay';
 
-export const CreateMemoryCard: FC = () => {
+type CreateMemoryCardProps = {
+  isLoading: boolean;
+};
+export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
   const {
     register,
     formState: { errors },
   } = useFormContext();
   return (
     <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md p-5">
+      {isLoading && (
+        <>
+          <Overlay />
+          <FullComponentSpinner />
+        </>
+      )}
       <div className="mb-5">
         <label htmlFor="memory-title" className="block mb-2 text-sm font-medium text-gray-900">
           Title

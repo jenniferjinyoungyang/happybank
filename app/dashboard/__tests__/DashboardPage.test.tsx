@@ -23,7 +23,7 @@ describe('DashboardPage', () => {
     useSessionSpy.mockReturnValueOnce({ data: null, status: 'loading', update: jest.fn() });
 
     render(<DashboardPage />);
-    expect(screen.getByText('Loading your happy memories...')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
   it('should load correct title when successfully authenticated', () => {

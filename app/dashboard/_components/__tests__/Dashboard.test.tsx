@@ -30,9 +30,9 @@ describe('Dashboard', () => {
 
   it('should render a loading message when it is fetching a memory', async () => {
     render(<Dashboard />);
-    expect(screen.getByText('loading data...')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
 
-    expect(await screen.findByText('loading data...')).not.toBeInTheDocument();
+    expect(await screen.findByRole('status')).not.toBeInTheDocument();
   });
 
   it('should render an empty dashboard when no memory exists', async () => {
