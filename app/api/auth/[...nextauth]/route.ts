@@ -85,8 +85,8 @@ const handler = NextAuth({
                 authType: AuthType.GOOGLE,
               },
             });
-          }
-          if (existingUserByEmail?.authType !== AuthType.GOOGLE) {
+            // if the user had signed up as auth type === credentials with google email, but user tries to sign in with google, should throw an error
+          } else if (existingUserByEmail.authType !== AuthType.GOOGLE) {
             throw new Error('You already have an account with this email');
           }
         } catch {
