@@ -12,7 +12,7 @@ const PageHeader: React.FC = () => {
       <PageNav />
       <div className="flex-1 flex items-center">
         {match(pathname)
-          .with('/dashboard', () => <h1>Welcome back, {session?.user?.name}</h1>)
+          .with('/dashboard', () => <h1>Welcome, {session?.user?.name}</h1>)
           .with('/create-memory', () => (
             <h1 className="text-xl">
               {`Save a special memory for ${new Date().toLocaleDateString(undefined, {
