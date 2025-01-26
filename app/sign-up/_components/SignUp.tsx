@@ -2,13 +2,38 @@
 
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../../_shared/_components/Button';
 import { GoogleLogo } from '../../_shared/_components/icons/GoogleLogo';
 import { HappyBankLogo } from '../../_shared/_components/icons/HappyBankLogo';
+import { ApiData, getInitialApiDataStatus } from '../../_shared/_utils/apiData';
+import { createUser, UserCreationFields } from '../_api/createUser';
 
 export const SignUp: React.FC = () => {
-  const { register } = useForm();
+  const [createUserStatus, setCreateUserStatus] =
+    useState<ApiData<null>>(getInitialApiDataStatus());
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserCreationFields>();
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<UserCreationFields> = async (data: UserCreationFields) => {
+    createUser(data).then((result) => {
+      if (result.isSuccess) {
+        router.push('/sign-in');
+      } else {
+        setCreateUserStatus({
+          status: 'error',
+          data: null,
+          error: result.error,
+        });
+      }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
@@ -22,12 +47,18 @@ export const SignUp: React.FC = () => {
             <h2 className="my-16">Create an account</h2>
             <div className="max-w-lg w-full flex-1 my-8">
               <div className="w-3/4 mx-auto">
-                <form>
+                <form aria-label="create-user-form" onSubmit={handleSubmit(onSubmit)}>
                   <div className="relative">
                     <input
                       className="block p-4 w-full text-sm text-gray-900 bg-gray-100 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-0 peer"
-                      {...register('fullName')}
-                      type="full-name"
+                      {...register('name', {
+                        required: 'This field is required.',
+                        maxLength: {
+                          value: 50,
+                          message: 'This input cannot exceed maximum length of 50.',
+                        },
+                      })}
+                      type="text"
                       id="full-name-sign-up"
                       placeholder=""
                     />
@@ -37,12 +68,21 @@ export const SignUp: React.FC = () => {
                     >
                       Full Name
                     </label>
+                    {errors.name && (
+                      <p className="text-red-500">{errors.name.message?.toString()}</p>
+                    )}
                   </div>
                   <div className="relative mt-5">
                     <input
                       className="block p-4 w-full text-sm text-gray-900 bg-gray-100 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-0 peer"
-                      {...register('email')}
-                      type="email"
+                      {...register('email', {
+                        required: 'This field is required.',
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                          message: 'Please enter a valid email.',
+                        },
+                      })}
+                      type="text"
                       id="email-sign-up"
                       placeholder=""
                     />
@@ -52,12 +92,25 @@ export const SignUp: React.FC = () => {
                     >
                       Email
                     </label>
+                    {errors.email && (
+                      <p className="text-red-500">{errors.email.message?.toString()}</p>
+                    )}
+                    {createUserStatus.status === 'error' && (
+                      <p className="text-red-500">{createUserStatus.error}</p>
+                    )}
                   </div>
 
                   <div className="relative mt-5">
                     <input
                       className="block p-4 w-full text-sm text-gray-900 bg-gray-100 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-0 peer"
-                      {...register('password')}
+                      {...register('password', {
+                        required: 'This field is required.',
+                        pattern: {
+                          value: /^(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{6,}$/,
+                          message:
+                            'Password must be at least 6 characters long and include at least one special character and one number.',
+                        },
+                      })}
                       type="password"
                       id="password-sign-up"
                       placeholder=""
@@ -68,6 +121,9 @@ export const SignUp: React.FC = () => {
                     >
                       Password
                     </label>
+                    {errors.password && (
+                      <p className="text-red-500">{errors.password.message?.toString()}</p>
+                    )}
                   </div>
                   <Button type="submit" label="Create an account" cssWrapper="w-full mt-16" />
                 </form>

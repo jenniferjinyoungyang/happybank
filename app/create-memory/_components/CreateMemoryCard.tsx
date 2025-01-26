@@ -29,10 +29,10 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
             className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base
           focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             {...register('title', {
-              required: 'This is required.',
+              required: 'This field is required.',
               maxLength: {
                 value: 100,
-                message: 'This input exceeds maximum length of 100.',
+                message: 'This input cannot exceed maximum length of 100.',
               },
             })}
           />
@@ -50,10 +50,10 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
             className="block w-full p-2 flex-1 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base
           focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             {...register('message', {
-              required: 'This is required.',
+              required: 'This field is required.',
               maxLength: {
                 value: 1000,
-                message: 'This input exceeds maximum length of 1000.',
+                message: 'This input cannot exceed maximum length of 1000.',
               },
             })}
           />
@@ -70,7 +70,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
             {...register('hashtag', {
               maxLength: {
                 value: 20,
-                message: 'This input exceeds maximum length of 20.',
+                message: 'This input caanot exceed maximum length of 20.',
               },
             })}
           />
