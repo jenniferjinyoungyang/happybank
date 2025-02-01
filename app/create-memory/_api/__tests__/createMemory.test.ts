@@ -1,8 +1,8 @@
 import { makeFetchResponseMock } from '../../../_shared/__mocks__/fetchResponse.mock';
-import { makeMemoryMock } from '../../../_shared/__mocks__/memory.mock';
-import { getMemory } from '../getMemory';
+import { makeMemoryCreationFieldsMock } from '../../../_shared/__mocks__/memoryCreationFields.mock';
+import { createMemory } from '../createMemory';
 
-describe('getMemory', () => {
+describe('createMemory', () => {
   let fetchSpy: jest.SpyInstance<ReturnType<typeof fetch>>;
 
   beforeEach(() => {
@@ -10,15 +10,18 @@ describe('getMemory', () => {
   });
 
   test('returns success when API call is successful', async () => {
-    fetchSpy.mockResolvedValue(makeFetchResponseMock({ json: async () => makeMemoryMock() }));
+    fetchSpy.mockResolvedValueOnce(makeFetchResponseMock());
 
-    const apiMemoryResult = await getMemory();
+    const result = await createMemory(makeMemoryCreationFieldsMock());
 
-    expect(apiMemoryResult).toEqual({ isSuccess: true, data: makeMemoryMock() });
+    expect(result).toStrictEqual({
+      data: null,
+      isSuccess: true,
+    });
   });
 
   test('returns error when API call fails with a message', async () => {
-    const errorMessage = 'some error';
+    const errorMessage = 'failed to create a memory';
     fetchSpy.mockResolvedValueOnce(
       makeFetchResponseMock({
         ok: false,
@@ -26,7 +29,7 @@ describe('getMemory', () => {
       }),
     );
 
-    const result = await getMemory();
+    const result = await createMemory(makeMemoryCreationFieldsMock());
 
     expect(result).toStrictEqual({ isSuccess: false, error: errorMessage });
   });
@@ -34,8 +37,8 @@ describe('getMemory', () => {
   test('returns unknown error when fetch throws an error', async () => {
     fetchSpy.mockRejectedValueOnce(new Error('Network error'));
 
-    const apiMemoryResult = await getMemory();
+    const result = await createMemory(makeMemoryCreationFieldsMock());
 
-    expect(apiMemoryResult).toEqual({ isSuccess: false, error: 'unknown error' });
+    expect(result).toStrictEqual({ isSuccess: false, error: 'unknown error' });
   });
 });

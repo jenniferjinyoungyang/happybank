@@ -15,11 +15,7 @@ describe('createUser', () => {
   };
 
   test('returns success when API call is successful', async () => {
-    fetchSpy.mockResolvedValueOnce(
-      makeFetchResponseMock({
-        ok: true,
-      }),
-    );
+    fetchSpy.mockResolvedValueOnce(makeFetchResponseMock());
 
     const result = await createUser(mockUser);
 
