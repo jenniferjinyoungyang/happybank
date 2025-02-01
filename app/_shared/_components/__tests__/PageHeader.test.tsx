@@ -20,9 +20,7 @@ describe('PageHeader', () => {
       </SessionProvider>,
     );
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Welcome back, Barbie Tester',
-    );
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Welcome, Barbie Tester');
   });
 
   it('renders create-memory page header text', () => {

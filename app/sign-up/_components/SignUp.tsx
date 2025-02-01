@@ -69,7 +69,9 @@ export const SignUp: React.FC = () => {
                       Full Name
                     </label>
                     {errors.name && (
-                      <p className="text-red-500">{errors.name.message?.toString()}</p>
+                      <p data-testid="name-input-validation-error" className="text-red-500">
+                        {errors.name.message?.toString()}
+                      </p>
                     )}
                   </div>
                   <div className="relative mt-5">
@@ -93,7 +95,9 @@ export const SignUp: React.FC = () => {
                       Email
                     </label>
                     {errors.email && (
-                      <p className="text-red-500">{errors.email.message?.toString()}</p>
+                      <p data-testid="email-input-validation-error" className="text-red-500">
+                        {errors.email.message?.toString()}
+                      </p>
                     )}
                     {createUserStatus.status === 'error' && (
                       <p className="text-red-500">{createUserStatus.error}</p>
@@ -122,7 +126,9 @@ export const SignUp: React.FC = () => {
                       Password
                     </label>
                     {errors.password && (
-                      <p className="text-red-500">{errors.password.message?.toString()}</p>
+                      <p data-testid="password-input-validation-error" className="text-red-500">
+                        {errors.password.message?.toString()}
+                      </p>
                     )}
                   </div>
                   <Button type="submit" label="Create an account" cssWrapper="w-full mt-16" />
