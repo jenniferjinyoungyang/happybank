@@ -3,10 +3,18 @@ import { ApiResult } from '../../_shared/_utils/apiResult';
 
 export const getMemory = async (): Promise<ApiResult<Memory | null>> => {
   try {
-    const res = await fetch('/api/memories');
-    const data = (await res.json()) as Memory | null;
-    return { isSuccess: true, data }; // TODO proper mapping
+    const response = await fetch('/api/memories');
+
+    if (!response.ok) {
+      const { message } = (await response.json()) as { message: string };
+      return {
+        isSuccess: false,
+        error: message,
+      };
+    }
+
+    return { isSuccess: true, data: await response.json() };
   } catch (err) {
-    return { isSuccess: false, error: 'unknown error' }; // TODO proper error message
+    return { isSuccess: false, error: 'unknown error' };
   }
 };
