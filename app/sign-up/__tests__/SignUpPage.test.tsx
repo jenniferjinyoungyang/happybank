@@ -6,5 +6,6 @@ describe('SignUpPage', () => {
     render(<SignUpPage />);
 
     expect(screen.getByRole('heading', { name: 'Create an account' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Create an account' })).toBeInTheDocument();
   });
 });

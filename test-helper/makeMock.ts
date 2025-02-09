@@ -1,4 +1,4 @@
-import { ApiErrorResult, ApiSuccessResult } from '../app/_shared/_utils/apiResult';
+import { ApiErrorResult, ApiSuccessResult } from '../app/_shared/_types/apiResult';
 
 export const makeMock =
   <T>(baseEntity: T) =>

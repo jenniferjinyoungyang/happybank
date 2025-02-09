@@ -1,5 +1,5 @@
 import SignInPage from './sign-in/page';
 
-const Home: React.FC = () => <SignInPage />;
+const HomePage: React.FC = () => <SignInPage />;
 
-export default Home;
+export default HomePage;
