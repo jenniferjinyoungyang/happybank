@@ -1,5 +1,5 @@
+import { ApiResult } from '../../_shared/_types/apiResult';
 import { Memory } from '../../_shared/_types/memory';
-import { ApiResult } from '../../_shared/_utils/apiResult';
 
 export const getMemory = async (): Promise<ApiResult<Memory | null>> => {
   try {

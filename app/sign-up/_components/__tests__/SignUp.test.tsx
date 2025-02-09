@@ -1,22 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import * as NextAuthModule from 'next-auth/react';
 import mockRouter from 'next-router-mock';
 import { makeApiSuccessMock } from '../../../../test-helper/makeMock';
 import * as CreateUserModule from '../../_api/createUser';
 import { SignUp } from '../SignUp';
 
 jest.mock('../../_api/createUser');
+jest.mock('next-auth/react');
 
 describe('SignUp', () => {
   let createUserSpy: jest.SpyInstance<ReturnType<typeof CreateUserModule.createUser>>;
+  let signInSpy: jest.SpyInstance<ReturnType<typeof NextAuthModule.signIn>>;
 
   beforeEach(() => {
     createUserSpy = jest
       .spyOn(CreateUserModule, 'createUser')
       .mockResolvedValue(makeApiSuccessMock(null));
+
+    signInSpy = jest.spyOn(NextAuthModule, 'signIn');
   });
 
-  test('renders SignUp', () => {
+  test('renders the component', () => {
     render(<SignUp />);
 
     expect(screen.getByRole('heading', { name: 'Create an account' })).toBeInTheDocument();
@@ -25,6 +30,9 @@ describe('SignUp', () => {
     expect(screen.getByLabelText('Full Name')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
+
+    expect(screen.getByText('Already have an account?')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/sign-in');
   });
 
   test('allows user to type in input fields and submit the form', async () => {
@@ -141,5 +149,15 @@ describe('SignUp', () => {
     expect(screen.getByTestId('password-input-validation-error')).toHaveTextContent(
       'Password must be at least 6 characters long and include at least one special character and one number.',
     );
+  });
+
+  test('calls Google sign up function when continue with Google button is clicked', async () => {
+    render(<SignUp />);
+
+    const googleButton = screen.getByRole('button', { name: 'Continue with Google' });
+    await userEvent.click(googleButton);
+
+    expect(signInSpy).toHaveBeenCalledTimes(1);
+    expect(signInSpy).toHaveBeenCalledWith('google', { callbackUrl: '/dashboard' });
   });
 });

@@ -1,4 +1,4 @@
-import { ApiResult } from '../../_shared/_utils/apiResult';
+import { ApiResult } from '../../_shared/_types/apiResult';
 
 export type UserCreationFields = {
   email: string;
