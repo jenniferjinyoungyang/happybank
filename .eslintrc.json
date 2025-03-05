@@ -32,14 +32,19 @@
       }
     ],
     "jsx-a11y/label-has-associated-control": [
-      2,
+      "error",
       {
         "assert": "either"
       }
     ],
     "react/jsx-props-no-spreading": "off",
     "react/button-has-type": "warn",
-    "react/require-default-props": "warn",
+    "react/require-default-props": [
+      "warn",
+      {
+        "functions": "defaultArguments"
+      }
+    ],
     "react-hooks/exhaustive-deps": "error",
     "no-param-reassign": "off"
   },
