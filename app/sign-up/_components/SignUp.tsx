@@ -36,16 +36,16 @@ export const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
+    <div className="bg-gray-100 text-gray-900 flex justify-center">
       <div className="m-0 bg-white shadow sm:rounded-lg flex justify-center flex-1">
         <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
           <div className="w-full bg-contain bg-center bg-no-repeat bg-cover bg-login-image" />
         </div>
-        <div className="h-screen flex w-1/2 p-6 sm:p-12">
-          <div className="flex flex-col items-center inline-block align-middle w-2/3 m-auto">
+        <div className="h-screen flex p-6 sm:p-12 lg:w-1/2">
+          <div className="flex flex-col items-center inline-block align-middle w-full m-auto">
             <HappyBankLogo />
-            <h2 className="my-16">Create an account</h2>
-            <div className="max-w-lg w-full flex-1 my-8">
+            <h2 className="mt-8 text-center">Create an account</h2>
+            <div className="max-w-lg w-full flex-1 mt-8">
               <div className="w-3/4 mx-auto">
                 <form aria-label="create-user-form" onSubmit={handleSubmit(onSubmit)}>
                   <div className="relative">
@@ -131,7 +131,11 @@ export const SignUp: React.FC = () => {
                       </p>
                     )}
                   </div>
-                  <Button type="submit" label="Create an account" cssWrapper="w-full mt-16" />
+                  <Button
+                    type="submit"
+                    label="Create an account"
+                    cssWrapper="w-full mt-12 lg:mt-16"
+                  />
                 </form>
               </div>
 

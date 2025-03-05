@@ -2,25 +2,32 @@
 
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
+import { demoUserEmail, demoUserPassword } from '../../../test-helper/demoUser';
 import { Button } from '../../_shared/_components/Button';
 import { GoogleLogo } from '../../_shared/_components/icons/GoogleLogo';
 import { HappyBankLogo } from '../../_shared/_components/icons/HappyBankLogo';
 
 const SignIn: React.FC = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, setValue } = useForm();
+
+  const inputDemoUser = useCallback(() => {
+    setValue('email', demoUserEmail);
+    setValue('password', demoUserPassword);
+  }, [setValue]);
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
+    <div className="bg-gray-100 text-gray-900 flex justify-center">
       <div className="m-0 bg-white shadow sm:rounded-lg flex justify-center flex-1">
         <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
           <div className="w-full bg-contain bg-center bg-no-repeat bg-cover bg-login-image" />
         </div>
-        <div className="h-screen flex w-1/2 p-6 sm:p-12">
-          <div className="flex flex-col items-center inline-block align-middle w-2/3 m-auto">
+        <div className="h-screen flex p-6 sm:p-12 lg:w-1/2">
+          <div className="flex flex-col items-center inline-block align-middle w-full m-auto">
             <HappyBankLogo />
-            <h2 className="mt-16">Welcome to Happy bank!</h2>
-            <div className="max-w-lg w-full flex-1 my-8">
+            <h2 className="mt-8 text-center">Welcome to Happy bank!</h2>
+            <div className="max-w-lg w-full flex-1 mt-8">
               <div className="flex flex-col items-center w-3/4 m-auto">
                 <button
                   type="button"
@@ -79,7 +86,7 @@ const SignIn: React.FC = () => {
                       Password
                     </label>
                   </div>
-                  <Button type="submit" label="Sign in" cssWrapper="w-full mt-16" />
+                  <Button type="submit" label="Sign in" cssWrapper="w-full mt-12 lg:mt-16" />
                 </form>
 
                 <p className="mt-6 text-xs text-gray-600 text-center">
@@ -88,6 +95,14 @@ const SignIn: React.FC = () => {
                     Sign up
                   </Link>
                 </p>
+              </div>
+              <div className="flex justify-center">
+                <Button
+                  type="button"
+                  label="Try as a demo user"
+                  cssWrapper="mt-8 lg:mt-16 bg-transparent text-s text-indigo-500 text-cente outline-none hover:bg-transparent hover:text-red-500"
+                  onClick={inputDemoUser}
+                />
               </div>
             </div>
           </div>
