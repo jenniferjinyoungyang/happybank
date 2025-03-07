@@ -7,8 +7,6 @@ Happy Bank is a **single-page application** developed by [Jennifer Yang](https:/
 ## **Table of Contents**
 
 - [About](#about)
-- [Features](#features)
-- [Future Features](#future-features)
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
 - [Running Locally](#running-locally)
