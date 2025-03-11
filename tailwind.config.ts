@@ -13,6 +13,11 @@ const config: Config = {
         'login-image': "url('/images/sunset.jpg')",
       },
       plugins: [],
+      screens: {
+        'h-sm': { raw: '(max-height: 640px)' },
+        'h-md': { raw: '(min-height: 641px) and (max-height: 768px)' },
+        'h-lg': { raw: '(min-height: 769px)' },
+      },
     },
   },
 };
