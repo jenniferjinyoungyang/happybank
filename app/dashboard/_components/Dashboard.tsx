@@ -31,7 +31,7 @@ const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory }) => 
       .with(null, () => <EmptyDashboard />)
       .with(P.not(null), (it) => (
         <>
-          <h2 className="mb-10 font-medium">{`This is your memory from ${new Date(
+          <h2 className="mb-10 font-medium text-xl lg:text-3xl">{`This is your memory from ${new Date(
             it.createdAt,
           ).toLocaleDateString(undefined, {
             weekday: 'long',
@@ -39,7 +39,7 @@ const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory }) => 
             month: 'long',
             day: 'numeric',
           })}`}</h2>
-          <div className="flex h-3/4">
+          <div className="flex flex-col lg:flex-row lg:h-3/4">
             <MemoryCard memory={it} />
             <MemoryImageCard imageId={it.imageId} />
             <DashboardActionPanel handleRecallMemory={recallMemory} />
@@ -70,7 +70,7 @@ export const Dashboard: FC = () => {
   }, [loadMemory]);
 
   return (
-    <main className="flex-1 bg-stone-100 px-28 pt-12 pb-24">
+    <main className="flex-1 bg-stone-100 px-6 pt-4 pb-24 lg:px-28 lg:pt-12 lg:pb-24">
       {match(memoryStatus)
         .with({ status: 'not loaded', isLoading: false }, () => null)
         .with({ status: 'not loaded', isLoading: true }, () => <FullComponentSpinner />)

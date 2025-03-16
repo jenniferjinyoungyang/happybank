@@ -8,11 +8,13 @@ const PageHeader: React.FC = () => {
   const pathname = usePathname();
 
   return (
-    <header className="flex flex-col bg-white h-1/6 lg:px-8 border-b-neutral-200 border-2 pt-2 ">
+    <header className="flex flex-col bg-white h-1/6 px-4 lg:px-8 border-b-neutral-200 border-2 pt-2">
       <PageNav />
       <div className="flex-1 flex items-center">
         {match(pathname)
-          .with('/dashboard', () => <h1>Welcome, {session?.user?.name}</h1>)
+          .with('/dashboard', () => (
+            <h1 className="text-2xl lg:text-4xl">Welcome, {session?.user?.name}</h1>
+          ))
           .with('/create-memory', () => (
             <h1 className="text-xl">
               {`Save a special memory for ${new Date().toLocaleDateString(undefined, {
