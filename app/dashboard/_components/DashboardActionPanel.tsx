@@ -7,9 +7,11 @@ type DashboardActionPanelProps = {
 };
 
 export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleRecallMemory }) => (
-  <section className="flex-initial flex flex-col items-center w-1/4">
+  <section className="flex-initial flex lg:flex-col items-center lg:w-1/4">
     <div className="flex flex-col items-center w-5/6">
-      <p className={`${handleRecallMemory ? 'text-neutral-400' : 'text-neutral-200'}`}>
+      <p
+        className={`hidden lg:block ${handleRecallMemory ? 'text-neutral-400' : 'text-neutral-200'}`}
+      >
         Show me another memory!
       </p>
       <button
@@ -21,8 +23,8 @@ export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleReca
         Recall
       </button>
     </div>
-    <div className="flex flex-col items-center mt-10 w-5/6">
-      <p className="text-neutral-400">Let&apos;s save a new memory!</p>
+    <div className="flex flex-col items-center lg:mt-10 w-5/6">
+      <p className="hidden lg:block text-neutral-400">Let&apos;s save a new memory!</p>
       <Link
         className="tracking-wide font-semibold bg-indigo-400 text-gray-100 w-5/6 py-4 rounded-lg hover:bg-indigo-600 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
         href="/create-memory"
@@ -30,6 +32,7 @@ export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleReca
         Deposit
       </Link>
     </div>
-    <img src={piggyBank.src} className="flex w-3/5 mt-auto" alt="piggy bank icon" />
+
+    <img src={piggyBank.src} className="hidden lg:block w-3/5 mt-auto" alt="piggy bank icon" />
   </section>
 );

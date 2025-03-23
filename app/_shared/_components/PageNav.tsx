@@ -16,7 +16,7 @@ import { ArrowRightStartOnRectangleIcon, Bars3Icon, XMarkIcon } from '@heroicons
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { PropsWithChildren, useMemo, useState } from 'react';
 import { SvgIcon } from '../_types/svgIcon';
 import { HappyBankHeartLogo } from './icons/HappyBankHeartLogo';
 
@@ -26,7 +26,7 @@ type AccountMenuItem = {
   readonly onClick: () => void;
 };
 
-const PageNav: React.FC = () => {
+const PageNav: React.FC<PropsWithChildren> = ({ children }) => {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -51,17 +51,18 @@ const PageNav: React.FC = () => {
     <>
       <nav aria-label="Global" className="flex max-w-full justify-between">
         <div className="flex lg:flex-1">
-          <Link href="/dashboard" className="-m-1.5 p-1.5">
+          <Link href="/dashboard" className="-m-1.5 p-1">
             <span className="sr-only">Happy Bank</span>
             <HappyBankHeartLogo />
           </Link>
         </div>
+        {children}
         <div className="flex lg:hidden">
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-            data-testid="mobile-hamberger-menu-button"
+            data-testid="mobile-hamburger-menu-button"
           >
             <span className="sr-only">Open main menu</span>
             <Bars3Icon aria-hidden="true" className="h-6 w-6" />
@@ -107,11 +108,7 @@ const PageNav: React.FC = () => {
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Happy Bank</span>
-              <HappyBankHeartLogo />
-            </a>
+          <div className="flex items-center justify-end">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}

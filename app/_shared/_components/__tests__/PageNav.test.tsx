@@ -42,12 +42,12 @@ describe('PageNav', () => {
     });
   });
 
-  it('should open mobile menu when hamberger menu button icon is clicked on mobile view', async () => {
+  it('should open mobile menu when hamburger menu button icon is clicked on mobile view', async () => {
     render(<PageNav />);
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
-    await userEvent.click(screen.getByTestId('mobile-hamberger-menu-button'));
+    await userEvent.click(screen.getByTestId('mobile-hamburger-menu-button'));
 
     const withinDialog = within(screen.getByRole('dialog'));
 
@@ -57,7 +57,7 @@ describe('PageNav', () => {
   it('should close mobile menu when close menu button is clicked on mobile view', async () => {
     render(<PageNav />);
 
-    await userEvent.click(screen.getByTestId('mobile-hamberger-menu-button'));
+    await userEvent.click(screen.getByTestId('mobile-hamburger-menu-button'));
 
     const withinDialog = within(screen.getByRole('dialog'));
 

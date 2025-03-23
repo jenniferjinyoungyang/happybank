@@ -8,12 +8,18 @@ const PageHeader: React.FC = () => {
   const pathname = usePathname();
 
   return (
-    <header className="flex flex-col bg-white h-1/6 px-4 lg:px-8 border-b-neutral-200 border-2 pt-2">
-      <PageNav />
+    <header className="flex flex-col bg-white h-12 lg:h-28 px-4 lg:px-8 border-b-neutral-200 border-2 pt-2">
+      <PageNav>
+        {match(pathname)
+          .with('/dashboard', () => (
+            <h1 className="block lg:hidden text-xl">Welcome, {session?.user?.name}</h1>
+          ))
+          .otherwise(() => null)}
+      </PageNav>
       <div className="flex-1 flex items-center">
         {match(pathname)
           .with('/dashboard', () => (
-            <h1 className="text-2xl lg:text-4xl">Welcome, {session?.user?.name}</h1>
+            <h1 className="hidden lg:block">Welcome, {session?.user?.name}</h1>
           ))
           .with('/create-memory', () => (
             <h1 className="text-xl">
