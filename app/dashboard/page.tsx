@@ -19,10 +19,10 @@ const DashboardPage: React.FC = () => {
           <section className="flex flex-col h-screen">
             <PageHeader />
             <Dashboard />
+            <PageFooter />
           </section>
         ))
         .exhaustive()}
-      <PageFooter />
     </>
   );
 };

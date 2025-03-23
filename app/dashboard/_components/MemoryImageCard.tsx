@@ -9,7 +9,7 @@ type MemoryImageCardProps = {
 };
 
 export const MemoryImageCard: FC<MemoryImageCardProps> = ({ imageId }) => (
-  <div className="relative w-1/3 m-0 overflow-hidden text-gray-700 bg-white bg-clip-border shadow-md rounded-xl shrink-0 mr-12">
+  <div className="relative lg:w-1/3 m-0 overflow-hidden text-gray-700 bg-white bg-clip-border shadow-md rounded-xl shrink-0 lg:mr-12 h-72 lg:h-full">
     {match(imageId)
       .with(P.string, (it) => (
         <CldImage
