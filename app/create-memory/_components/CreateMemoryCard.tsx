@@ -66,7 +66,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
           <input
             type="text"
             id="memory-hashtag"
-            className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 "
+            className="block w-full p-2 mb-8 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 "
             {...register('hashtag', {
               maxLength: {
                 value: 20,
@@ -77,7 +77,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
         </label>
         {errors.hashtag && <p className="text-red-500">{errors.hashtag.message?.toString()}</p>}
       </div>
-      <Button type="submit" label="Submit" cssWrapper="mt-4 lg:mt-auto" />
+      <Button type="submit" label="Submit" cssWrapper="mt-auto" />
     </div>
   );
 };

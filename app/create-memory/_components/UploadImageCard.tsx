@@ -18,11 +18,11 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle, isLoadi
 
   return (
     <div
-      className="relative flex flex-col overflow-hidden text-gray-700 bg-white shadow-md bg-clip-border rounded-xl shrink-0 p-5 h-72 lg:h-full"
+      className="relative flex flex-col overflow-hidden text-gray-700 bg-white shadow-md bg-clip-border rounded-xl shrink-0 p-5"
       data-testid="upload-image-card"
     >
       {isLoading && <Overlay />}
-      <div className="relative h-4/6">
+      <div className="relative h-72 lg:h-4/6">
         {match(imageId)
           .with(P.string, (it) => (
             <CldImage
