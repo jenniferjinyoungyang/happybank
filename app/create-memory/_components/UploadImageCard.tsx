@@ -18,7 +18,7 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle, isLoadi
 
   return (
     <div
-      className="relative flex flex-col overflow-hidden text-gray-700 bg-white shadow-md bg-clip-border rounded-xl shrink-0 p-5"
+      className="relative flex flex-col overflow-hidden text-gray-700 bg-white shadow-md bg-clip-border rounded-xl shrink-0 p-5 h-72 lg:h-full"
       data-testid="upload-image-card"
     >
       {isLoading && <Overlay />}
@@ -43,7 +43,7 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle, isLoadi
           ))
           .exhaustive()}
       </div>
-      <div className="mt-10 text-center font-permanent_marker text-3xl">{memoryTitle}</div>
+      <div className="my-4 lg:my-10 text-center font-permanent_marker text-3xl">{memoryTitle}</div>
       <CldUploadButton
         uploadPreset="ml_default"
         className="mt-auto tracking-wide font-semibold bg-indigo-400 text-gray-100 py-3 rounded-lg hover:bg-indigo-600 transition-all duration-300 ease-in-out focus:shadow-outline focus:outline-none"

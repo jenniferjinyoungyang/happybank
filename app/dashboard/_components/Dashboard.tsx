@@ -39,7 +39,7 @@ const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory }) => 
             month: 'long',
             day: 'numeric',
           })}.`}</h2>
-          <h2 className="block lg:hidden mb-4 font-medium text-base">{`This is your memory from ${new Date(
+          <h2 className="block lg:hidden mb-4 font-medium text-sm sm:text-base">{`This is your memory from ${new Date(
             it.createdAt,
           ).toLocaleDateString(undefined, {
             weekday: 'short',

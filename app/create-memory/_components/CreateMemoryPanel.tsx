@@ -46,11 +46,11 @@ export const CreateMemoryPanel: FC = () => {
   );
 
   return (
-    <main className="flex-1 bg-stone-100 px-28 py-12">
+    <main className="bg-stone-100 h-[calc(100%-8rem)] lg:h-[calc(100%-10rem)] px-6 py-4 lg:px-28 lg:pt-12 overflow-auto">
       <FormProvider {...methods}>
         <form
           aria-label="create-memory-form"
-          className="grid grid-cols-2 gap-x-12 h-3/4"
+          className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-x-12 lg:h-3/4"
           onSubmit={methods.handleSubmit(onSubmit)}
         >
           <CreateMemoryCard isLoading={isLoadingStatus(createMemoryStatus)} />

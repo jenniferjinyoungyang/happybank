@@ -20,7 +20,9 @@ describe('PageHeader', () => {
       </SessionProvider>,
     );
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Welcome, Barbie Tester');
+    expect(
+      screen.getAllByRole('heading', { level: 1, name: 'Welcome, Barbie Tester' }),
+    ).toHaveLength(2);
   });
 
   it('renders create-memory page header text', () => {
@@ -33,9 +35,12 @@ describe('PageHeader', () => {
       </SessionProvider>,
     );
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Save a special memory for Monday, December 30, 2024',
-    );
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Save a special memory for Monday, December 30, 2024',
+      }),
+    ).toBeInTheDocument();
 
     jest.useRealTimers();
   });

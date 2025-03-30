@@ -77,7 +77,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
         </label>
         {errors.hashtag && <p className="text-red-500">{errors.hashtag.message?.toString()}</p>}
       </div>
-      <Button type="submit" label="Submit" cssWrapper="mt-auto" />
+      <Button type="submit" label="Submit" cssWrapper="mt-4 lg:mt-auto" />
     </div>
   );
 };

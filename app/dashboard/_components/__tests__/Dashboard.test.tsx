@@ -59,7 +59,7 @@ describe('Dashboard', () => {
     expect(
       await screen.findByRole('heading', {
         level: 2,
-        name: 'This is your memory from Monday, December 30, 2024',
+        name: 'This is your memory from Monday, December 30, 2024.',
       }),
     ).toBeInTheDocument();
 
@@ -99,7 +99,7 @@ describe('Dashboard', () => {
     expect(
       await screen.findByRole('heading', {
         level: 2,
-        name: 'This is your memory from Monday, December 30, 2024',
+        name: 'This is your memory from Monday, December 30, 2024.',
       }),
     ).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Test title' })).toBeInTheDocument();
@@ -123,7 +123,7 @@ describe('Dashboard', () => {
     expect(
       await screen.findByRole('heading', {
         level: 2,
-        name: 'This is your memory from Friday, December 27, 2024',
+        name: 'This is your memory from Friday, December 27, 2024.',
       }),
     ).toBeInTheDocument();
     expect(
