@@ -10,24 +10,27 @@ export const PageFooter: FC = () => (
     </span>
     <ul className="flex flex-wrap items-center text-sm font-medium text-gray-500">
       <li>
-        <div className="me-1.5">Created by</div>
+        <p className="me-1">Created by</p>
       </li>
       <li>
-        <a href="https://github.com/jenniferjinyoungyang" className="hover:underline me-1.5">
+        <a
+          href="https://github.com/jenniferjinyoungyang"
+          className="hover:underline font-hind me-1"
+        >
           Jennifer Yang
         </a>
       </li>
       <li>
-        <div className="me-1.5">and</div>
+        <p className="me-1">and</p>
       </li>
       <li>
         <div className="flex">
-          <a href="https://github.com/itsyurika" className="hover:underline me-1.5">
+          <a href="https://github.com/itsyurika" className="hover:underline font-hind me-1">
             Yuri Yang
           </a>
         </div>
       </li>
-      <div className="me-1.5">with Love♡</div>
+      <p className="me-1">with Love♡</p>
       <li>
         <a href="https://www.flaticon.com" title="icons">
           <p className="hidden lg:block text-gray-200">

@@ -14,6 +14,16 @@ const PageHeader: React.FC = () => {
           .with('/dashboard', () => (
             <h1 className="block lg:hidden text-xl">Welcome, {session?.user?.name}</h1>
           ))
+          .with('/create-memory', () => (
+            <h1 className="block lg:hidden text-xl">
+              {`${new Date().toLocaleDateString(undefined, {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}`}
+            </h1>
+          ))
           .otherwise(() => null)}
       </PageNav>
       <div className="flex-1 flex items-center">
@@ -22,7 +32,7 @@ const PageHeader: React.FC = () => {
             <h1 className="hidden lg:block">Welcome, {session?.user?.name}</h1>
           ))
           .with('/create-memory', () => (
-            <h1 className="text-xl">
+            <h1 className="hidden lg:block text-xl">
               {`Save a special memory for ${new Date().toLocaleDateString(undefined, {
                 weekday: 'long',
                 year: 'numeric',

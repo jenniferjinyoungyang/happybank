@@ -40,11 +40,17 @@ describe('DashboardPage', () => {
         <DashboardPage />
       </SessionProvider>,
     );
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Welcome, Barbie Tester');
+    expect(
+      screen.getAllByRole('heading', { level: 1, name: 'Welcome, Barbie Tester' }),
+    ).toHaveLength(2);
   });
 
   it('should render a footer', () => {
-    useSessionSpy.mockReturnValueOnce({ data: null, status: 'unauthenticated', update: jest.fn() });
+    useSessionSpy.mockReturnValue({
+      data: makeSessionMock(),
+      status: 'authenticated',
+      update: jest.fn(),
+    });
 
     render(<DashboardPage />);
     expect(screen.getByRole('contentinfo')).toHaveTextContent('HappyBank');
