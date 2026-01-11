@@ -1,0 +1,29 @@
+POST http://localhost:3000/api/chat
+Content-Type: application/json
+//PASTE 'next-auth.session-token' COOKIE FROM THE BROWSER IN THE FORM OF:
+Cookie: next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..Yat9oAwtMKMhxt3c.VyfRaxHWZ3CPWhji0nOjk3zvwpoDRhwTQ1uHvpLlIyW9t6iK7oFPfCDG1c82PQHNX8kffuV1GN_kI3CuP8IFjm60ntkjD7vCw_GXLC9pKK-3ie4_h7E4YuB5AcZzBlEJnwe1JYyyoW4Yu-Pjt-cC2-4c7nHliOQaKb6fHVBF8jr42dqNnBk-8anFzAvfZVnMcljOrCRyIlfXqcOr9abRTUXnWQ_EYLt9_61TVgfGvpqOHIe_Nx1fXb706tGOj2YF.b8JRvLIDUoVHApuyE2z7kQ
+
+{
+  "message": "Hello! What can you help me with?"
+}
+
+###
+
+POST http://localhost:3000/api/chat
+Content-Type: application/json
+//PASTE 'next-auth.session-token' COOKIE FROM THE BROWSER IN THE FORM OF:
+Cookie: next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..Yat9oAwtMKMhxt3c.VyfRaxHWZ3CPWhji0nOjk3zvwpoDRhwTQ1uHvpLlIyW9t6iK7oFPfCDG1c82PQHNX8kffuV1GN_kI3CuP8IFjm60ntkjD7vCw_GXLC9pKK-3ie4_h7E4YuB5AcZzBlEJnwe1JYyyoW4Yu-Pjt-cC2-4c7nHliOQaKb6fHVBF8jr42dqNnBk-8anFzAvfZVnMcljOrCRyIlfXqcOr9abRTUXnWQ_EYLt9_61TVgfGvpqOHIe_Nx1fXb706tGOj2YF.b8JRvLIDUoVHApuyE2z7kQ
+
+{
+  "message": "What did we talk about earlier?",
+  "history": [
+    {
+      "role": "user",
+      "content": "Hello! What can you help me with?"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! I'm here to help you with general questions and conversations. What would you like to know?"
+    }
+  ]
+}
