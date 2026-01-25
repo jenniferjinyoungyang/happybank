@@ -1,20 +1,26 @@
-import { GoogleGenAI } from '@google/genai';
-import { getToken } from 'next-auth/jwt';
 import { NextRequest } from 'next/server';
 import makeNextServerMock from '../../../../test-helper/nextServer.mock';
-import { POST } from '../route';
 
 jest.mock('next/server', () => makeNextServerMock());
+// Provide manual mocks using doMock (not hoisted) so we can reference variables safely
+const mockGetToken = jest.fn();
+const mockGoogleGenAI = jest.fn();
+jest.doMock('@google/genai', () => ({
+  __esModule: true,
+  GoogleGenAI: mockGoogleGenAI,
+  default: mockGoogleGenAI,
+}));
+jest.doMock('next-auth/jwt', () => ({
+  getToken: mockGetToken,
+}));
 
-// Mock dependencies
-jest.mock('next-auth/jwt');
-jest.mock('@google/genai');
-
-const mockGetToken = getToken as jest.MockedFunction<typeof getToken>;
+// Require the route after mocks are configured so the module imports use the mocks
+const { POST } = require('../route');
 
 describe('/api/chat', () => {
   const mockToken = { sub: 'user-123' };
   const mockApiKey = 'test-api-key';
+  // `mockGoogleGenAI` is declared above and configured in tests
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -24,9 +30,13 @@ describe('/api/chat', () => {
     // Setup default mocks
     mockGetToken.mockResolvedValue(mockToken as never);
 
-    // Reset GoogleGenAI mock
-    const MockedGoogleGenAI = GoogleGenAI as jest.MockedClass<typeof GoogleGenAI>;
-    MockedGoogleGenAI.mockClear();
+    // Reset GoogleGenAI mock implementation (re-use the top-level mock reference)
+    mockGoogleGenAI.mockImplementation(() => ({
+      models: {
+        generateContent: jest.fn(),
+      },
+    }));
+    mockGoogleGenAI.mockClear();
   });
 
   afterEach(() => {
@@ -46,14 +56,11 @@ describe('/api/chat', () => {
         text: mockResponseText,
       });
 
-      const MockedGoogleGenAI = GoogleGenAI as jest.MockedClass<typeof GoogleGenAI>;
-      const mockInstance = {
+      mockGoogleGenAI.mockImplementation(() => ({
         models: {
           generateContent: mockGenerateContent,
         },
-      };
-      MockedGoogleGenAI.mockImplementation(() => mockInstance as unknown as GoogleGenAI);
-
+      }));
       const request = createMockRequest({
         message: 'Hello',
       });
@@ -80,13 +87,11 @@ describe('/api/chat', () => {
         text: mockResponseText,
       });
 
-      const MockedGoogleGenAI = GoogleGenAI as jest.MockedClass<typeof GoogleGenAI>;
-      const mockInstance = {
+      mockGoogleGenAI.mockImplementation(() => ({
         models: {
           generateContent: mockGenerateContent,
         },
-      };
-      MockedGoogleGenAI.mockImplementation(() => mockInstance as unknown as GoogleGenAI);
+      }));
 
       const request = createMockRequest({
         message: 'What did we talk about?',
@@ -215,13 +220,11 @@ describe('/api/chat', () => {
     test('returns error when Gemini API throws an error', async () => {
       const mockGenerateContent = jest.fn().mockRejectedValue(new Error('API Error'));
 
-      const MockedGoogleGenAI = GoogleGenAI as jest.MockedClass<typeof GoogleGenAI>;
-      const mockInstance = {
+      mockGoogleGenAI.mockImplementation(() => ({
         models: {
           generateContent: mockGenerateContent,
         },
-      };
-      MockedGoogleGenAI.mockImplementation(() => mockInstance as unknown as GoogleGenAI);
+      }));
 
       const request = createMockRequest({
         message: 'Hello',
@@ -239,13 +242,11 @@ describe('/api/chat', () => {
         text: undefined,
       });
 
-      const MockedGoogleGenAI = GoogleGenAI as jest.MockedClass<typeof GoogleGenAI>;
-      const mockInstance = {
+      mockGoogleGenAI.mockImplementation(() => ({
         models: {
           generateContent: mockGenerateContent,
         },
-      };
-      MockedGoogleGenAI.mockImplementation(() => mockInstance as unknown as GoogleGenAI);
+      }));
 
       const request = createMockRequest({
         message: 'Hello',
