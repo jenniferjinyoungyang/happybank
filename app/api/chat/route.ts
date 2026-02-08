@@ -62,7 +62,7 @@ export const POST = async (
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { message: error.errors[0]?.message || 'Invalid request format' },
+        { message: error.issues[0]?.message || 'Invalid request format' },
         { status: 400 },
       );
     }

@@ -14,7 +14,7 @@ type ChatWidgetPanelProps = {
   readonly canSend: boolean;
   readonly onSend: () => void;
   readonly onSubmit: (e: FormEvent) => void;
-  readonly bottomRef: React.RefObject<HTMLDivElement>;
+  readonly bottomRef: React.RefObject<HTMLDivElement | null>;
 };
 
 export const ChatWidgetPanel: React.FC<ChatWidgetPanelProps> = ({

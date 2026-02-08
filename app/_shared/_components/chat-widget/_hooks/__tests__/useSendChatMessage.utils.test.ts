@@ -28,8 +28,8 @@ describe('useSendChatMessage.utils', () => {
       const originalCrypto = global.crypto;
 
       try {
-        // @ts-ignore
-        global.crypto = undefined;
+        // @ts-expect-error - intentionally removing crypto for test
+        delete global.crypto;
 
         const id = createId();
 
@@ -42,17 +42,25 @@ describe('useSendChatMessage.utils', () => {
     });
 
     it('should use fallback format when crypto.randomUUID is not available', () => {
-      // Temporarily hide crypto.randomUUID
       const originalCrypto = global.crypto;
 
       try {
-        // Create a new crypto object without randomUUID
-        const cryptoWithoutRandomUUID = Object.create(originalCrypto);
-        delete (cryptoWithoutRandomUUID as Partial<Crypto>).randomUUID;
+        // Use Proxy to hide randomUUID from 'in' operator check
+        const cryptoWithoutRandomUUID = new Proxy(originalCrypto, {
+          has(target, prop) {
+            if (prop === 'randomUUID') return false;
+            return prop in target;
+          },
+          get(target, prop) {
+            if (prop === 'randomUUID') return undefined;
+            return Reflect.get(target, prop);
+          },
+        });
 
         Object.defineProperty(global, 'crypto', {
           value: cryptoWithoutRandomUUID,
           writable: true,
+          configurable: true,
         });
 
         const id = createId();
@@ -64,22 +72,31 @@ describe('useSendChatMessage.utils', () => {
         Object.defineProperty(global, 'crypto', {
           value: originalCrypto,
           writable: true,
+          configurable: true,
         });
       }
     });
 
     it('should return different fallback IDs when called multiple times without randomUUID', () => {
-      // Temporarily hide crypto.randomUUID
       const originalCrypto = global.crypto;
 
       try {
-        // Create a new crypto object without randomUUID
-        const cryptoWithoutRandomUUID = Object.create(originalCrypto);
-        delete (cryptoWithoutRandomUUID as Partial<Crypto>).randomUUID;
+        // Use Proxy to hide randomUUID from 'in' operator check
+        const cryptoWithoutRandomUUID = new Proxy(originalCrypto, {
+          has(target, prop) {
+            if (prop === 'randomUUID') return false;
+            return prop in target;
+          },
+          get(target, prop) {
+            if (prop === 'randomUUID') return undefined;
+            return Reflect.get(target, prop);
+          },
+        });
 
         Object.defineProperty(global, 'crypto', {
           value: cryptoWithoutRandomUUID,
           writable: true,
+          configurable: true,
         });
 
         const id1 = createId();
@@ -96,6 +113,7 @@ describe('useSendChatMessage.utils', () => {
         Object.defineProperty(global, 'crypto', {
           value: originalCrypto,
           writable: true,
+          configurable: true,
         });
       }
     });

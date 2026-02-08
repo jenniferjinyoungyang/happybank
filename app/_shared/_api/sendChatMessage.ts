@@ -31,7 +31,7 @@ export const sendChatMessage = async ({
 
     const { response: assistantMessage } = (await response.json()) as { response: string };
     return { isSuccess: true, data: assistantMessage };
-  } catch (err) {
+  } catch {
     return { isSuccess: false, error: 'unknown error' };
   }
 };

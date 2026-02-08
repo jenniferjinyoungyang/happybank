@@ -53,7 +53,7 @@ const handler = NextAuth({
             };
           }
           throw new Error('Invalid credentials');
-        } catch (err) {
+        } catch {
           throw new Error('Invalid credentials');
         }
       },

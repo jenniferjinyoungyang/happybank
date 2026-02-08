@@ -3,7 +3,7 @@ import { ChatMessage } from '../../_types/chat';
 type ChatWidgetMessagesProps = {
   readonly messages: readonly ChatMessage[];
   readonly isSending: boolean;
-  readonly bottomRef: React.RefObject<HTMLDivElement>;
+  readonly bottomRef: React.RefObject<HTMLDivElement | null>;
 };
 
 export const ChatWidgetMessages: React.FC<ChatWidgetMessagesProps> = ({

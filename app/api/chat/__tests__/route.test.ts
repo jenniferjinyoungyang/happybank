@@ -14,8 +14,13 @@ jest.doMock('next-auth/jwt', () => ({
   getToken: mockGetToken,
 }));
 
-// Require the route after mocks are configured so the module imports use the mocks
-const { POST } = require('../route');
+// Import the route after mocks are configured so the module imports use the mocks
+// Using dynamic import to ensure mocks are applied before module loads
+let POST: typeof import('../route').POST;
+beforeAll(async () => {
+  const routeModule = await import('../route');
+  POST = routeModule.POST;
+});
 
 describe('/api/chat', () => {
   const mockToken = { sub: 'user-123' };
@@ -161,8 +166,8 @@ describe('/api/chat', () => {
 
       expect(response.status).toBe(400);
       expect(data.message).toBeDefined();
-      // Zod returns "Required" when field is missing, "Message is required" when empty
-      expect(data.message).toMatch(/Required|Message is required/);
+      // Zod v4 returns different error format - check for validation error indicators
+      expect(data.message).toMatch(/Required|Message is required|Invalid input|expected string/);
     });
 
     test('returns error when message is empty', async () => {

@@ -93,10 +93,10 @@ const PageNav: React.FC<PropsWithChildren> = ({ children }) => {
                       />
                     </div>
                     <div className="flex-auto ">
-                      <a href="#" className="block font-semibold text-gray-900">
+                      <span className="block font-semibold text-gray-900">
                         {item.name}
                         <span className="absolute inset-0" />
-                      </a>
+                      </span>
                     </div>
                   </button>
                 ))}

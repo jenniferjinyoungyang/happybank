@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
 import piggyBank from '../../../public/images/piggy-bank.png';
@@ -33,6 +34,11 @@ export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleReca
       </Link>
     </div>
 
-    <img src={piggyBank.src} className="hidden lg:block w-3/5 mt-auto" alt="piggy bank icon" />
+    <Image
+      src={piggyBank}
+      className="hidden lg:block w-3/5 mt-auto"
+      alt="piggy bank icon"
+      priority={false}
+    />
   </section>
 );

@@ -24,7 +24,7 @@ export const createUser = async (data: UserCreationFields): Promise<ApiResult<nu
       };
     }
     return { isSuccess: true, data: null };
-  } catch (err) {
+  } catch {
     return { isSuccess: false, error: 'unknown error' };
   }
 };

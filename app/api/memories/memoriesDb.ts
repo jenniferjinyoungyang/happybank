@@ -1,12 +1,10 @@
 import { Memory } from '@prisma/client';
 import prisma from '../../../lib/prisma';
 
-export declare namespace MemoriesDb {
-  type Entity = Omit<Memory, 'id' | 'userId'>;
-  type CreationFields = Omit<Entity, 'createdAt'>;
-}
+export type MemoriesDbEntity = Omit<Memory, 'id' | 'userId'>;
+export type MemoriesDbCreationFields = Omit<MemoriesDbEntity, 'createdAt'>;
 
-const findAll = async (userId: string): Promise<MemoriesDb.Entity[]> =>
+const findAll = async (userId: string): Promise<MemoriesDbEntity[]> =>
   prisma.memory.findMany({
     where: {
       userId,
@@ -20,10 +18,7 @@ const findAll = async (userId: string): Promise<MemoriesDb.Entity[]> =>
     },
   });
 
-const create = async (
-  userId: string,
-  fields: MemoriesDb.CreationFields,
-): Promise<Memory> =>
+const create = async (userId: string, fields: MemoriesDbCreationFields): Promise<Memory> =>
   prisma.memory.create({
     data: {
       userId,
