@@ -14,7 +14,7 @@ export const getMemory = async (): Promise<ApiResult<Memory | null>> => {
     }
 
     return { isSuccess: true, data: await response.json() };
-  } catch (err) {
+  } catch {
     return { isSuccess: false, error: 'unknown error' };
   }
 };

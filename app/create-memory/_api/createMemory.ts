@@ -19,7 +19,7 @@ export const createMemory = async (data: MemoryCreationFields): Promise<ApiResul
       };
     }
     return { isSuccess: true, data: null };
-  } catch (err) {
+  } catch {
     return { isSuccess: false, error: 'unknown error' };
   }
 };

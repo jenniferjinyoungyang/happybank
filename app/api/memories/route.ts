@@ -1,17 +1,21 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 import * as z from 'zod';
-import { MemoriesDb, memoriesDb } from './memoriesDb';
+import { MemoriesDbEntity, MemoriesDbCreationFields, memoriesDb } from './memoriesDb';
 
 const secret = process.env.NEXTAUTH_SECRET;
 
 export const GET = async (
   req: NextRequest,
-): Promise<NextResponse<MemoriesDb.Entity | null | { message: string }>> => {
+): Promise<NextResponse<MemoriesDbEntity | null | { message: string }>> => {
   const token = await getToken({ req, secret });
 
+  if (!token?.sub) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
-    const memories = await memoriesDb.findAll(token?.sub!);
+    const memories = await memoriesDb.findAll(token.sub);
 
     if (memories.length === 0) {
       return NextResponse.json(null, { status: 200 });
@@ -21,7 +25,7 @@ export const GET = async (
     const memory = memories[randomIndex];
 
     return NextResponse.json(memory, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ message: 'Oops! Something went wrong :(' }, { status: 500 });
   }
 };
@@ -40,9 +44,14 @@ export const POST = async (req: NextRequest): Promise<NextResponse<{ message: st
 
   const body = await req.json();
   const token = await getToken({ req, secret });
+
+  if (!token?.sub) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+
   const { title, message, hashtag, imageId = null } = createMemorySchema.parse(body);
 
-  const inputFields: MemoriesDb.CreationFields = {
+  const inputFields: MemoriesDbCreationFields = {
     title,
     message,
     hashtag,
@@ -50,9 +59,9 @@ export const POST = async (req: NextRequest): Promise<NextResponse<{ message: st
   };
 
   try {
-    await memoriesDb.create(token!.sub!, inputFields);
+    await memoriesDb.create(token.sub, inputFields);
     return NextResponse.json({ message: 'successfully created a new memory' }, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ message: 'Oops! Something went wrong :(' }, { status: 500 });
   }
 };

@@ -53,7 +53,7 @@ describe('useSendChatMessage.utils', () => {
           },
           get(target, prop) {
             if (prop === 'randomUUID') return undefined;
-            return (target as any)[prop];
+            return Reflect.get(target, prop);
           },
         });
 
@@ -89,7 +89,7 @@ describe('useSendChatMessage.utils', () => {
           },
           get(target, prop) {
             if (prop === 'randomUUID') return undefined;
-            return (target as any)[prop];
+            return Reflect.get(target, prop);
           },
         });
 
