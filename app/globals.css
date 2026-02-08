@@ -1,9 +1,25 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 :root {
   --foreground-rgb: 0, 0, 0;
+}
+
+@layer utilities {
+  .bg-login-image {
+    background-image: url('/images/sunset.jpg');
+  }
+
+  .font-permanent_marker {
+    font-family: var(--font-permanent-marker);
+  }
+
+  .font-hind {
+    font-family: var(--font-hind);
+  }
+
+  .font-montserrat {
+    font-family: var(--font-montserrat);
+  }
 }
 
 html {
