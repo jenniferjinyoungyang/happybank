@@ -17,27 +17,47 @@ async function seed() {
     update: {},
   });
 
-  const memories = await prisma.memory.createMany({
-    data: [
-      {
-        userId: 'cm0ll6qxq00003b6se4csrall',
-        title: 'test post',
-        message: 'test message',
-        createdAt: new Date('2024-07-27'),
-        hashtag: 'test',
+  // Create memories individually (createMany doesn't support nested relations)
+  const memory1 = await prisma.memory.create({
+    data: {
+      userId: 'cm0ll6qxq00003b6se4csrall',
+      title: 'test post',
+      message: 'test message',
+      createdAt: new Date('2024-07-27'),
+      hashtagRelations: {
+        create: {
+          hashtag: {
+            connectOrCreate: {
+              where: { name: 'test' },
+              create: { name: 'test' },
+            },
+          },
+        },
       },
-      {
-        userId: 'cm0ll6qxq00003b6se4csrall',
-        title: 'Moved into a new office!',
-        message:
-          'Our team finally moved into our brand new office located in the downtown. I am excited for this new start!',
-        createdAt: new Date('2024-09-14'),
-        hashtag: 'celebration',
-      },
-    ],
+    },
   });
 
-  console.log('seeding : ', { barbie, memories });
+  const memory2 = await prisma.memory.create({
+    data: {
+      userId: 'cm0ll6qxq00003b6se4csrall',
+      title: 'Moved into a new office!',
+      message:
+        'Our team finally moved into our brand new office located in the downtown. I am excited for this new start!',
+      createdAt: new Date('2024-09-14'),
+      hashtagRelations: {
+        create: {
+          hashtag: {
+            connectOrCreate: {
+              where: { name: 'celebration' },
+              create: { name: 'celebration' },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  console.log('seeding : ', { barbie, memories: [memory1, memory2] });
 }
 
 seed()

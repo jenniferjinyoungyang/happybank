@@ -23,14 +23,38 @@ enum AuthType {
   CREDENTIALS
 }
 
-model Memory {
-  id        Int     @id @default(autoincrement())
-  userId    String
-  title     String
-  message   String
+model Hashtag {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique // e.g., "happy", "memory" (stored without # prefix)
   createdAt DateTime @default(now())
-  hashtag   String @map("hashtag")
-  imageId   String?
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-	@@map("Memory")
+  memories  MemoryHashtag[]
+
+  @@map("Hashtag")
+  @@index([name])
+}
+
+model MemoryHashtag {
+  id        Int     @id @default(autoincrement())
+  memoryId  Int
+  hashtagId Int
+  memory    Memory  @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  hashtag  Hashtag @relation(fields: [hashtagId], references: [id], onDelete: Cascade)
+
+  @@unique([memoryId, hashtagId])
+  @@map("MemoryHashtag")
+  @@index([hashtagId])
+  @@index([memoryId])
+}
+
+model Memory {
+  id               Int      @id @default(autoincrement())
+  userId           String
+  title            String
+  message          String
+  createdAt        DateTime @default(now())
+  hashtagRelations MemoryHashtag[] // Relation for hashtag search
+  imageId          String?
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("Memory")
 }
