@@ -25,15 +25,20 @@ export const GET = async (
     const memory = memories[randomIndex];
 
     return NextResponse.json(memory, { status: 200 });
-  } catch {
-    return NextResponse.json({ message: 'Oops! Something went wrong :(' }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: `Oops! Something went wrong :( ${error instanceof Error ? error.message : String(error)}`,
+      },
+      { status: 500 },
+    );
   }
 };
 
 const createMemorySchema = z.object({
   title: z.string().min(1, 'Title is required').max(100),
   message: z.string().min(1, 'Email is required').max(1000),
-  hashtag: z.string().max(20),
+  hashtags: z.array(z.string().max(20)).default([]),
   imageId: z.string().max(265).optional(), // taking into account max filename length for Mac/Windows
 });
 
@@ -49,12 +54,12 @@ export const POST = async (req: NextRequest): Promise<NextResponse<{ message: st
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const { title, message, hashtag, imageId = null } = createMemorySchema.parse(body);
+  const { title, message, hashtags = [], imageId = null } = createMemorySchema.parse(body);
 
   const inputFields: MemoriesDbCreationFields = {
     title,
     message,
-    hashtag,
+    hashtags,
     imageId,
   };
 

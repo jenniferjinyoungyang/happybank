@@ -11,20 +11,42 @@ import { createMemory } from '../_api/createMemory';
 import { CreateMemoryCard } from './CreateMemoryCard';
 import { UploadImageCard } from './UploadImageCard';
 
+type MemoryFormData = MemoryCreationFields & {
+  hashtagsInput?: string;
+  hashtags?: string[]; // Input-only field for API
+};
+
 export const CreateMemoryPanel: FC = () => {
   const [createMemoryStatus, setCreateMemoryStatus] =
     useState<ApiData<null>>(getInitialApiDataStatus());
 
-  const methods = useForm<MemoryCreationFields>({
+  const methods = useForm<MemoryFormData>({
     defaultValues: {
       imageId: null,
+      hashtags: [], // Input field - will be converted to relations
     },
   });
 
-  const onSubmit: SubmitHandler<MemoryCreationFields> = useMemo(
-    () => async (data: MemoryCreationFields) => {
+  const onSubmit: SubmitHandler<MemoryFormData> = useMemo(
+    () => async (data) => {
       setCreateMemoryStatus(setLoadingStatus());
-      createMemory(data).then((result) => {
+
+      // Transform comma-separated hashtags string to array
+      const hashtagsArray = data.hashtagsInput
+        ? data.hashtagsInput
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean)
+        : [];
+
+      const memoryData = {
+        title: data.title,
+        message: data.message,
+        hashtags: hashtagsArray,
+        imageId: data.imageId,
+      };
+
+      createMemory(memoryData).then((result) => {
         if (result.isSuccess) {
           setCreateMemoryStatus({
             status: 'loaded',
@@ -32,7 +54,7 @@ export const CreateMemoryPanel: FC = () => {
             error: null,
             isLoading: false,
           });
-          methods.reset({ title: '', message: '', hashtag: '', imageId: null });
+          methods.reset({ title: '', message: '', hashtags: [], hashtagsInput: '', imageId: null }); // hashtags is input-only, converted to relations
         } else {
           setCreateMemoryStatus({
             status: 'error',

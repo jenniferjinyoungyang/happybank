@@ -20,15 +20,15 @@ describe('CreateMemoryPanel', () => {
 
     const titleInputBox = screen.getByLabelText('Title');
     const messageTextBox = screen.getByLabelText('Message');
-    const hashtagInputBox = screen.getByLabelText('Hashtag #');
+    const hashtagsInputBox = screen.getByLabelText('Hashtags (comma-separated)');
 
     await userEvent.type(titleInputBox, 'Ginger day');
     await userEvent.type(messageTextBox, 'I met Ginger today!');
-    await userEvent.type(hashtagInputBox, 'ginger');
+    await userEvent.type(hashtagsInputBox, 'ginger, happy');
 
     expect(titleInputBox).toHaveValue('Ginger day');
     expect(messageTextBox).toHaveValue('I met Ginger today!');
-    expect(hashtagInputBox).toHaveValue('ginger');
+    expect(hashtagsInputBox).toHaveValue('ginger, happy');
 
     const withinUploadImageCard = within(screen.getByTestId('upload-image-card'));
     expect(withinUploadImageCard.getByText('Ginger day')).toBeInTheDocument();
@@ -39,13 +39,13 @@ describe('CreateMemoryPanel', () => {
     expect(createMemorySpy).toHaveBeenCalledWith({
       title: 'Ginger day',
       message: 'I met Ginger today!',
-      hashtag: 'ginger',
+      hashtags: ['ginger', 'happy'],
       imageId: null,
     });
 
     expect(titleInputBox).toHaveValue('');
     expect(messageTextBox).toHaveValue('');
-    expect(hashtagInputBox).toHaveValue('');
+    expect(hashtagsInputBox).toHaveValue('');
   });
 
   it('should display alert if create memory request is failed', async () => {
@@ -55,11 +55,11 @@ describe('CreateMemoryPanel', () => {
 
     const titleInputBox = screen.getByLabelText('Title');
     const messageTextBox = screen.getByLabelText('Message');
-    const hashtagInputBox = screen.getByLabelText('Hashtag #');
+    const hashtagsInputBox = screen.getByLabelText('Hashtags (comma-separated)');
 
     await userEvent.type(titleInputBox, 'Ginger day');
     await userEvent.type(messageTextBox, 'I met Ginger today!');
-    await userEvent.type(hashtagInputBox, 'ginger');
+    await userEvent.type(hashtagsInputBox, 'ginger');
 
     await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
@@ -67,7 +67,7 @@ describe('CreateMemoryPanel', () => {
 
     expect(titleInputBox).toHaveValue('Ginger day');
     expect(messageTextBox).toHaveValue('I met Ginger today!');
-    expect(hashtagInputBox).toHaveValue('ginger');
+    expect(hashtagsInputBox).toHaveValue('ginger');
 
     expect(screen.getByText('Error creating memory')).toBeInTheDocument();
   });

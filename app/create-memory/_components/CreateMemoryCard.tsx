@@ -61,21 +61,31 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
         {errors.message && <p className="text-red-500">{errors.message.message?.toString()}</p>}
       </div>
       <div>
-        <label htmlFor="memory-hashtag" className="block mb-2 text-sm font-medium text-gray-900">
-          Hashtag #
+        <label htmlFor="memory-hashtags" className="block mb-2 text-sm font-medium text-gray-900">
+          Hashtags (comma-separated)
           <input
             type="text"
-            id="memory-hashtag"
+            id="memory-hashtags"
+            placeholder="e.g., #happy #memory #special"
             className="block w-full p-2 mb-8 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 "
-            {...register('hashtag', {
-              maxLength: {
-                value: 20,
-                message: 'This input caanot exceed maximum length of 20.',
+            {...register('hashtagsInput', {
+              validate: (value: string) => {
+                if (!value || value.trim() === '') return true; // Optional field
+                const hashtags = value
+                  .split(',')
+                  .map((tag: string) => tag.trim())
+                  .filter(Boolean);
+                if (hashtags.some((tag: string) => tag.length > 20)) {
+                  return 'Each hashtag cannot exceed 20 characters.';
+                }
+                return true;
               },
             })}
           />
         </label>
-        {errors.hashtag && <p className="text-red-500">{errors.hashtag.message?.toString()}</p>}
+        {errors.hashtagsInput && (
+          <p className="text-red-500">{errors.hashtagsInput.message?.toString()}</p>
+        )}
       </div>
       <Button type="submit" label="Submit" cssWrapper="mt-auto" />
     </div>
