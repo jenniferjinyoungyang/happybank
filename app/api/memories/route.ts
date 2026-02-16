@@ -1,7 +1,7 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 import * as z from 'zod';
-import { MemoriesDbEntity, MemoriesDbCreationFields, memoriesDb } from './memoriesDb';
+import { MemoriesDbCreationFields, MemoriesDbEntity, memoriesDb } from './memoriesDb';
 
 const secret = process.env.NEXTAUTH_SECRET;
 
@@ -39,7 +39,7 @@ const createMemorySchema = z.object({
   title: z.string().min(1, 'Title is required').max(100),
   message: z.string().min(1, 'Email is required').max(1000),
   hashtags: z.array(z.string().max(20)).default([]),
-  imageId: z.string().max(265).optional(), // taking into account max filename length for Mac/Windows
+  imageId: z.string().max(265).nullable().optional(),
 });
 
 export const POST = async (req: NextRequest): Promise<NextResponse<{ message: string }>> => {
