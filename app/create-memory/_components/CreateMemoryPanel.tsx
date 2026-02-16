@@ -12,8 +12,7 @@ import { CreateMemoryCard } from './CreateMemoryCard';
 import { UploadImageCard } from './UploadImageCard';
 
 type MemoryFormData = MemoryCreationFields & {
-  hashtagsInput?: string;
-  hashtags?: string[]; // Input-only field for API
+  readonly hashtags: string[];
 };
 
 export const CreateMemoryPanel: FC = () => {
@@ -23,7 +22,7 @@ export const CreateMemoryPanel: FC = () => {
   const methods = useForm<MemoryFormData>({
     defaultValues: {
       imageId: null,
-      hashtags: [], // Input field - will be converted to relations
+      hashtags: [],
     },
   });
 
@@ -31,18 +30,10 @@ export const CreateMemoryPanel: FC = () => {
     () => async (data) => {
       setCreateMemoryStatus(setLoadingStatus());
 
-      // Transform comma-separated hashtags string to array
-      const hashtagsArray = data.hashtagsInput
-        ? data.hashtagsInput
-            .split(',')
-            .map((tag) => tag.trim())
-            .filter(Boolean)
-        : [];
-
       const memoryData = {
         title: data.title,
         message: data.message,
-        hashtags: hashtagsArray,
+        hashtags: data.hashtags || [],
         imageId: data.imageId,
       };
 
@@ -54,7 +45,7 @@ export const CreateMemoryPanel: FC = () => {
             error: null,
             isLoading: false,
           });
-          methods.reset({ title: '', message: '', hashtags: [], hashtagsInput: '', imageId: null }); // hashtags is input-only, converted to relations
+          methods.reset({ title: '', message: '', hashtags: [], imageId: null });
         } else {
           setCreateMemoryStatus({
             status: 'error',

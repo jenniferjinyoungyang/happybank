@@ -1,6 +1,7 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 import * as z from 'zod';
+import { MEMORY_VALIDATION } from '../../_shared/_constants/memory';
 import { MemoriesDbCreationFields, MemoriesDbEntity, memoriesDb } from './memoriesDb';
 
 const secret = process.env.NEXTAUTH_SECRET;
@@ -36,10 +37,23 @@ export const GET = async (
 };
 
 const createMemorySchema = z.object({
-  title: z.string().min(1, 'Title is required').max(100),
-  message: z.string().min(1, 'Email is required').max(1000),
-  hashtags: z.array(z.string().max(20)).default([]),
-  imageId: z.string().max(265).nullable().optional(),
+  title: z.string().min(1, 'Title is required').max(MEMORY_VALIDATION.TITLE_MAX_LENGTH),
+  message: z.string().min(1, 'Email is required').max(MEMORY_VALIDATION.MESSAGE_MAX_LENGTH),
+  hashtags: z
+    .array(
+      z
+        .string()
+        .max(
+          MEMORY_VALIDATION.HASHTAG_MAX_LENGTH,
+          `Each hashtag cannot exceed ${MEMORY_VALIDATION.HASHTAG_MAX_LENGTH} characters`,
+        ),
+    )
+    .max(
+      MEMORY_VALIDATION.HASHTAG_MAX_COUNT,
+      `You can only add up to ${MEMORY_VALIDATION.HASHTAG_MAX_COUNT} hashtags`,
+    )
+    .default([]),
+  imageId: z.string().max(MEMORY_VALIDATION.IMAGE_ID_MAX_LENGTH).nullable().optional(),
 });
 
 export const POST = async (req: NextRequest): Promise<NextResponse<{ message: string }>> => {
