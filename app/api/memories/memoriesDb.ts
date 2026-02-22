@@ -9,10 +9,10 @@ export type MemoriesDbCreationFields = Omit<MemoriesDbEntity, 'createdAt' | 'has
 };
 
 /**
- * Normalize hashtag name: remove #, lowercase, trim
+ * Normalize hashtag name: remove #, trim
  */
 function normalizeHashtag(hashtag: string): string | null {
-  const normalized = hashtag.replace(/^#+/, '').toLowerCase().trim();
+  const normalized = hashtag.replace(/^#+/, '').trim();
   return normalized.length > 0 ? normalized : null;
 }
 
