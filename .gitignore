@@ -47,3 +47,6 @@ prisma/seed.js
 
 # documentation
 docs/
+
+# commit message helper (temporary file for AI-generated commit messages)
+.commit_message.txt
