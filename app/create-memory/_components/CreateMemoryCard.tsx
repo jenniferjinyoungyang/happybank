@@ -18,13 +18,12 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
     formState: { errors, isSubmitSuccessful },
   } = useFormContext();
 
-  const hashtags: string[] = watch('hashtags') || [];
+  const hashtags: string[] = watch('hashtags');
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     register('hashtags', {
       validate: (value: string[]) => {
-        if (!value) return true;
         if (value.length > MEMORY_VALIDATION.HASHTAG_MAX_COUNT) {
           return `You can only add up to ${MEMORY_VALIDATION.HASHTAG_MAX_COUNT} hashtags.`;
         }

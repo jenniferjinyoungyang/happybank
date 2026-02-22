@@ -33,7 +33,7 @@ export const CreateMemoryPanel: FC = () => {
       const memoryData = {
         title: data.title,
         message: data.message,
-        hashtags: data.hashtags || [],
+        hashtags: data.hashtags,
         imageId: data.imageId,
       };
 

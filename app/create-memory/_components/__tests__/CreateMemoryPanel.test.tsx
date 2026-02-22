@@ -79,4 +79,29 @@ describe('CreateMemoryPanel', () => {
 
     expect(screen.getByText('Error creating memory')).toBeInTheDocument();
   });
+
+  it('should submit form with empty hashtags array when no hashtags are provided', async () => {
+    // Verify that hashtags is always an array (from defaultValues)
+    // React Hook Form ensures hashtags is always [] due to defaultValues,
+    // so no fallback is needed
+    render(<CreateMemoryPanel />);
+
+    const titleInputBox = screen.getByLabelText('Title');
+    const messageTextBox = screen.getByLabelText('Message');
+
+    await userEvent.type(titleInputBox, 'Test memory');
+    await userEvent.type(messageTextBox, 'Test message');
+
+    // Submit form without adding any hashtags
+    await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
+
+    expect(createMemorySpy).toHaveBeenCalledTimes(1);
+    // Verify hashtags is always an array (from defaultValues, no fallback needed)
+    expect(createMemorySpy).toHaveBeenCalledWith({
+      title: 'Test memory',
+      message: 'Test message',
+      hashtags: [], // Always an array due to defaultValues
+      imageId: null,
+    });
+  });
 });
