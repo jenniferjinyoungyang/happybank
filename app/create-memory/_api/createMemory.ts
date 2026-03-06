@@ -1,11 +1,7 @@
 import { ApiResult } from '../../_shared/_types/apiResult';
 import { MemoryCreationFields } from '../../_shared/_types/memory';
 
-type CreateMemoryInput = MemoryCreationFields & {
-  hashtags: string[]; // Input-only field for API
-};
-
-export const createMemory = async (data: CreateMemoryInput): Promise<ApiResult<null>> => {
+export const createMemory = async (data: MemoryCreationFields): Promise<ApiResult<null>> => {
   try {
     const response = await fetch('/api/memories', {
       method: 'POST',

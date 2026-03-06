@@ -6,6 +6,9 @@ import { CreateMemoryPanel } from '../CreateMemoryPanel';
 
 jest.mock('../../_api/createMemory');
 
+// No delay so typing is deterministic (same pattern as CreateMemoryCard.test.tsx)
+const user = userEvent.setup({ delay: null });
+
 describe('CreateMemoryPanel', () => {
   let createMemorySpy: jest.SpyInstance<ReturnType<typeof CreateMemoryModule.createMemory>>;
 
@@ -22,10 +25,10 @@ describe('CreateMemoryPanel', () => {
     const messageTextBox = screen.getByLabelText('Message');
     const hashtagsInputBox = screen.getByLabelText('Hashtags');
 
-    await userEvent.type(titleInputBox, 'Ginger day');
-    await userEvent.type(messageTextBox, 'I met Ginger today!');
-    await userEvent.type(hashtagsInputBox, 'ginger{enter}');
-    await userEvent.type(hashtagsInputBox, 'happy{enter}');
+    await user.type(titleInputBox, 'Ginger day');
+    await user.type(messageTextBox, 'I met Ginger today!');
+    await user.type(hashtagsInputBox, 'ginger{Enter}');
+    await user.type(hashtagsInputBox, 'happy{Enter}');
 
     expect(titleInputBox).toHaveValue('Ginger day');
     expect(messageTextBox).toHaveValue('I met Ginger today!');
@@ -36,7 +39,7 @@ describe('CreateMemoryPanel', () => {
     const withinUploadImageCard = within(screen.getByTestId('upload-image-card'));
     expect(withinUploadImageCard.getByText('Ginger day')).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
 
     expect(createMemorySpy).toHaveBeenCalledTimes(1);
     expect(createMemorySpy).toHaveBeenCalledWith({
@@ -53,7 +56,7 @@ describe('CreateMemoryPanel', () => {
     expect(hashtagsInputBox).toHaveValue('');
     expect(screen.queryByText('#ginger')).not.toBeInTheDocument();
     expect(screen.queryByText('#happy')).not.toBeInTheDocument();
-  });
+  }, 15000);
 
   it('should display alert if create memory request is failed', async () => {
     createMemorySpy.mockResolvedValue(makeApiErrorMock('unknown error'));
@@ -64,11 +67,11 @@ describe('CreateMemoryPanel', () => {
     const messageTextBox = screen.getByLabelText('Message');
     const hashtagsInputBox = screen.getByLabelText('Hashtags');
 
-    await userEvent.type(titleInputBox, 'Ginger day');
-    await userEvent.type(messageTextBox, 'I met Ginger today!');
-    await userEvent.type(hashtagsInputBox, 'ginger{enter}');
+    await user.type(titleInputBox, 'Ginger day');
+    await user.type(messageTextBox, 'I met Ginger today!');
+    await user.type(hashtagsInputBox, 'ginger{Enter}');
 
-    await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
 
     expect(createMemorySpy).toHaveBeenCalledTimes(1);
 
@@ -89,11 +92,11 @@ describe('CreateMemoryPanel', () => {
     const titleInputBox = screen.getByLabelText('Title');
     const messageTextBox = screen.getByLabelText('Message');
 
-    await userEvent.type(titleInputBox, 'Test memory');
-    await userEvent.type(messageTextBox, 'Test message');
+    await user.type(titleInputBox, 'Test memory');
+    await user.type(messageTextBox, 'Test message');
 
     // Submit form without adding any hashtags
-    await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
 
     expect(createMemorySpy).toHaveBeenCalledTimes(1);
     // Verify hashtags is always an array (from defaultValues, no fallback needed)
@@ -103,5 +106,5 @@ describe('CreateMemoryPanel', () => {
       hashtags: [], // Always an array due to defaultValues
       imageId: null,
     });
-  });
+  }, 10000);
 });

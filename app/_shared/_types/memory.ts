@@ -1,15 +1,10 @@
-export type Memory = {
+export type MemoryCreationFields = {
   readonly title: string;
   readonly message: string;
-  readonly createdAt: Date;
-  readonly hashtagRelations?: ReadonlyArray<{
-    readonly hashtag: {
-      readonly id: number;
-      readonly name: string;
-      readonly createdAt: Date;
-    };
-  }>;
+  readonly hashtags: string[];
   readonly imageId: string | null;
 };
 
-export type MemoryCreationFields = Omit<Memory, 'createdAt' | 'hashtagRelations'>;
+export type Memory = MemoryCreationFields & {
+  readonly createdAt: Date;
+};
