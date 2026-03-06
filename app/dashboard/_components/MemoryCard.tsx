@@ -6,10 +6,7 @@ type MemoryCardProps = {
 };
 
 export const MemoryCard: FC<MemoryCardProps> = ({ memory }) => {
-  const { title, message, hashtagRelations } = memory;
-
-  // Extract hashtag names from hashtagRelations
-  const hashtags = hashtagRelations?.map((relation) => relation.hashtag.name) ?? [];
+  const { title, message, hashtags } = memory;
 
   return (
     <article className="relative flex bg-clip-border rounded-xl bg-white text-gray-700 shadow-md lg:w-1/3 flex-row py-6 lg:mr-12 h-72 lg:h-full">

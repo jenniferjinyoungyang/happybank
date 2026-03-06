@@ -54,14 +54,14 @@ describe('/api/memories', () => {
           createdAt: new Date('2024-01-01'),
           title: 'Memory 1',
           message: 'Message 1',
-          hashtagRelations: [],
+          hashtags: [],
           imageId: null,
         },
         {
           createdAt: new Date('2024-01-02'),
           title: 'Memory 2',
           message: 'Message 2',
-          hashtagRelations: [],
+          hashtags: [],
           imageId: null,
         },
       ];

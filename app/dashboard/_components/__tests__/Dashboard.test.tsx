@@ -140,22 +140,7 @@ describe('Dashboard', () => {
     getMemorySpy.mockResolvedValue(
       makeApiSuccessMock(
         makeMemoryMock({
-          hashtagRelations: [
-            {
-              hashtag: {
-                id: 1,
-                name: 'happy',
-                createdAt: new Date('2024-01-01'),
-              },
-            },
-            {
-              hashtag: {
-                id: 2,
-                name: 'memory',
-                createdAt: new Date('2024-01-01'),
-              },
-            },
-          ],
+          hashtags: ['happy', 'memory'],
         }),
       ),
     );
@@ -167,13 +152,7 @@ describe('Dashboard', () => {
   });
 
   it('should not display hashtag chips when memory has no hashtags', async () => {
-    getMemorySpy.mockResolvedValue(
-      makeApiSuccessMock(
-        makeMemoryMock({
-          hashtagRelations: [],
-        }),
-      ),
-    );
+    getMemorySpy.mockResolvedValue(makeApiSuccessMock(makeMemoryMock()));
 
     render(<Dashboard />);
 
@@ -182,22 +161,5 @@ describe('Dashboard', () => {
     ).toBeInTheDocument();
     expect(screen.queryByText('#happy')).not.toBeInTheDocument();
     expect(screen.queryByText('#memory')).not.toBeInTheDocument();
-  });
-
-  it('should not display hashtag chips when hashtagRelations is undefined', async () => {
-    getMemorySpy.mockResolvedValue(
-      makeApiSuccessMock(
-        makeMemoryMock({
-          hashtagRelations: undefined,
-        }),
-      ),
-    );
-
-    render(<Dashboard />);
-
-    expect(
-      await screen.findByRole('heading', { level: 4, name: 'Test title' }),
-    ).toBeInTheDocument();
-    expect(screen.queryByText('#happy')).not.toBeInTheDocument();
   });
 });

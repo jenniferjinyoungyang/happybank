@@ -2,13 +2,14 @@ import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 import * as z from 'zod';
 import { MEMORY_VALIDATION } from '../../_shared/_constants/memory';
-import { MemoriesDbCreationFields, MemoriesDbEntity, memoriesDb } from './memoriesDb';
+import { Memory, MemoryCreationFields } from '../../_shared/_types/memory';
+import { memoriesDb } from './memoriesDb';
 
 const secret = process.env.NEXTAUTH_SECRET;
 
 export const GET = async (
   req: NextRequest,
-): Promise<NextResponse<MemoriesDbEntity | null | { message: string }>> => {
+): Promise<NextResponse<Memory | null | { message: string }>> => {
   const token = await getToken({ req, secret });
 
   if (!token?.sub) {
@@ -25,7 +26,15 @@ export const GET = async (
     const randomIndex = Math.floor(Math.random() * memories.length);
     const memory = memories[randomIndex];
 
-    return NextResponse.json(memory, { status: 200 });
+    const mapped_memory = {
+      title: memory.title,
+      createdAt: memory.createdAt,
+      message: memory.message,
+      imageId: memory.imageId,
+      hashtags: memory.hashtagRelations?.map((relation) => relation.hashtag.name) ?? [],
+    };
+
+    return NextResponse.json(mapped_memory, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       {
@@ -70,7 +79,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse<{ message: st
 
   const { title, message, hashtags = [], imageId = null } = createMemorySchema.parse(body);
 
-  const inputFields: MemoriesDbCreationFields = {
+  const inputFields: MemoryCreationFields = {
     title,
     message,
     hashtags,

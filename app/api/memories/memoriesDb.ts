@@ -1,11 +1,9 @@
-import { Memory, Hashtag } from '@prisma/client';
+import { Hashtag, Memory } from '@prisma/client';
 import prisma from '../../../lib/prisma';
+import { MemoryCreationFields } from '../../_shared/_types/memory';
 
 export type MemoriesDbEntity = Omit<Memory, 'id' | 'userId'> & {
   hashtagRelations?: Array<{ hashtag: Hashtag }>;
-};
-export type MemoriesDbCreationFields = Omit<MemoriesDbEntity, 'createdAt' | 'hashtagRelations'> & {
-  hashtags: string[]; // Array of hashtag names (e.g., ["happy", "memory"]) - used for input only
 };
 
 /**
@@ -43,7 +41,7 @@ const findAll = async (userId: string): Promise<MemoriesDbEntity[]> => {
   }));
 };
 
-const create = async (userId: string, fields: MemoriesDbCreationFields): Promise<Memory> => {
+const create = async (userId: string, fields: MemoryCreationFields): Promise<Memory> => {
   const { hashtags, ...memoryFields } = fields;
 
   // Normalize and deduplicate hashtags
