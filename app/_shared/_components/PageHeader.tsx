@@ -1,3 +1,5 @@
+'use client';
+
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { match } from 'ts-pattern';
@@ -24,6 +26,9 @@ const PageHeader: React.FC = () => {
               })}`}
             </h1>
           ))
+          .with('/search-memories', () => (
+            <h1 className="block lg:hidden text-xl">Search your memories</h1>
+          ))
           .otherwise(() => null)}
       </PageNav>
       <div className="flex-1 flex items-center">
@@ -40,6 +45,9 @@ const PageHeader: React.FC = () => {
                 day: 'numeric',
               })}`}
             </h1>
+          ))
+          .with('/search-memories', () => (
+            <h1 className="hidden lg:block text-xl">Search your memories</h1>
           ))
           .otherwise(() => (
             <h1>Cannot find the requested page</h1>
