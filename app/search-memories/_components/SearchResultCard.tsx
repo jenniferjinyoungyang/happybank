@@ -3,6 +3,9 @@
 
 import { FC } from 'react';
 import { Memory } from '../../_shared/_types/memory';
+import { CldImage } from 'next-cloudinary';
+import polaroid from '../../../public/images/polaroid.png';
+import Image from 'next/image';
 
 const truncateMessage = (message: string, maxLength = 180): string =>
   message.length > maxLength ? `${message.slice(0, maxLength).trimEnd()}…` : message;
@@ -36,9 +39,14 @@ export const SearchResultCard: FC<{
         )}
       </div>
       <div className="flex-1 p-4 flex flex-col gap-3">
-        <h3 className="text-base sm:text-lg font-semibold text-gray-900 line-clamp-2">
-          {memory.title}
-        </h3>
+        <div>
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 line-clamp-2">
+            {memory.title}
+          </h3>
+          <p className="text-xs text-gray-500 mt-0.5">
+            {new Date(memory.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+          </p>
+        </div>
         <p className="text-sm text-gray-700">{truncateMessage(memory.message)}</p>
         {memory.hashtags.length > 0 && (
           <div className="mt-auto flex flex-wrap gap-2">
