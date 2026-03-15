@@ -1,4 +1,4 @@
-import { Hashtag, Memory } from '@prisma/client';
+import { Hashtag, Memory, Prisma } from '@prisma/client';
 import prisma from '../../../lib/prisma';
 import { MemoryCreationFields } from '../../_shared/_types/memory';
 
@@ -48,63 +48,48 @@ type SearchParams = {
   readonly to?: string;
 };
 
-const buildSearchWhere = (userId: string, params: SearchParams) => {
-  const where: Parameters<typeof prisma.memory.findMany>[0]['where'] = {
-    userId,
-  };
+const buildSearchWhere = (userId: string, params: SearchParams): Prisma.MemoryWhereInput => {
+  const andConditions: Prisma.MemoryWhereInput[] = [];
 
   if (params.q) {
-    where.AND = [
-      ...(where.AND ?? []),
-      {
-        OR: [
-          {
-            title: {
-              contains: params.q,
-              mode: 'insensitive',
-            },
-          },
-          {
-            message: {
-              contains: params.q,
-              mode: 'insensitive',
-            },
-          },
-        ],
-      },
-    ];
+    andConditions.push({
+      OR: [
+        { title: { contains: params.q, mode: 'insensitive' } },
+        { message: { contains: params.q, mode: 'insensitive' } },
+      ],
+    });
   }
 
   if (params.from || params.to) {
-    where.AND = [
-      ...(where.AND ?? []),
-      {
-        createdAt: {
-          ...(params.from ? { gte: new Date(params.from) } : {}),
-          ...(params.to ? { lte: new Date(params.to) } : {}),
-        },
+    andConditions.push({
+      createdAt: {
+        ...(params.from ? { gte: new Date(params.from) } : {}),
+        ...(params.to ? { lte: new Date(params.to) } : {}),
       },
-    ];
+    });
   }
 
   if (params.hashtags && params.hashtags.length > 0) {
-    where.AND = [
-      ...(where.AND ?? []),
-      {
+    const tagNames = params.hashtags
+      .map((tag) => tag.replace(/^#+/, '').trim())
+      .filter((tag) => tag.length > 0);
+    if (tagNames.length > 0) {
+      andConditions.push({
         hashtagRelations: {
           some: {
             hashtag: {
-              name: {
-                in: params.hashtags.map((tag) => tag.replace(/^#+/, '').trim()).filter((tag) => tag.length > 0),
-                mode: 'insensitive',
-              },
+              name: { in: tagNames, mode: 'insensitive' },
             },
           },
         },
-      },
-    ];
+      });
+    }
   }
 
+  const where: Prisma.MemoryWhereInput = {
+    userId,
+    ...(andConditions.length > 0 ? { AND: andConditions } : {}),
+  };
   return where;
 };
 
