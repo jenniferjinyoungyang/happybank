@@ -8,7 +8,7 @@ type DashboardActionPanelProps = {
 };
 
 export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleRecallMemory }) => (
-  <section className="flex-initial flex lg:flex-col items-center lg:w-1/4">
+  <section className="flex-initial flex flex-col items-center lg:w-1/4 gap-4 lg:gap-8">
     <div className="flex flex-col items-center w-5/6">
       <p
         className={`hidden lg:block ${handleRecallMemory ? 'text-neutral-400' : 'text-neutral-200'}`}
@@ -23,6 +23,17 @@ export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleReca
       >
         Recall
       </button>
+    </div>
+    <div className="flex flex-col items-center lg:mt-10 w-5/6">
+      <p className="hidden lg:block text-neutral-400">
+        Find memories by tags, dates, and more
+      </p>
+      <Link
+        className="tracking-wide font-semibold bg-indigo-400 text-gray-100 w-5/6 py-4 rounded-lg hover:bg-indigo-600 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none mt-2 lg:mt-4"
+        href="/search-memories"
+      >
+        Search memories
+      </Link>
     </div>
     <div className="flex flex-col items-center lg:mt-10 w-5/6">
       <p className="hidden lg:block text-neutral-400">Let&apos;s save a new memory!</p>

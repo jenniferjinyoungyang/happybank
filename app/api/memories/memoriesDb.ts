@@ -41,6 +41,103 @@ const findAll = async (userId: string): Promise<MemoriesDbEntity[]> => {
   }));
 };
 
+type SearchParams = {
+  readonly hashtags?: string[];
+  readonly q?: string;
+  readonly from?: string;
+  readonly to?: string;
+};
+
+const buildSearchWhere = (userId: string, params: SearchParams) => {
+  const where: Parameters<typeof prisma.memory.findMany>[0]['where'] = {
+    userId,
+  };
+
+  if (params.q) {
+    where.AND = [
+      ...(where.AND ?? []),
+      {
+        OR: [
+          {
+            title: {
+              contains: params.q,
+              mode: 'insensitive',
+            },
+          },
+          {
+            message: {
+              contains: params.q,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    ];
+  }
+
+  if (params.from || params.to) {
+    where.AND = [
+      ...(where.AND ?? []),
+      {
+        createdAt: {
+          ...(params.from ? { gte: new Date(params.from) } : {}),
+          ...(params.to ? { lte: new Date(params.to) } : {}),
+        },
+      },
+    ];
+  }
+
+  if (params.hashtags && params.hashtags.length > 0) {
+    where.AND = [
+      ...(where.AND ?? []),
+      {
+        hashtagRelations: {
+          some: {
+            hashtag: {
+              name: {
+                in: params.hashtags.map((tag) => tag.replace(/^#+/, '').trim()).filter((tag) => tag.length > 0),
+                mode: 'insensitive',
+              },
+            },
+          },
+        },
+      },
+    ];
+  }
+
+  return where;
+};
+
+const search = async (userId: string, params: SearchParams): Promise<MemoriesDbEntity[]> => {
+  const where = buildSearchWhere(userId, params);
+
+  const memories = await prisma.memory.findMany({
+    where,
+    orderBy: {
+      createdAt: 'desc',
+    },
+    select: {
+      createdAt: true,
+      title: true,
+      message: true,
+      hashtagRelations: {
+        include: {
+          hashtag: true,
+        },
+      },
+      imageId: true,
+    },
+  });
+
+  return memories.map((memory) => ({
+    createdAt: memory.createdAt,
+    title: memory.title,
+    message: memory.message,
+    hashtagRelations: memory.hashtagRelations,
+    imageId: memory.imageId,
+  }));
+};
+
 const create = async (userId: string, fields: MemoryCreationFields): Promise<Memory> => {
   const { hashtags, ...memoryFields } = fields;
 
@@ -78,5 +175,6 @@ const create = async (userId: string, fields: MemoryCreationFields): Promise<Mem
 
 export const memoriesDb = {
   findAll,
+  search,
   create,
 };
