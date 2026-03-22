@@ -19,19 +19,21 @@ Happy Bank is a **simple and uplifting web app** designed to help users **captur
 
 ### **Features**
 
-✅ **Write & save** short memos with a title and message  
-📸 **Attach an image** to each memory  
-🔄 **Randomly rediscover** past moments  
+✅ **Write & save** short memos with a title, message, image and hashtag(s)
+📸 **Attach an image** to each memory
+🔄 **Randomly rediscover** past moments
+🔍 **Memory Search** – Search memories by **date range** or **hashtags**
 💾 **A digital alternative** to the classic memory jar
 
-![Dashboard Page](https://res.cloudinary.com/dujcvkecm/image/upload/v1741314688/happybank_screenshot_02_plliry.png)
+![Dashboard Page](https://res.cloudinary.com/dujcvkecm/image/upload/v1774207324/happybank_dashboard_01_g0kkyy.png)
+![Add New Memory Page](https://res.cloudinary.com/dujcvkecm/image/upload/v1774208174/happybank_addmemory_01_ni9kki.png)
+![Search Memory Page](https://res.cloudinary.com/dujcvkecm/image/upload/v1774208165/happybank_searchmemories_01_sw7ifa.png)
 
 Whether it's a **personal achievement, a funny moment, or a heartwarming experience**, Happy Bank helps you **collect and relive life's little joys**.
 
 ### **Future Features**
 
-🔖 **Hashtags** – Categorize memorable moments  
-🔍 **Memory Search** – Search memories by **date range** or **hashtags**
+🔖 **Album** – Categorize memorable moments
 
 ## **Technologies Used**
 

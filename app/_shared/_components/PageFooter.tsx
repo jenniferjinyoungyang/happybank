@@ -34,10 +34,10 @@ export const PageFooter: FC = () => (
       <li>
         <a href="https://www.flaticon.com" title="icons">
           <p className="hidden lg:block text-gray-200">
-            Icon made by `&quot;`Freepik`&quot;` and `&quot;`ICs Icons`&quot;` from www.flaticon.com
+            Icon made by Freepik and ICs Icons from www.flaticon.com
           </p>
           <p className="block lg:hidden text-gray-200">
-            Icon made by `&quot;`ICs Icons`&quot;` from www.flaticon.com
+            Icon made by ICs Icons from www.flaticon.com
           </p>
         </a>
       </li>
