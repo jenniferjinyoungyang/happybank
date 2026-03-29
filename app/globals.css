@@ -1,8 +1,16 @@
 @import 'tailwindcss';
+@config '../tailwind.config.ts';
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-}
+/* Class-based dark mode (matches design system script; v4 default is prefers-color-scheme). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Viewport-height breakpoints (SignIn / SignUp). In Tailwind v4, `screens: { raw: ... }` for
+ * height is merged into width/container logic and breaks CSS parsing; use @custom-variant instead.
+ */
+@custom-variant h-sm (@media (max-height: 640px));
+@custom-variant h-md (@media (min-height: 641px) and (max-height: 768px));
+@custom-variant h-lg (@media (min-height: 769px));
 
 @layer utilities {
   .bg-login-image {
@@ -20,10 +28,29 @@
   .font-montserrat {
     font-family: var(--font-montserrat);
   }
+
+  /* Soft editorial card shadow (invalid `shadow:` from source HTML corrected to box-shadow). */
+  .editorial-shadow {
+    box-shadow: 0 25px 50px -12px rgba(46, 47, 45, 0.06);
+  }
+}
+
+/* Material Symbols — use when loading the icon font */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
 }
 
 html {
   font-family: var(--font-montserrat);
+}
+
+body {
+  background-color: theme('colors.background');
+  color: theme('colors.on-background');
 }
 
 p {
