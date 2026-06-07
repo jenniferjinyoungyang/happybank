@@ -67,7 +67,9 @@ export const POST = async (
       );
     }
 
-    console.error('Error calling Gemini API:', error);
+    if (process.env.NODE_ENV !== 'test') {
+      console.error('Error calling Gemini API:', error);
+    }
 
     // In development, return more detailed error information
     const errorMessage =
