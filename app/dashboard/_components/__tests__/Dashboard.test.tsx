@@ -50,7 +50,11 @@ describe('Dashboard', () => {
       'src',
       '/_next/image?url=%2Fimg.jpg&w=3840&q=75',
     );
-    expect(screen.getByRole('button', { name: 'Recall' })).toBeDisabled();
+    expect(screen.getByRole('link', { name: /Deposit memory/i })).toHaveAttribute(
+      'href',
+      '/create-memory',
+    );
+    expect(screen.getByRole('button', { name: /Recall/i })).toBeDisabled();
   });
 
   it('should render a memory card when successfully fetches a memory', async () => {
@@ -74,8 +78,11 @@ describe('Dashboard', () => {
     );
     expect(screen.queryByAltText('polaroid icon')).not.toBeInTheDocument();
 
-    expect(screen.getByRole('button', { name: 'Recall' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Deposit' })).toHaveAttribute('href', '/create-memory');
+    expect(screen.getByRole('link', { name: /Deposit memory/i })).toHaveAttribute(
+      'href',
+      '/create-memory',
+    );
+    expect(screen.getByRole('button', { name: /Recall/i })).toBeInTheDocument();
   });
 
   it('should render a polaroid icon when successfully fetched memory does not have image id', async () => {
@@ -120,7 +127,7 @@ describe('Dashboard', () => {
       ),
     );
 
-    await userEvent.click(screen.getByRole('button', { name: 'Recall' }));
+    await userEvent.click(screen.getByRole('button', { name: /Recall/i }));
 
     expect(
       await screen.findByRole('heading', {
