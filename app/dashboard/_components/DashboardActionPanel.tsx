@@ -1,55 +1,60 @@
-import Image from 'next/image';
+import { ChevronRightIcon, PhotoIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { FC } from 'react';
-import piggyBank from '../../../public/images/piggy-bank.png';
 
 type DashboardActionPanelProps = {
   readonly handleRecallMemory?: () => void;
 };
 
+const quickActionButtonClass =
+  'group flex w-full items-center gap-3 rounded-full px-4 py-3 text-left transition-opacity duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2';
+
+/** Right-sidebar quick actions: deposit a new memory and recall a random one. */
 export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleRecallMemory }) => (
-  <section className="flex-initial flex flex-col items-center lg:w-1/4 gap-4 lg:gap-8">
-    <div className="flex flex-col items-center w-5/6">
-      <p
-        className={`hidden lg:block ${handleRecallMemory ? 'text-neutral-400' : 'text-neutral-200'}`}
+  <section aria-labelledby="quick-actions-heading" className="flex flex-col lg:w-1/4">
+    <h3
+      id="quick-actions-heading"
+      className="mb-3 text-xs font-medium tracking-widest text-on-surface-variant uppercase"
+    >
+      Quick Actions
+    </h3>
+
+    <div className="flex flex-col gap-3 rounded-3xl bg-surface-container p-3">
+      <Link
+        href="/create-memory"
+        className={`${quickActionButtonClass} bg-gradient-to-r from-primary to-[#8b7fd4] focus-visible:ring-primary`}
       >
-        Show me another memory!
-      </p>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-dim/40">
+          <PhotoIcon aria-hidden="true" className="h-5 w-5 text-on-primary" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-semibold text-on-primary">Deposit memory</span>
+          <span className="block text-sm text-on-primary/90">Let&apos;s save a new memory</span>
+        </span>
+        <ChevronRightIcon
+          aria-hidden="true"
+          className="h-5 w-5 shrink-0 text-on-primary/90 transition-transform group-hover:translate-x-0.5"
+        />
+      </Link>
+
       <button
         type="button"
-        className="tracking-wide font-semibold bg-indigo-400 text-gray-100 w-5/6 py-4 rounded-lg hover:bg-indigo-600 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none disabled:bg-neutral-300"
+        className={`${quickActionButtonClass} bg-gradient-to-r from-secondary-fixed to-[#f5a623] focus-visible:ring-secondary disabled:cursor-not-allowed disabled:opacity-50`}
         disabled={!handleRecallMemory}
         onClick={handleRecallMemory}
       >
-        Recall
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary-fixed-dim/50">
+          <SparklesIcon aria-hidden="true" className="h-5 w-5 text-on-surface" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-semibold text-on-surface">Recall</span>
+          <span className="block text-sm text-on-surface/80">Let&apos;s find a memory</span>
+        </span>
+        <ChevronRightIcon
+          aria-hidden="true"
+          className="h-5 w-5 shrink-0 text-on-surface/70 transition-transform group-enabled:group-hover:translate-x-0.5"
+        />
       </button>
     </div>
-    <div className="flex flex-col items-center lg:mt-10 w-5/6">
-      <p className="hidden lg:block text-neutral-400">
-        Find memories by tags, dates, and more
-      </p>
-      <Link
-        className="tracking-wide font-semibold bg-indigo-400 text-gray-100 w-5/6 py-4 rounded-lg hover:bg-indigo-600 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none mt-2 lg:mt-4"
-        href="/search-memories"
-      >
-        Search memories
-      </Link>
-    </div>
-    <div className="flex flex-col items-center lg:mt-10 w-5/6">
-      <p className="hidden lg:block text-neutral-400">Let&apos;s save a new memory!</p>
-      <Link
-        className="tracking-wide font-semibold bg-indigo-400 text-gray-100 w-5/6 py-4 rounded-lg hover:bg-indigo-600 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
-        href="/create-memory"
-      >
-        Deposit
-      </Link>
-    </div>
-
-    <Image
-      src={piggyBank}
-      className="hidden lg:block w-3/5 mt-auto"
-      alt="piggy bank icon"
-      priority={false}
-    />
   </section>
 );
