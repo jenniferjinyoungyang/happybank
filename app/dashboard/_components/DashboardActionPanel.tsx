@@ -22,7 +22,7 @@ export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleReca
     <div className="flex flex-col gap-3 rounded-3xl bg-surface-container p-3">
       <Link
         href="/create-memory"
-        className={`${quickActionButtonClass} bg-gradient-to-r from-primary to-[#8b7fd4] focus-visible:ring-primary`}
+        className={`${quickActionButtonClass} bg-gradient-to-r from-primary to-primary-fixed-dim focus-visible:ring-primary`}
       >
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-dim/40">
           <PhotoIcon aria-hidden="true" className="h-5 w-5 text-on-primary" />
@@ -39,7 +39,7 @@ export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleReca
 
       <button
         type="button"
-        className={`${quickActionButtonClass} bg-gradient-to-r from-secondary-fixed to-[#f5a623] focus-visible:ring-secondary disabled:cursor-not-allowed disabled:opacity-50`}
+        className={`${quickActionButtonClass} bg-gradient-to-r from-secondary-fixed to-secondary-fixed-dim focus-visible:ring-secondary disabled:cursor-not-allowed disabled:opacity-50`}
         disabled={!handleRecallMemory}
         onClick={handleRecallMemory}
       >
