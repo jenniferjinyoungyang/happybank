@@ -1,16 +1,19 @@
 'use client';
 
 import { FC } from 'react';
+import { PageContainer } from '../_shared/_components/PageContainer';
+import { PageFooter } from '../_shared/_components/PageFooter';
 import PageHeader from '../_shared/_components/PageHeader';
 import { CreateMemoryPanel } from './_components/CreateMemoryPanel';
-import { PageFooter } from '../_shared/_components/PageFooter';
 
 const CreateMemoryPage: FC = () => (
-  <section className="flex flex-col h-screen">
-    <PageHeader />
-    <CreateMemoryPanel />
-    <PageFooter />
-  </section>
+  <PageContainer>
+    <section className="flex flex-col h-screen">
+      <PageHeader />
+      <CreateMemoryPanel />
+      <PageFooter />
+    </section>
+  </PageContainer>
 );
 
 export default CreateMemoryPage;
