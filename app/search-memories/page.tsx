@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { match } from 'ts-pattern';
 import ChatWidget from '../_shared/_components/ChatWidget';
 import { FullPageSpinner } from '../_shared/_components/FullPageSpinner';
+import { PageContainer } from '../_shared/_components/PageContainer';
 import { PageFooter } from '../_shared/_components/PageFooter';
 import PageHeader from '../_shared/_components/PageHeader';
 import { SearchMemoriesContent } from './_components/SearchMemoriesContent';
@@ -13,7 +14,7 @@ const SearchMemoriesPage: React.FC = () => {
   const { status } = useSession();
 
   return (
-    <>
+    <PageContainer>
       {match(status)
         .with('unauthenticated', () => (
           <section className="flex flex-col h-screen items-center justify-center bg-background px-6">
@@ -40,7 +41,7 @@ const SearchMemoriesPage: React.FC = () => {
           </section>
         ))
         .exhaustive()}
-    </>
+    </PageContainer>
   );
 };
 

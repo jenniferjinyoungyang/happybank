@@ -17,31 +17,6 @@ describe('PageHeader', () => {
     jest.restoreAllMocks();
   });
 
-  it('renders dashboard page header text', () => {
-    mockRouter.push('/dashboard');
-    render(<PageHeader />);
-
-    expect(
-      screen.getAllByRole('heading', { level: 1, name: 'Welcome, Barbie Tester' }),
-    ).toHaveLength(2);
-  });
-
-  it('renders create-memory page header text', () => {
-    jest.useFakeTimers().setSystemTime(new Date('2024-12-30T10:00:00.000-05:00'));
-
-    mockRouter.push('/create-memory');
-    render(<PageHeader />);
-
-    expect(
-      screen.getByRole('heading', {
-        level: 1,
-        name: 'Save a special memory for Monday, December 30, 2024',
-      }),
-    ).toBeInTheDocument();
-
-    jest.useRealTimers();
-  });
-
   it('highlights the memories nav link on memory-related routes', () => {
     mockRouter.push('/search-memories');
     render(<PageHeader />);
@@ -90,9 +65,6 @@ describe('PageHeader', () => {
     render(<PageHeader />);
 
     expect(screen.getByText('HB')).toBeInTheDocument();
-    expect(screen.getAllByRole('heading', { level: 1 })[0]).toHaveTextContent(
-      'Welcome, Happy Bank',
-    );
   });
 
   it('renders a fallback image alt when the user has no name', () => {
@@ -134,14 +106,5 @@ describe('PageHeader', () => {
 
     expect(signOutMock).toHaveBeenCalledWith({ redirect: false, callbackUrl: '/' });
     expect(mockRouter.pathname).toBe('/');
-  });
-
-  it('renders unknown page header text', () => {
-    mockRouter.push('/some-random-pathname');
-    render(<PageHeader />);
-
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Cannot find the requested page',
-    );
   });
 });

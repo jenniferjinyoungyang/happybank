@@ -22,7 +22,7 @@ const RootLayout = ({
         <link rel="icon" type="image/png" href="icon.png" />
       </head>
       <body>
-        <div className="mx-auto w-full max-w-[1280px] shadow-2xl shadow-slate-900/10 rounded-[2rem] backdrop-blur-lg">
+        <div className="mx-auto w-full shadow-2xl shadow-slate-900/10 rounded-[2rem] backdrop-blur-lg">
           {children}
         </div>
       </body>

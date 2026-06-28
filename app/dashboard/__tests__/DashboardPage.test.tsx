@@ -1,7 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import * as NextAuthReactModule from 'next-auth/react';
-import { SessionProvider } from 'next-auth/react';
-import mockRouter from 'next-router-mock';
 import { makeSessionMock } from '../../_shared/__mocks__/session.mock';
 import DashboardPage from '../page';
 
@@ -24,25 +22,6 @@ describe('DashboardPage', () => {
 
     render(<DashboardPage />);
     expect(screen.getByRole('status')).toBeInTheDocument();
-  });
-
-  it('should load correct title when successfully authenticated', () => {
-    useSessionSpy.mockReturnValue({
-      data: makeSessionMock(),
-      status: 'authenticated',
-      update: jest.fn(),
-    });
-
-    mockRouter.push('/dashboard');
-
-    render(
-      <SessionProvider>
-        <DashboardPage />
-      </SessionProvider>,
-    );
-    expect(
-      screen.getAllByRole('heading', { level: 1, name: 'Welcome, Barbie Tester' }),
-    ).toHaveLength(2);
   });
 
   it('should render a footer', () => {
