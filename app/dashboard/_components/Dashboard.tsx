@@ -6,7 +6,7 @@ import { ApiData, getInitialApiDataStatus, setLoadingStatus } from '../../_share
 import { getMemory } from '../_api/getMemory';
 import { DashboardActionPanel } from './DashboardActionPanel';
 import { EmptyMemoryCard } from './EmptyMemoryCard';
-import { MemoryCard } from './MemoryCard';
+import { MemoryHeroSection } from './MemoryHeroSection';
 import { MemoryImageCard } from './MemoryImageCard';
 
 const EmptyDashboard: FC = () => (
@@ -30,29 +30,14 @@ const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory }) => 
     {match<Memory | null>(memory)
       .with(null, () => <EmptyDashboard />)
       .with(P.not(null), (it) => (
-        <>
-          <h2 className="hidden lg:block mb-8 font-medium">{`This is your memory from ${new Date(
-            it.createdAt,
-          ).toLocaleDateString(undefined, {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}.`}</h2>
-          <h2 className="block lg:hidden mb-4 font-medium text-sm sm:text-base">{`This is your memory from ${new Date(
-            it.createdAt,
-          ).toLocaleDateString(undefined, {
-            weekday: 'short',
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-          })}.`}</h2>
-          <div className="flex flex-col gap-4 lg:flex-row lg:gap-0 lg:h-3/4">
-            <MemoryCard memory={it} />
-            <MemoryImageCard imageId={it.imageId} />
+        <div className="mx-auto flex max-w-6xl flex-col gap-12 lg:grid lg:grid-cols-[2fr_1fr] lg:items-start lg:gap-8">
+          <section className="flex flex-col space-y-12">
+            <MemoryHeroSection memory={it} />
+          </section>
+          <aside className="lg:pl-8">
             <DashboardActionPanel handleRecallMemory={recallMemory} />
-          </div>
-        </>
+          </aside>
+        </div>
       ))
       .exhaustive()}
   </>
@@ -78,7 +63,7 @@ export const Dashboard: FC = () => {
   }, [loadMemory]);
 
   return (
-    <main className="bg-background h-[calc(100%-8rem)] lg:h-[calc(100%-10rem)] px-6 py-4 lg:px-28 lg:pt-12 overflow-auto">
+    <main className="bg-background h-[calc(100%-8rem)] lg:h-[calc(100%-10rem)] px-4 py-4 lg:px-12 lg:pt-12 overflow-auto">
       {match(memoryStatus)
         .with({ status: 'not loaded', isLoading: false }, () => null)
         .with({ status: 'not loaded', isLoading: true }, () => <FullComponentSpinner />)

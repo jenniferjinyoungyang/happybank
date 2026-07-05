@@ -11,7 +11,7 @@ const quickActionButtonClass =
 
 /** Right-sidebar quick actions: deposit a new memory and recall a random one. */
 export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleRecallMemory }) => (
-  <section aria-labelledby="quick-actions-heading" className="flex flex-col lg:w-1/4">
+  <section aria-labelledby="quick-actions-heading" className="flex flex-col w-full">
     <h3
       id="quick-actions-heading"
       className="mb-3 text-xs font-medium tracking-widest text-on-surface-variant uppercase"
