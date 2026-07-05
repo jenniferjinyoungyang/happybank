@@ -9,19 +9,24 @@ type MemoryImageCardProps = {
 };
 
 export const MemoryImageCard: FC<MemoryImageCardProps> = ({ imageId }) => (
-  <div className="relative lg:w-1/3 m-0 overflow-hidden text-gray-700 bg-white bg-clip-border shadow-md rounded-xl shrink-0 lg:mr-12 h-72 lg:h-full">
+  <div className="relative aspect-[16/10] overflow-hidden rounded-[1.25rem] bg-surface-container-low shadow-2xl shadow-on-surface/5 transition-transform duration-500 hover:scale-[1.01]">
     {match(imageId)
       .with(P.string, (it) => (
         <CldImage
           src={it}
-          sizes="100vw"
+          sizes="(max-width: 1024px) 100vw, 70vw"
           alt="uploaded image"
-          className="bg-black w-full h-full object-contain"
+          className="h-full w-full object-cover"
           fill
         />
       ))
       .with(null, () => (
-        <Image src={polaroid.src} alt="polaroid icon" className="bg-white object-scale-down" fill />
+        <Image
+          src={polaroid.src}
+          alt="polaroid icon"
+          className="h-full w-full bg-white object-scale-down p-10"
+          fill
+        />
       ))
       .exhaustive()}
   </div>

@@ -60,15 +60,9 @@ describe('Dashboard', () => {
   it('should render a memory card when successfully fetches a memory', async () => {
     render(<Dashboard />);
 
-    expect(
-      await screen.findByRole('heading', {
-        level: 2,
-        name: 'This is your memory from Monday, December 30, 2024.',
-      }),
-    ).toBeInTheDocument();
-
-    expect(screen.getByRole('heading', { level: 4, name: 'Test title' })).toBeInTheDocument();
-    expect(screen.getByText('mock memory for testing purposes')).toBeInTheDocument();
+    expect(await screen.findByText('Memory of the Moment')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Test title' })).toBeInTheDocument();
+    expect(screen.getByText(/mock memory for testing purposes/i)).toBeInTheDocument();
 
     const imageElement = screen.getByAltText('uploaded image');
     expect(imageElement).toHaveAttribute('src');
@@ -91,7 +85,7 @@ describe('Dashboard', () => {
     render(<Dashboard />);
 
     expect(
-      await screen.findByRole('heading', { level: 4, name: 'Test title' }),
+      await screen.findByRole('heading', { level: 1, name: 'Test title' }),
     ).toBeInTheDocument();
 
     expect(screen.getByAltText('polaroid icon')).toHaveAttribute(
@@ -106,13 +100,9 @@ describe('Dashboard', () => {
     render(<Dashboard />);
 
     expect(
-      await screen.findByRole('heading', {
-        level: 2,
-        name: 'This is your memory from Monday, December 30, 2024.',
-      }),
+      await screen.findByRole('heading', { level: 1, name: 'Test title' }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 4, name: 'Test title' })).toBeInTheDocument();
-    expect(screen.getByText('mock memory for testing purposes')).toBeInTheDocument();
+    expect(screen.getByText(/mock memory for testing purposes/i)).toBeInTheDocument();
 
     expect(getMemorySpy).toHaveBeenCalledTimes(1);
 
@@ -130,15 +120,9 @@ describe('Dashboard', () => {
     await userEvent.click(screen.getByRole('button', { name: /Recall/i }));
 
     expect(
-      await screen.findByRole('heading', {
-        level: 2,
-        name: 'This is your memory from Friday, December 27, 2024.',
-      }),
+      await screen.findByRole('heading', { level: 1, name: 'Another test memory' }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { level: 4, name: 'Another test memory' }),
-    ).toBeInTheDocument();
-    expect(screen.getByText('test for recall button')).toBeInTheDocument();
+    expect(screen.getByText(/test for recall button/i)).toBeInTheDocument();
 
     expect(getMemorySpy).toHaveBeenCalledTimes(2);
   });
@@ -164,7 +148,7 @@ describe('Dashboard', () => {
     render(<Dashboard />);
 
     expect(
-      await screen.findByRole('heading', { level: 4, name: 'Test title' }),
+      await screen.findByRole('heading', { level: 1, name: 'Test title' }),
     ).toBeInTheDocument();
     expect(screen.queryByText('#happy')).not.toBeInTheDocument();
     expect(screen.queryByText('#memory')).not.toBeInTheDocument();
