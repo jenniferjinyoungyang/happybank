@@ -1,7 +1,7 @@
 import { SignUp } from './_components/SignUp';
 
 const SignUpPage: React.FC = () => (
-  <main>
+  <main className="h-full">
     <SignUp />
   </main>
 );

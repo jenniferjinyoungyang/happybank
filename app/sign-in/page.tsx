@@ -1,7 +1,7 @@
 import SignIn from './_components/SignIn';
 
 const SignInPage: React.FC = () => (
-  <main>
+  <main className="h-full">
     <SignIn />
   </main>
 );
