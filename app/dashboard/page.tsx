@@ -31,7 +31,7 @@ const DashboardPage: React.FC = () => {
         ))
         .with('loading', () => <FullPageSpinner />)
         .with('authenticated', () => (
-          <section className="flex flex-col h-screen">
+          <section className="flex min-h-0 flex-1 flex-col">
             <PageHeader />
             <Dashboard />
             <PageFooter />

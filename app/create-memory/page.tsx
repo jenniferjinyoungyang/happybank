@@ -8,7 +8,7 @@ import { CreateMemoryPanel } from './_components/CreateMemoryPanel';
 
 const CreateMemoryPage: FC = () => (
   <PageContainer>
-    <section className="flex flex-col h-screen">
+    <section className="flex min-h-0 flex-1 flex-col">
       <PageHeader />
       <CreateMemoryPanel />
       <PageFooter />
