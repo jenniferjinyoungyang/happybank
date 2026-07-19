@@ -59,7 +59,7 @@ export const CreateMemoryPanel: FC = () => {
   );
 
   return (
-    <main className="bg-background h-[calc(100%-8rem)] lg:h-[calc(100%-10rem)] px-6 py-4 lg:px-28 lg:pt-12 overflow-auto">
+    <main className="flex-1 min-h-0 overflow-auto bg-background px-6 py-4 pb-24 lg:px-28 lg:py-8 lg:pb-28">
       <FormProvider {...methods}>
         <form
           aria-label="create-memory-form"

@@ -63,7 +63,7 @@ export const Dashboard: FC = () => {
   }, [loadMemory]);
 
   return (
-    <main className="bg-background h-[calc(100%-8rem)] lg:h-[calc(100%-10rem)] px-4 py-4 lg:px-12 lg:pt-12 overflow-auto">
+    <main className="flex-1 min-h-0 overflow-auto bg-background px-4 py-4 pb-24 lg:px-12 lg:py-8 lg:pb-28">
       {match(memoryStatus)
         .with({ status: 'not loaded', isLoading: false }, () => null)
         .with({ status: 'not loaded', isLoading: true }, () => <FullComponentSpinner />)

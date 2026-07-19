@@ -30,7 +30,7 @@ const PageHeader: React.FC = () => {
   };
 
   return (
-    <nav className="sticky top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-[#aeadaa]/15 shadow-xl shadow-[#2e2f2d]/5">
+    <nav className="sticky top-0 z-50 w-full shrink-0 border-b border-[#aeadaa]/15 bg-background/80 shadow-xl shadow-[#2e2f2d]/5 backdrop-blur-md">
       <div className="flex justify-between items-center px-8 py-4 mx-auto w-full">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
