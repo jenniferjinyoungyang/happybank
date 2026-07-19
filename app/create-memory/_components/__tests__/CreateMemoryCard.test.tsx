@@ -31,6 +31,24 @@ describe('CreateMemoryCard', () => {
       expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
     });
 
+    it('should show character counters for title and message', () => {
+      render(
+        <FormWrapper<MemoryCreationFields>
+          defaultValues={{
+            title: '',
+            message: '',
+            hashtags: [],
+            imageId: null,
+          }}
+        >
+          <CreateMemoryCard isLoading={false} />
+        </FormWrapper>,
+      );
+
+      expect(screen.getByText('0/30')).toBeInTheDocument();
+      expect(screen.getByText('0/1500')).toBeInTheDocument();
+    });
+
     it('should render hashtag input placeholder when no hashtags exist', () => {
       render(
         <FormWrapper<MemoryCreationFields>
