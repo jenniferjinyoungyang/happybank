@@ -286,7 +286,7 @@ describe('/api/memories', () => {
 
     it('should validate title max length', async () => {
       const request = createMockRequest('POST', {
-        title: 'a'.repeat(101), // Exceeds TITLE_MAX_LENGTH (100)
+        title: 'a'.repeat(31), // Exceeds TITLE_MAX_LENGTH (30)
         message: 'Message',
       });
 
@@ -297,7 +297,7 @@ describe('/api/memories', () => {
     it('should validate message max length', async () => {
       const request = createMockRequest('POST', {
         title: 'Title',
-        message: 'a'.repeat(1001), // Exceeds MESSAGE_MAX_LENGTH (1000)
+        message: 'a'.repeat(1501), // Exceeds MESSAGE_MAX_LENGTH (1500)
       });
 
       await expect(POST(request)).rejects.toThrow();

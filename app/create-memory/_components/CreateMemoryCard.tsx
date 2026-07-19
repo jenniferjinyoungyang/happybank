@@ -19,6 +19,8 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
   } = useFormContext();
 
   const hashtags: string[] = watch('hashtags');
+  const titleValue = watch('title') ?? '';
+  const messageValue = watch('message') ?? '';
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
@@ -74,44 +76,53 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
         </>
       )}
       <div className="mb-5">
-        <label htmlFor="memory-title" className="block mb-2 text-sm font-medium text-gray-900">
-          Title
-          <input
-            type="text"
-            id="memory-title"
-            className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base
+        <div className="mb-2 flex items-center justify-between">
+          <label htmlFor="memory-title" className="text-sm font-medium text-gray-900">
+            Title
+          </label>
+          <span className="text-sm text-gray-500">
+            {titleValue.length}/{MEMORY_VALIDATION.TITLE_MAX_LENGTH}
+          </span>
+        </div>
+        <input
+          type="text"
+          id="memory-title"
+          className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base
           focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            {...register('title', {
-              required: 'This field is required.',
-              maxLength: {
-                value: MEMORY_VALIDATION.TITLE_MAX_LENGTH,
-                message: `This input cannot exceed maximum length of ${MEMORY_VALIDATION.TITLE_MAX_LENGTH}.`,
-              },
-            })}
-          />
-        </label>
-        {errors.title && <p className="text-red-500">{errors.title.message?.toString()}</p>}
+          {...register('title', {
+            required: 'This field is required.',
+            maxLength: {
+              value: MEMORY_VALIDATION.TITLE_MAX_LENGTH,
+              message: `This input cannot exceed maximum length of ${MEMORY_VALIDATION.TITLE_MAX_LENGTH}.`,
+            },
+          })}
+        />
+        {errors.title && <p className="mt-2 text-red-500">{errors.title.message?.toString()}</p>}
       </div>
       <div className="mb-5 h-1/2 flex flex-col">
-        <label
-          htmlFor="memory-message"
-          className="flex-1 flex flex-col mb-2 text-sm font-medium text-gray-900"
-        >
-          Message
-          <textarea
-            id="memory-message"
-            className="block w-full p-2 flex-1 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base
+        <div className="mb-2 flex items-center justify-between">
+          <label htmlFor="memory-message" className="text-sm font-medium text-gray-900">
+            Message
+          </label>
+          <span className="text-sm text-gray-500">
+            {messageValue.length}/{MEMORY_VALIDATION.MESSAGE_MAX_LENGTH}
+          </span>
+        </div>
+        <textarea
+          id="memory-message"
+          className="block w-full p-2 flex-1 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base
           focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            {...register('message', {
-              required: 'This field is required.',
-              maxLength: {
-                value: MEMORY_VALIDATION.MESSAGE_MAX_LENGTH,
-                message: `This input cannot exceed maximum length of ${MEMORY_VALIDATION.MESSAGE_MAX_LENGTH}.`,
-              },
-            })}
-          />
-        </label>
-        {errors.message && <p className="text-red-500">{errors.message.message?.toString()}</p>}
+          {...register('message', {
+            required: 'This field is required.',
+            maxLength: {
+              value: MEMORY_VALIDATION.MESSAGE_MAX_LENGTH,
+              message: `This input cannot exceed maximum length of ${MEMORY_VALIDATION.MESSAGE_MAX_LENGTH}.`,
+            },
+          })}
+        />
+        {errors.message && (
+          <p className="mt-2 text-red-500">{errors.message.message?.toString()}</p>
+        )}
       </div>
       <div>
         <label htmlFor="memory-hashtags" className="block mb-2 text-sm font-medium text-gray-900">
