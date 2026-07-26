@@ -1,13 +1,15 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { match, P } from 'ts-pattern';
 import { FullComponentSpinner } from '../../_shared/_components/FullComponentSpinner';
 import { Memory } from '../../_shared/_types/memory';
 import { ApiData, getInitialApiDataStatus, setLoadingStatus } from '../../_shared/_utils/apiData';
 import { getMemory } from '../_api/getMemory';
+import { getMemoryStats, MemoryStats } from '../_api/getMemoryStats';
 import { DashboardActionPanel } from './DashboardActionPanel';
 import { EmptyMemoryCard } from './EmptyMemoryCard';
 import { MemoryHeroSection } from './MemoryHeroSection';
 import { MemoryImageCard } from './MemoryImageCard';
+import { MemoryStatsCard } from './MemoryStatsCard';
 
 const EmptyDashboard: FC = () => (
   <>
@@ -23,9 +25,10 @@ const EmptyDashboard: FC = () => (
 type LoadedDashboardProps = {
   readonly memory: Memory | null;
   readonly recallMemory: () => void;
+  readonly stats: MemoryStats | null;
 };
 
-const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory }) => (
+const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory, stats }) => (
   <>
     {match<Memory | null>(memory)
       .with(null, () => <EmptyDashboard />)
@@ -34,8 +37,16 @@ const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory }) => 
           <section className="flex flex-col space-y-12">
             <MemoryHeroSection memory={it} />
           </section>
-          <aside className="lg:pl-8">
+          <aside className="lg:pl-8 space-y-6">
             <DashboardActionPanel handleRecallMemory={recallMemory} />
+            {stats ? (
+              <MemoryStatsCard
+                memoryCount={stats.memoryCount}
+                hashtagCount={stats.hashtagCount}
+                oldestMemoryDate={stats.oldestMemoryDate}
+                latestMemoryDate={stats.latestMemoryDate}
+              />
+            ) : null}
           </aside>
         </div>
       ))
@@ -46,6 +57,8 @@ const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory }) => 
 export const Dashboard: FC = () => {
   const [memoryStatus, setMemoryStatus] =
     useState<ApiData<Memory | null>>(getInitialApiDataStatus<Memory | null>());
+  const [statsStatus, setStatsStatus] =
+    useState<ApiData<MemoryStats>>(getInitialApiDataStatus<MemoryStats>());
 
   const loadMemory = useCallback((currentStatus?: ApiData<Memory | null>) => {
     setMemoryStatus(setLoadingStatus(currentStatus));
@@ -58,9 +71,28 @@ export const Dashboard: FC = () => {
     });
   }, []);
 
+  const loadStats = useCallback(() => {
+    setStatsStatus((currentStatus) => setLoadingStatus(currentStatus));
+    getMemoryStats().then((result) => {
+      if (result.isSuccess) {
+        setStatsStatus({ status: 'loaded', data: result.data, error: null, isLoading: false });
+      } else {
+        setStatsStatus({ status: 'error', data: null, error: result.error });
+      }
+    });
+  }, []);
+
+  const hasLoadedRef = useRef(false);
+
   useEffect(() => {
+    if (hasLoadedRef.current) {
+      return;
+    }
+
     loadMemory();
-  }, [loadMemory]);
+    loadStats();
+    hasLoadedRef.current = true;
+  }, [loadMemory, loadStats]);
 
   return (
     <main className="flex-1 min-h-0 overflow-auto bg-background px-4 py-4 pb-24 lg:px-12 lg:py-8 lg:pb-28">
@@ -68,7 +100,11 @@ export const Dashboard: FC = () => {
         .with({ status: 'not loaded', isLoading: false }, () => null)
         .with({ status: 'not loaded', isLoading: true }, () => <FullComponentSpinner />)
         .with({ status: 'loaded' }, ({ data }) => (
-          <LoadedDashboard memory={data} recallMemory={() => loadMemory(memoryStatus)} />
+          <LoadedDashboard
+            memory={data}
+            recallMemory={() => loadMemory(memoryStatus)}
+            stats={statsStatus.status === 'loaded' ? statsStatus.data : null}
+          />
         ))
         .with({ status: 'error' }, () => <p>error loading data</p>)
         .exhaustive()}

@@ -5,9 +5,11 @@ import { makeApiErrorMock, makeApiSuccessMock } from '../../../../test-helper/ma
 import { makeMemoryMock } from '../../../_shared/__mocks__/memory.mock';
 import { makeSessionMock } from '../../../_shared/__mocks__/session.mock';
 import * as GetMemoryModule from '../../_api/getMemory';
+import * as GetMemoryStatsModule from '../../_api/getMemoryStats';
 import { Dashboard } from '../Dashboard';
 
 jest.mock('../../_api/getMemory');
+jest.mock('../../_api/getMemoryStats');
 
 describe('Dashboard', () => {
   let getMemorySpy: jest.SpyInstance<ReturnType<typeof GetMemoryModule.getMemory>>;
@@ -16,6 +18,15 @@ describe('Dashboard', () => {
     jest
       .spyOn(NextAuthReactModule, 'useSession')
       .mockReturnValue({ data: makeSessionMock(), status: 'authenticated', update: jest.fn() });
+
+    jest.spyOn(GetMemoryStatsModule, 'getMemoryStats').mockResolvedValue(
+      makeApiSuccessMock({
+        memoryCount: 12,
+        hashtagCount: 42,
+        oldestMemoryDate: '2024-01-01T00:00:00.000Z',
+        latestMemoryDate: '2024-12-31T00:00:00.000Z',
+      }),
+    );
 
     getMemorySpy = jest
       .spyOn(GetMemoryModule, 'getMemory')
@@ -77,6 +88,13 @@ describe('Dashboard', () => {
       '/create-memory',
     );
     expect(screen.getByRole('button', { name: /Recall/i })).toBeInTheDocument();
+
+    expect(await screen.findByText('moments stored')).toBeInTheDocument();
+    expect(screen.getByText('12')).toBeInTheDocument();
+    expect(screen.getByText('42')).toBeInTheDocument();
+    expect(screen.getByText('Jan 2024')).toBeInTheDocument();
+    expect(screen.getByText('Dec 2024')).toBeInTheDocument();
+    expect(screen.getByText('TIMELINE')).toBeInTheDocument();
   });
 
   it('should render a polaroid icon when successfully fetched memory does not have image id', async () => {
