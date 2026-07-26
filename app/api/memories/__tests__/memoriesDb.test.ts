@@ -8,6 +8,11 @@ jest.mock('../../../../lib/prisma', () => ({
     memory: {
       findMany: jest.fn(),
       create: jest.fn(),
+      count: jest.fn(),
+      findFirst: jest.fn(),
+    },
+    hashtag: {
+      count: jest.fn(),
     },
   },
 }));
@@ -16,6 +21,11 @@ const mockPrisma = prisma as unknown as {
   memory: {
     findMany: jest.Mock;
     create: jest.Mock;
+    count: jest.Mock;
+    findFirst: jest.Mock;
+  };
+  hashtag: {
+    count: jest.Mock;
   };
 };
 
@@ -74,6 +84,69 @@ describe('memoriesDb', () => {
       const result = await memoriesDb.findAll(userId);
 
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('stats', () => {
+    it('should return memory stats with oldest/latest memory dates', async () => {
+      const userId = 'user123';
+      const oldest = { createdAt: new Date('2024-01-01T00:00:00.000Z') };
+      const latest = { createdAt: new Date('2024-12-31T23:59:59.999Z') };
+
+      mockPrisma.memory.count.mockResolvedValue(7);
+      mockPrisma.memory.findFirst
+        .mockResolvedValueOnce(oldest as never)
+        .mockResolvedValueOnce(latest as never);
+      mockPrisma.hashtag.count.mockResolvedValue(3);
+
+      const result = await memoriesDb.getStats(userId);
+
+      expect(mockPrisma.memory.count).toHaveBeenCalledWith({ where: { userId } });
+      expect(mockPrisma.memory.findFirst).toHaveBeenNthCalledWith(1, {
+        where: { userId },
+        orderBy: { createdAt: 'asc' },
+        select: { createdAt: true },
+      });
+      expect(mockPrisma.memory.findFirst).toHaveBeenNthCalledWith(2, {
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        select: { createdAt: true },
+      });
+      expect(mockPrisma.hashtag.count).toHaveBeenCalledWith({
+        where: {
+          memories: {
+            some: {
+              memory: {
+                userId,
+              },
+            },
+          },
+        },
+      });
+
+      expect(result).toEqual({
+        memoryCount: 7,
+        hashtagCount: 3,
+        oldestMemoryDate: oldest.createdAt,
+        latestMemoryDate: latest.createdAt,
+      });
+    });
+
+    it('should return null dates when no memories exist', async () => {
+      const userId = 'user123';
+
+      mockPrisma.memory.count.mockResolvedValue(0);
+      mockPrisma.memory.findFirst.mockResolvedValue(null as never);
+      mockPrisma.hashtag.count.mockResolvedValue(0);
+
+      const result = await memoriesDb.getStats(userId);
+
+      expect(result).toEqual({
+        memoryCount: 0,
+        hashtagCount: 0,
+        oldestMemoryDate: null,
+        latestMemoryDate: null,
+      });
     });
   });
 
