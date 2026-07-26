@@ -1,0 +1,3 @@
+GET http://localhost:3000/api/memories/stats
+//PASTE 'next-auth.session-token' COOKIE FROM THE BROWSER IN THE FORM OF:
+Cookie: next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..TZ-BbR4dsmAYEMfM.bTX7B359kwVsEavmPhj0JI-bScrXH9tdw-fOAOEGzdxg52vLDM7FzLYDw6KaG6z541JBRsGY_RjVK_L9sUsMWLfPehUU_ENtUMsQqfXTQJWx3PMLa13W1sWwCY7Jxkz76W5aY2QqKUHVqhJ3Pxx2GuR1KswVChDUXdgPCFq7wCJ9NRjOyykAHZt-0DBKGi4SoWVNwqJpX6UaEJTokGYPBwAmKyhGftSJacBwUtxhHpCFx6xpSa_yJo5rHj8G1Ndw.zcS6nWz_-uFQZvvdszfydQ

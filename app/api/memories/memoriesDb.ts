@@ -123,6 +123,47 @@ const search = async (userId: string, params: SearchParams): Promise<MemoriesDbE
   }));
 };
 
+type MemoryStats = {
+  readonly memoryCount: number;
+  readonly hashtagCount: number;
+  readonly oldestMemoryDate: Date | null;
+  readonly latestMemoryDate: Date | null;
+};
+
+const getStats = async (userId: string): Promise<MemoryStats> => {
+  const [memoryCount, oldestMemory, latestMemory, hashtagCount] = await Promise.all([
+    prisma.memory.count({ where: { userId } }),
+    prisma.memory.findFirst({
+      where: { userId },
+      orderBy: { createdAt: 'asc' },
+      select: { createdAt: true },
+    }),
+    prisma.memory.findFirst({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      select: { createdAt: true },
+    }),
+    prisma.hashtag.count({
+      where: {
+        memories: {
+          some: {
+            memory: {
+              userId,
+            },
+          },
+        },
+      },
+    }),
+  ]);
+
+  return {
+    memoryCount,
+    hashtagCount,
+    oldestMemoryDate: oldestMemory?.createdAt ?? null,
+    latestMemoryDate: latestMemory?.createdAt ?? null,
+  };
+};
+
 const create = async (userId: string, fields: MemoryCreationFields): Promise<Memory> => {
   const { hashtags, ...memoryFields } = fields;
 
@@ -161,5 +202,6 @@ const create = async (userId: string, fields: MemoryCreationFields): Promise<Mem
 export const memoriesDb = {
   findAll,
   search,
+  getStats,
   create,
 };
