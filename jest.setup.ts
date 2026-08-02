@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom';
-import * as nextRouterMock from 'next-router-mock';
 import 'whatwg-fetch';
 import makeResizeObserverMock from './test-helper/resizeObserver.mock';
 
@@ -53,7 +52,11 @@ console.error = (...args: unknown[]) => {
   originalConsoleError(...args);
 };
 
-jest.mock('next/navigation', () => ({
-  ...nextRouterMock,
-  usePathname: () => nextRouterMock.memoryRouter.pathname,
-}));
+jest.mock('next/navigation', () => {
+  const routerMock = jest.requireActual('next-router-mock');
+  return {
+    ...routerMock,
+    usePathname: () => routerMock.memoryRouter.pathname,
+    useSearchParams: () => new URLSearchParams(routerMock.memoryRouter.asPath.split('?')[1] || ''),
+  };
+});

@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { match } from 'ts-pattern';
 import ChatWidget from '../_shared/_components/ChatWidget';
 import { FullPageSpinner } from '../_shared/_components/FullPageSpinner';
@@ -34,7 +35,9 @@ const SearchMemoriesPage: React.FC = () => {
           <section className="flex min-h-0 flex-1 flex-col">
             <PageHeader />
             <main className="flex-1 min-h-0 overflow-auto bg-background px-6 py-4 pb-24 lg:px-28 lg:py-8 lg:pb-28">
-              <SearchMemoriesContent />
+              <Suspense fallback={<FullPageSpinner />}>
+                <SearchMemoriesContent />
+              </Suspense>
             </main>
             <PageFooter />
             <ChatWidget />

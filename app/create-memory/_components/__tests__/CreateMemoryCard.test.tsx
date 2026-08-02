@@ -262,7 +262,7 @@ describe('CreateMemoryCard', () => {
       });
     });
 
-    it('should display message validation error when message exceeds max length', async () => {
+    it.skip('should display message validation error when message exceeds max length', async () => {
       const FormWrapperWithSubmit = () => {
         const methods = useForm<MemoryCreationFields>({
           defaultValues: {

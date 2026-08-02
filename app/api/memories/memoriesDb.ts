@@ -10,7 +10,7 @@ export type MemoriesDbEntity = Omit<Memory, 'id' | 'userId'> & {
  * Normalize hashtag name: remove #, trim
  */
 function normalizeHashtag(hashtag: string): string | null {
-  const normalized = hashtag.replace(/^#+/, '').trim();
+  const normalized = hashtag.trim().replace(/^#+/, '');
   return normalized.length > 0 ? normalized : null;
 }
 
@@ -71,7 +71,7 @@ const buildSearchWhere = (userId: string, params: SearchParams): Prisma.MemoryWh
 
   if (params.hashtags && params.hashtags.length > 0) {
     const tagNames = params.hashtags
-      .map((tag) => tag.replace(/^#+/, '').trim())
+      .map((tag) => tag.trim().replace(/^#+/, ''))
       .filter((tag) => tag.length > 0);
     if (tagNames.length > 0) {
       andConditions.push({
@@ -199,9 +199,98 @@ const create = async (userId: string, fields: MemoryCreationFields): Promise<Mem
   });
 };
 
+export type TopHashtag = {
+  readonly id: number;
+  readonly name: string;
+  readonly count: number;
+  readonly imageId: string | null;
+};
+
+const getTopHashtags = async (userId: string): Promise<TopHashtag[]> => {
+  const topTags = await prisma.memoryHashtag.groupBy({
+    by: ['hashtagId'],
+    where: {
+      memory: {
+        userId,
+      },
+    },
+    _count: {
+      memoryId: true,
+    },
+    orderBy: {
+      _count: {
+        memoryId: 'desc',
+      },
+    },
+    take: 3,
+  });
+
+  const result: TopHashtag[] = [];
+
+  for (const tag of topTags) {
+    const hashtag = await prisma.hashtag.findUnique({
+      where: { id: tag.hashtagId },
+      select: { name: true },
+    });
+
+    if (!hashtag) {
+      continue;
+    }
+
+    // Try to find the latest memory with an image for this user and hashtag
+    let latestMemory = await prisma.memory.findFirst({
+      where: {
+        userId,
+        imageId: { not: null },
+        hashtagRelations: {
+          some: {
+            hashtagId: tag.hashtagId,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        imageId: true,
+      },
+    });
+
+    // Fallback to absolute latest memory under this hashtag
+    if (!latestMemory) {
+      latestMemory = await prisma.memory.findFirst({
+        where: {
+          userId,
+          hashtagRelations: {
+            some: {
+              hashtagId: tag.hashtagId,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        select: {
+          imageId: true,
+        },
+      });
+    }
+
+    result.push({
+      id: tag.hashtagId,
+      name: hashtag.name,
+      count: tag._count.memoryId,
+      imageId: latestMemory?.imageId ?? null,
+    });
+  }
+
+  return result;
+};
+
 export const memoriesDb = {
   findAll,
   search,
   getStats,
   create,
+  getTopHashtags,
 };

@@ -6,10 +6,12 @@ import { makeMemoryMock } from '../../../_shared/__mocks__/memory.mock';
 import { makeSessionMock } from '../../../_shared/__mocks__/session.mock';
 import * as GetMemoryModule from '../../_api/getMemory';
 import * as GetMemoryStatsModule from '../../_api/getMemoryStats';
+import * as GetCurationsModule from '../../_api/getCurations';
 import { Dashboard } from '../Dashboard';
 
 jest.mock('../../_api/getMemory');
 jest.mock('../../_api/getMemoryStats');
+jest.mock('../../_api/getCurations');
 
 describe('Dashboard', () => {
   let getMemorySpy: jest.SpyInstance<ReturnType<typeof GetMemoryModule.getMemory>>;
@@ -26,6 +28,13 @@ describe('Dashboard', () => {
         oldestMemoryDate: '2024-01-01T00:00:00.000Z',
         latestMemoryDate: '2024-12-31T00:00:00.000Z',
       }),
+    );
+
+    jest.spyOn(GetCurationsModule, 'getCurations').mockResolvedValue(
+      makeApiSuccessMock([
+        { id: 1, name: 'vietnam trip', count: 15, imageId: 'vietnam-img' },
+        { id: 2, name: 'mountain hike', count: 5, imageId: 'mountain-img' },
+      ]),
     );
 
     getMemorySpy = jest
@@ -170,5 +179,15 @@ describe('Dashboard', () => {
     ).toBeInTheDocument();
     expect(screen.queryByText('#happy')).not.toBeInTheDocument();
     expect(screen.queryByText('#memory')).not.toBeInTheDocument();
+  });
+
+  it('should render the curations panel when curations are fetched successfully', async () => {
+    render(<Dashboard />);
+
+    expect(await screen.findByRole('heading', { level: 2, name: 'Curations' })).toBeInTheDocument();
+    expect(screen.getByText('Vietnam Trip')).toBeInTheDocument();
+    expect(screen.getByText('15 memories')).toBeInTheDocument();
+    expect(screen.getByText('Mountain Hike')).toBeInTheDocument();
+    expect(screen.getByText('5 memories')).toBeInTheDocument();
   });
 });
