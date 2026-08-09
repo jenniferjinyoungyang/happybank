@@ -32,8 +32,8 @@ describe('Dashboard', () => {
 
     jest.spyOn(GetCurationsModule, 'getCurations').mockResolvedValue(
       makeApiSuccessMock([
-        { id: 1, name: 'vietnam trip', count: 15, imageId: 'vietnam-img' },
-        { id: 2, name: 'mountain hike', count: 5, imageId: 'mountain-img' },
+        { id: 1, name: 'VietnamTrip', count: 15, imageId: 'vietnam-img' },
+        { id: 2, name: 'MountainHike', count: 5, imageId: 'mountain-img' },
       ]),
     );
 
@@ -185,9 +185,9 @@ describe('Dashboard', () => {
     render(<Dashboard />);
 
     expect(await screen.findByRole('heading', { level: 2, name: 'Curations' })).toBeInTheDocument();
-    expect(screen.getByText('#Vietnam Trip')).toBeInTheDocument();
+    expect(screen.getByText('#VietnamTrip')).toBeInTheDocument();
     expect(screen.getByText('15 memories')).toBeInTheDocument();
-    expect(screen.getByText('#Mountain Hike')).toBeInTheDocument();
+    expect(screen.getByText('#MountainHike')).toBeInTheDocument();
     expect(screen.getByText('5 memories')).toBeInTheDocument();
   });
 });

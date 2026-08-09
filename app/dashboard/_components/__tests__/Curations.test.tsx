@@ -17,8 +17,8 @@ describe('Curations', () => {
 
   it('should render curations list with correct names and counts', () => {
     const curations: TopHashtag[] = [
-      { id: 1, name: 'vietnam trip', count: 15, imageId: null },
-      { id: 2, name: 'mountain hike', count: 5, imageId: 'mountain-img' },
+      { id: 1, name: 'VietnamTrip', count: 15, imageId: null },
+      { id: 2, name: 'MountainHike', count: 5, imageId: 'mountain-img' },
     ];
 
     render(<Curations curations={curations} />);
@@ -27,10 +27,10 @@ describe('Curations', () => {
     expect(screen.getByRole('link', { name: 'View All' })).toBeInTheDocument();
 
     // Verification of formatted names
-    expect(screen.getByText('#Vietnam Trip')).toBeInTheDocument();
+    expect(screen.getByText('#VietnamTrip')).toBeInTheDocument();
     expect(screen.getByText('15 memories')).toBeInTheDocument();
 
-    expect(screen.getByText('#Mountain Hike')).toBeInTheDocument();
+    expect(screen.getByText('#MountainHike')).toBeInTheDocument();
     expect(screen.getByText('5 memories')).toBeInTheDocument();
 
     // Check images
@@ -39,14 +39,14 @@ describe('Curations', () => {
     expect(fallbackImage).toBeInTheDocument();
 
     // For id 2 (imageId: 'mountain-img'), should show CldImage mock
-    const cldImage = screen.getByAltText('mountain hike');
+    const cldImage = screen.getByAltText('MountainHike');
     expect(cldImage).toHaveAttribute('src', 'cloudinary://mountain-img');
 
     // Check link hrefs
     const links = screen.getAllByRole('link');
     expect(links[0]).toHaveAttribute('href', '/search-memories');
-    expect(links[1]).toHaveAttribute('href', '/search-memories?hashtags=vietnam%20trip');
-    expect(links[2]).toHaveAttribute('href', '/search-memories?hashtags=mountain%20hike');
+    expect(links[1]).toHaveAttribute('href', '/search-memories?hashtags=VietnamTrip');
+    expect(links[2]).toHaveAttribute('href', '/search-memories?hashtags=MountainHike');
   });
 
   it('renders correct count label for single memory count', () => {
@@ -54,7 +54,7 @@ describe('Curations', () => {
 
     render(<Curations curations={curations} />);
 
-    expect(screen.getByText('#Solitude')).toBeInTheDocument();
+    expect(screen.getByText('#solitude')).toBeInTheDocument();
     expect(screen.getByText('1 memory')).toBeInTheDocument();
   });
 });

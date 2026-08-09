@@ -27,11 +27,7 @@ export const Curations: FC<CurationsProps> = ({ curations }) => {
 
       <div className="space-y-4">
         {curations.map((tag) => {
-          // Capitalize hashtag name or show it beautifully
-          const formattedName = `#${tag.name
-            .split(' ')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-            .join(' ')}`;
+          const formattedName = `#${tag.name}`;
 
           return (
             <Link
