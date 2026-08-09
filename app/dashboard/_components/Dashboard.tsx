@@ -5,11 +5,13 @@ import { Memory } from '../../_shared/_types/memory';
 import { ApiData, getInitialApiDataStatus, setLoadingStatus } from '../../_shared/_utils/apiData';
 import { getMemory } from '../_api/getMemory';
 import { getMemoryStats, MemoryStats } from '../_api/getMemoryStats';
+import { getCurations, TopHashtag } from '../_api/getCurations';
 import { DashboardActionPanel } from './DashboardActionPanel';
 import { EmptyMemoryCard } from './EmptyMemoryCard';
 import { MemoryHeroSection } from './MemoryHeroSection';
 import { MemoryImageCard } from './MemoryImageCard';
 import { MemoryStatsCard } from './MemoryStatsCard';
+import { Curations } from './Curations';
 
 const EmptyDashboard: FC = () => (
   <>
@@ -26,9 +28,10 @@ type LoadedDashboardProps = {
   readonly memory: Memory | null;
   readonly recallMemory: () => void;
   readonly stats: MemoryStats | null;
+  readonly curations: TopHashtag[];
 };
 
-const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory, stats }) => (
+const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory, stats, curations }) => (
   <>
     {match<Memory | null>(memory)
       .with(null, () => <EmptyDashboard />)
@@ -37,16 +40,21 @@ const LoadedDashboard: FC<LoadedDashboardProps> = ({ memory, recallMemory, stats
           <section className="flex flex-col space-y-12">
             <MemoryHeroSection memory={it} />
           </section>
-          <aside className="lg:pl-8 space-y-6">
-            <DashboardActionPanel handleRecallMemory={recallMemory} />
-            {stats ? (
-              <MemoryStatsCard
-                memoryCount={stats.memoryCount}
-                hashtagCount={stats.hashtagCount}
-                oldestMemoryDate={stats.oldestMemoryDate}
-                latestMemoryDate={stats.latestMemoryDate}
-              />
-            ) : null}
+          <aside className="lg:pl-8 space-y-10">
+            <div>
+              <DashboardActionPanel handleRecallMemory={recallMemory} />
+            </div>
+            <div className="space-y-8">
+              {stats ? (
+                <MemoryStatsCard
+                  memoryCount={stats.memoryCount}
+                  hashtagCount={stats.hashtagCount}
+                  oldestMemoryDate={stats.oldestMemoryDate}
+                  latestMemoryDate={stats.latestMemoryDate}
+                />
+              ) : null}
+              <Curations curations={curations} />
+            </div>
           </aside>
         </div>
       ))
@@ -59,6 +67,8 @@ export const Dashboard: FC = () => {
     useState<ApiData<Memory | null>>(getInitialApiDataStatus<Memory | null>());
   const [statsStatus, setStatsStatus] =
     useState<ApiData<MemoryStats>>(getInitialApiDataStatus<MemoryStats>());
+  const [curationsStatus, setCurationsStatus] =
+    useState<ApiData<TopHashtag[]>>(getInitialApiDataStatus<TopHashtag[]>());
 
   const loadMemory = useCallback((currentStatus?: ApiData<Memory | null>) => {
     setMemoryStatus(setLoadingStatus(currentStatus));
@@ -82,6 +92,17 @@ export const Dashboard: FC = () => {
     });
   }, []);
 
+  const loadCurations = useCallback(() => {
+    setCurationsStatus((currentStatus) => setLoadingStatus(currentStatus));
+    getCurations().then((result) => {
+      if (result.isSuccess) {
+        setCurationsStatus({ status: 'loaded', data: result.data, error: null, isLoading: false });
+      } else {
+        setCurationsStatus({ status: 'error', data: null, error: result.error });
+      }
+    });
+  }, []);
+
   const hasLoadedRef = useRef(false);
 
   useEffect(() => {
@@ -91,8 +112,9 @@ export const Dashboard: FC = () => {
 
     loadMemory();
     loadStats();
+    loadCurations();
     hasLoadedRef.current = true;
-  }, [loadMemory, loadStats]);
+  }, [loadMemory, loadStats, loadCurations]);
 
   return (
     <main className="flex-1 min-h-0 overflow-auto bg-background px-4 py-4 pb-24 lg:px-12 lg:py-8 lg:pb-28">
@@ -104,6 +126,7 @@ export const Dashboard: FC = () => {
             memory={data}
             recallMemory={() => loadMemory(memoryStatus)}
             stats={statsStatus.status === 'loaded' ? statsStatus.data : null}
+            curations={curationsStatus.status === 'loaded' ? curationsStatus.data : []}
           />
         ))
         .with({ status: 'error' }, () => <p>error loading data</p>)

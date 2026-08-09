@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 'use client';
 
-import { FC, FormEvent, useMemo, useState } from 'react';
+import { FC, FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { match } from 'ts-pattern';
 import { FullComponentSpinner } from '../../_shared/_components/FullComponentSpinner';
 import { Memory } from '../../_shared/_types/memory';
@@ -35,23 +36,24 @@ export const SearchMemoriesContent: FC = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [carouselState, setCarouselState] = useState<CarouselState>({ currentIndex: 0 });
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
+  const searchParams = useSearchParams();
+  const lastHashtagParamRef = useRef<string | null>(null);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const executeSearch = useCallback(async (params: SearchFormState) => {
     setHasSearched(true);
-    setSearchStatus(setLoadingStatus(searchStatus));
+    setSearchStatus((currentStatus) => setLoadingStatus(currentStatus));
 
     const hashtags =
-      formState.hashtagsInput
+      params.hashtagsInput
         .split(',')
-        .map((tag) => tag.replace(/^#+/, '').trim())
+        .map((tag) => tag.trim().replace(/^#+/, ''))
         .filter((tag) => tag.length > 0) ?? [];
 
     const result = await searchMemories({
       hashtags,
-      query: formState.query || undefined,
-      from: formState.from || undefined,
-      to: formState.to || undefined,
+      query: params.query || undefined,
+      from: params.from || undefined,
+      to: params.to || undefined,
     });
 
     if (result.isSuccess) {
@@ -69,9 +71,33 @@ export const SearchMemoriesContent: FC = () => {
         error: result.error ?? 'unknown error',
       });
     }
+  }, []);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await executeSearch(formState);
   };
 
+  useEffect(() => {
+    const hashtagsParam = searchParams.get('hashtags');
+    if (hashtagsParam && hashtagsParam !== lastHashtagParamRef.current) {
+      lastHashtagParamRef.current = hashtagsParam;
+      const initialTags = decodeURIComponent(hashtagsParam)
+        .split(',')
+        .map((t) => t.trim().replace(/^#+/, ''))
+        .join(', ');
+
+      const prefilledState = {
+        ...initialFormState,
+        hashtagsInput: initialTags,
+      };
+      setFormState(prefilledState);
+      executeSearch(prefilledState);
+    }
+  }, [searchParams, executeSearch]);
+
   const resetFilters = () => {
+    lastHashtagParamRef.current = null;
     setFormState(initialFormState);
     setSearchStatus(getInitialApiDataStatus<Memory[]>());
     setHasSearched(false);

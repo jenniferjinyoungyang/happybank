@@ -182,4 +182,26 @@ describe('SearchMemoriesContent', () => {
     expect(screen.getByRole('button', { name: 'Previous memory' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Next memory' })).toBeDisabled();
   });
+
+  it('automatically triggers search on mount when hashtags search param is present', async () => {
+    const memory = makeMemoryMock({ title: 'Tag search memory' });
+    searchMemoriesSpy.mockResolvedValue({ isSuccess: true, data: [memory] });
+
+    const routerMock = jest.requireActual('next-router-mock');
+    routerMock.memoryRouter.setCurrentUrl('/search-memories?hashtags=travel');
+
+    render(<SearchMemoriesContent />);
+
+    // Verify input gets prefilled with formatting
+    const tagsInput = screen.getByPlaceholderText('e.g. gratitude, family, weekend');
+    expect(tagsInput).toHaveValue('travel');
+
+    // Verify search was triggered automatically on mount
+    await screen.findByRole('heading', { level: 3, name: 'Tag search memory' });
+    expect(searchMemoriesSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        hashtags: ['travel'],
+      }),
+    );
+  });
 });
