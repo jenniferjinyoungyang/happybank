@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FormWrapper } from '../../../../test-helper/formWrapper';
@@ -262,7 +262,7 @@ describe('CreateMemoryCard', () => {
       });
     });
 
-    it.skip('should display message validation error when message exceeds max length', async () => {
+    it('should display message validation error when message exceeds max length', async () => {
       const FormWrapperWithSubmit = () => {
         const methods = useForm<MemoryCreationFields>({
           defaultValues: {
@@ -292,7 +292,7 @@ describe('CreateMemoryCard', () => {
       const messageInput = screen.getByLabelText('Message');
       const longMessage = 'a'.repeat(MEMORY_VALIDATION.MESSAGE_MAX_LENGTH + 1);
 
-      await user.type(messageInput, longMessage);
+      fireEvent.change(messageInput, { target: { value: longMessage } });
       const submitButton = screen.getByRole('button', { name: 'Submit' });
       await user.click(submitButton);
 

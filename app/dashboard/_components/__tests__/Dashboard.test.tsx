@@ -185,9 +185,9 @@ describe('Dashboard', () => {
     render(<Dashboard />);
 
     expect(await screen.findByRole('heading', { level: 2, name: 'Curations' })).toBeInTheDocument();
-    expect(screen.getByText('Vietnam Trip')).toBeInTheDocument();
+    expect(screen.getByText('#Vietnam Trip')).toBeInTheDocument();
     expect(screen.getByText('15 memories')).toBeInTheDocument();
-    expect(screen.getByText('Mountain Hike')).toBeInTheDocument();
+    expect(screen.getByText('#Mountain Hike')).toBeInTheDocument();
     expect(screen.getByText('5 memories')).toBeInTheDocument();
   });
 });

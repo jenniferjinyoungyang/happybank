@@ -27,10 +27,10 @@ describe('Curations', () => {
     expect(screen.getByRole('link', { name: 'View All' })).toBeInTheDocument();
 
     // Verification of formatted names
-    expect(screen.getByText('Vietnam Trip')).toBeInTheDocument();
+    expect(screen.getByText('#Vietnam Trip')).toBeInTheDocument();
     expect(screen.getByText('15 memories')).toBeInTheDocument();
 
-    expect(screen.getByText('Mountain Hike')).toBeInTheDocument();
+    expect(screen.getByText('#Mountain Hike')).toBeInTheDocument();
     expect(screen.getByText('5 memories')).toBeInTheDocument();
 
     // Check images
@@ -54,7 +54,7 @@ describe('Curations', () => {
 
     render(<Curations curations={curations} />);
 
-    expect(screen.getByText('Solitude')).toBeInTheDocument();
+    expect(screen.getByText('#Solitude')).toBeInTheDocument();
     expect(screen.getByText('1 memory')).toBeInTheDocument();
   });
 });
