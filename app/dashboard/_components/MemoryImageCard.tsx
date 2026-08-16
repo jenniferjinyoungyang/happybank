@@ -5,7 +5,7 @@ import { match, P } from 'ts-pattern';
 import polaroid from '../../../public/images/polaroid.png';
 
 type MemoryImageCardProps = {
-  imageId: string | null;
+  readonly imageId: string | null;
 };
 
 export const MemoryImageCard: FC<MemoryImageCardProps> = ({ imageId }) => (

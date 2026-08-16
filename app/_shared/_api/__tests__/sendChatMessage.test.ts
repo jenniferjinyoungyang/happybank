@@ -108,7 +108,9 @@ describe('sendChatMessage', () => {
     });
 
     expect(result.isSuccess).toBe(true);
-    expect(result.data).toBe('First response');
+    if (result.isSuccess) {
+      expect(result.data).toBe('First response');
+    }
   });
 
   test('handles message with multiple history items', async () => {

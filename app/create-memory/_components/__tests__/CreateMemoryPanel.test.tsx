@@ -28,13 +28,13 @@ describe('CreateMemoryPanel', () => {
     await user.type(titleInputBox, 'Ginger day');
     await user.type(messageTextBox, 'I met Ginger today!');
     await user.type(hashtagsInputBox, 'ginger{Enter}');
-    await user.type(hashtagsInputBox, 'happy{Enter}');
+    await user.type(hashtagsInputBox, 'gingerhappy{Enter}');
 
     expect(titleInputBox).toHaveValue('Ginger day');
     expect(messageTextBox).toHaveValue('I met Ginger today!');
     expect(hashtagsInputBox).toHaveValue('');
     expect(await screen.findByText('#ginger')).toBeInTheDocument();
-    expect(await screen.findByText('#happy')).toBeInTheDocument();
+    expect(await screen.findByText('#gingerhappy')).toBeInTheDocument();
 
     const withinUploadImageCard = within(screen.getByTestId('upload-image-card'));
     expect(withinUploadImageCard.getByText('Ginger day')).toBeInTheDocument();
@@ -45,7 +45,7 @@ describe('CreateMemoryPanel', () => {
     expect(createMemorySpy).toHaveBeenCalledWith({
       title: 'Ginger day',
       message: 'I met Ginger today!',
-      hashtags: ['ginger', 'happy'],
+      hashtags: ['ginger', 'gingerhappy'],
       imageId: null,
     });
 

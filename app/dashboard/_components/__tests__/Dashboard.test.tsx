@@ -190,4 +190,36 @@ describe('Dashboard', () => {
     expect(screen.getByText('#MountainHike')).toBeInTheDocument();
     expect(screen.getByText('5 memories')).toBeInTheDocument();
   });
+
+  it('should handle getMemoryStats error', async () => {
+    jest
+      .spyOn(GetMemoryStatsModule, 'getMemoryStats')
+      .mockResolvedValue(makeApiErrorMock('Stats error'));
+
+    render(<Dashboard />);
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Test title' }),
+    ).toBeInTheDocument();
+  });
+
+  it('should handle getCurations error', async () => {
+    jest
+      .spyOn(GetCurationsModule, 'getCurations')
+      .mockResolvedValue(makeApiErrorMock('Curations error'));
+
+    render(<Dashboard />);
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Test title' }),
+    ).toBeInTheDocument();
+  });
+
+  it('should skip duplicate load on rerender when hasLoadedRef is true', async () => {
+    const { rerender } = render(<Dashboard />);
+    await screen.findByRole('heading', { level: 1, name: 'Test title' });
+
+    rerender(<Dashboard />);
+    expect(getMemorySpy).toHaveBeenCalledTimes(1);
+  });
 });
