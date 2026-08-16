@@ -44,7 +44,7 @@ describe('SearchMemoriesPage', () => {
 
     render(<SearchMemoriesPage />);
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Search memories' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Relive your joy' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Search' })).toBeInTheDocument();
   });
 });

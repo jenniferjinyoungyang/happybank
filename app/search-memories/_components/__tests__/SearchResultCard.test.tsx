@@ -20,29 +20,27 @@ describe('SearchResultCard', () => {
     });
     render(<SearchResultCard memory={memory} onOpen={() => {}} />);
 
-    expect(screen.getByRole('button')).toHaveTextContent('Beach day');
-    expect(screen.getByRole('button')).toHaveTextContent('A short note');
+    expect(screen.getByText('Beach day')).toBeInTheDocument();
+    expect(screen.getByText('A short note')).toBeInTheDocument();
     expect(screen.getByText('#summer')).toBeInTheDocument();
     expect(screen.getByText('#fun')).toBeInTheDocument();
   });
 
-  it('renders the memory date in medium format', () => {
+  it('renders the memory date in long format', () => {
     const memory = makeMemoryMock({
       createdAt: new Date('2024-12-30T10:00:00.000-05:00'),
     });
     render(<SearchResultCard memory={memory} onOpen={() => {}} />);
 
-    // toLocaleDateString(undefined, { dateStyle: 'medium' }) e.g. "Dec 30, 2024" (locale-dependent)
-    expect(screen.getByText(/Dec 30, 2024/)).toBeInTheDocument();
+    expect(screen.getByText(/December 30, 2024/i)).toBeInTheDocument();
   });
 
-  it('truncates long messages with ellipsis', () => {
-    const longMessage = 'a'.repeat(200);
+  it('renders full message when fullMessage is true', () => {
+    const longMessage = 'Line 1\nLine 2';
     const memory = makeMemoryMock({ message: longMessage });
-    render(<SearchResultCard memory={memory} onOpen={() => {}} />);
+    render(<SearchResultCard memory={memory} fullMessage />);
 
-    expect(screen.getByRole('button')).toHaveTextContent('…');
-    expect(screen.getByRole('button').textContent?.length).toBeLessThan(250);
+    expect(screen.getByText(/Line 1/)).toBeInTheDocument();
   });
 
   it('calls onOpen when the card is clicked', async () => {
@@ -50,7 +48,7 @@ describe('SearchResultCard', () => {
     const memory = makeMemoryMock({ title: 'Click me' });
     render(<SearchResultCard memory={memory} onOpen={onOpen} />);
 
-    await userEvent.click(screen.getByRole('button', { name: /Click me/ }));
+    await userEvent.click(screen.getByText('Click me'));
 
     expect(onOpen).toHaveBeenCalledTimes(1);
   });
@@ -59,14 +57,14 @@ describe('SearchResultCard', () => {
     const memory = makeMemoryMock({ imageId: null });
     render(<SearchResultCard memory={memory} onOpen={() => {}} />);
 
-    expect(screen.getByAltText('memory placeholder')).toBeInTheDocument();
+    expect(screen.getByAltText('polaroid icon')).toBeInTheDocument();
   });
 
   it('renders cloudinary image when memory has imageId', () => {
-    const memory = makeMemoryMock({ imageId: 'test_photo' });
+    const memory = makeMemoryMock({ title: 'My memory', imageId: 'test_photo' });
     render(<SearchResultCard memory={memory} onOpen={() => {}} />);
 
-    expect(screen.getByAltText('memory image')).toBeInTheDocument();
-    expect(screen.getByAltText('memory image')).toHaveAttribute('src', 'test_photo');
+    expect(screen.getByAltText('My memory')).toBeInTheDocument();
+    expect(screen.getByAltText('My memory')).toHaveAttribute('src', 'test_photo');
   });
 });

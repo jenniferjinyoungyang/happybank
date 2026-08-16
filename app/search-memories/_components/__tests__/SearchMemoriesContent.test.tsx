@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { ApiResult } from '../../../_shared/_types/apiResult';
 import { Memory } from '../../../_shared/_types/memory';
 import { makeMemoryMock } from '../../../_shared/__mocks__/memory.mock';
 import * as SearchMemoriesApi from '../../_api/searchMemories';
@@ -19,12 +20,14 @@ describe('SearchMemoriesContent', () => {
 
   beforeEach(() => {
     searchMemoriesSpy = jest.spyOn(SearchMemoriesApi, 'searchMemories');
+    const routerMock = jest.requireActual('next-router-mock');
+    routerMock.memoryRouter.setCurrentUrl('/search-memories');
   });
 
   it('renders header and search form', () => {
     const { container } = render(<SearchMemoriesContent />);
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Search memories' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Relive your joy' })).toBeInTheDocument();
     expect(screen.getByPlaceholderText('e.g. gratitude, family, weekend')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Search in titles and messages')).toBeInTheDocument();
     const dateInputs = container.querySelectorAll('input[type="date"]');
@@ -85,7 +88,7 @@ describe('SearchMemoriesContent', () => {
     render(<SearchMemoriesContent />);
     await userEvent.click(screen.getByRole('button', { name: 'Search' }));
 
-    expect(await screen.findByText(/Showing 1 memory that match/)).toBeInTheDocument();
+    expect(await screen.findByText(/Showing 1 memory/)).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 3, name: 'First memory' })).toBeInTheDocument();
   });
 
@@ -138,19 +141,16 @@ describe('SearchMemoriesContent', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Search' }));
 
     expect(await screen.findByText(/Showing 2 memories/)).toBeInTheDocument();
-    expect(screen.getByText('Memory 1 of 2')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 3, name: 'Memory one' })).toBeInTheDocument();
+    expect(screen.getByText('Memory one')).toBeInTheDocument();
 
     const nextButton = screen.getByRole('button', { name: 'Next memory' });
     expect(nextButton).not.toBeDisabled();
     await userEvent.click(nextButton);
 
-    expect(screen.getByText('Memory 2 of 2')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 3, name: 'Memory two' })).toBeInTheDocument();
+    expect(screen.getByText('Memory two')).toBeInTheDocument();
 
     const prevButton = screen.getByRole('button', { name: 'Previous memory' });
     await userEvent.click(prevButton);
-    expect(screen.getByText('Memory 1 of 2')).toBeInTheDocument();
   });
 
   it('opens lightbox when a result card is clicked and closes on close', async () => {
@@ -161,26 +161,14 @@ describe('SearchMemoriesContent', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Search' }));
     await screen.findByRole('heading', { level: 3, name: 'Lightbox memory' });
 
-    await userEvent.click(screen.getByRole('button', { name: /Lightbox memory/ }));
+    await userEvent.click(screen.getByText('mock memory for testing purposes'));
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 2, name: 'Lightbox memory' })).toBeInTheDocument();
+    expect(screen.getAllByRole('heading', { name: 'Lightbox memory' })).toHaveLength(2);
 
     await userEvent.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-  });
-
-  it('prev/next buttons are disabled for single result', async () => {
-    const memories = [makeMemoryMock()];
-    searchMemoriesSpy.mockResolvedValue({ isSuccess: true, data: memories });
-
-    render(<SearchMemoriesContent />);
-    await userEvent.click(screen.getByRole('button', { name: 'Search' }));
-    await screen.findByText(/Showing 1 memory/);
-
-    expect(screen.getByRole('button', { name: 'Previous memory' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Next memory' })).toBeDisabled();
   });
 
   it('automatically triggers search on mount when hashtags search param is present', async () => {
@@ -203,5 +191,91 @@ describe('SearchMemoriesContent', () => {
         hashtags: ['travel'],
       }),
     );
+  });
+
+  it('renders fallback error message when search fails without an explicit error message', async () => {
+    searchMemoriesSpy.mockResolvedValue({ isSuccess: false, error: 'unknown error' } as ApiResult<
+      Memory[]
+    >);
+
+    render(<SearchMemoriesContent />);
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }));
+
+    expect(
+      await screen.findByText(/Something went wrong while searching your memories\. unknown error/),
+    ).toBeInTheDocument();
+  });
+
+  it('calls scrollBy on carousel container when clicking prev and next', async () => {
+    const memories = [
+      makeMemoryMock({ title: 'Memory one' }),
+      makeMemoryMock({ title: 'Memory two' }),
+    ];
+    searchMemoriesSpy.mockResolvedValue({ isSuccess: true, data: memories });
+
+    const scrollByMock = jest.fn();
+    const originalQuerySelector = HTMLElement.prototype.querySelector;
+    // Mock scrollBy on elements
+    HTMLElement.prototype.scrollBy = scrollByMock;
+
+    render(<SearchMemoriesContent />);
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }));
+    await screen.findByText(/Showing 2 memories/);
+
+    const nextButton = screen.getByRole('button', { name: 'Next memory' });
+    await userEvent.click(nextButton);
+    expect(scrollByMock).toHaveBeenCalledWith({ left: 420, behavior: 'smooth' });
+
+    const prevButton = screen.getByRole('button', { name: 'Previous memory' });
+    await userEvent.click(prevButton);
+    expect(scrollByMock).toHaveBeenCalledWith({ left: -420, behavior: 'smooth' });
+
+    delete (HTMLElement.prototype as Partial<HTMLElement>).scrollBy;
+    HTMLElement.prototype.querySelector = originalQuerySelector;
+  });
+
+  it('handles spaces and empty tag input correctly', async () => {
+    searchMemoriesSpy.mockResolvedValue({ isSuccess: true, data: [] });
+
+    render(<SearchMemoriesContent />);
+    await userEvent.type(screen.getByPlaceholderText('e.g. gratitude, family, weekend'), ' ,  , ');
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }));
+
+    expect(searchMemoriesSpy).toHaveBeenCalledWith({
+      hashtags: [],
+      query: undefined,
+      from: undefined,
+      to: undefined,
+    });
+  });
+
+  it('handles null data in search status gracefully', async () => {
+    searchMemoriesSpy.mockResolvedValue({ isSuccess: true, data: null as unknown as Memory[] });
+
+    render(<SearchMemoriesContent />);
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }));
+
+    expect(await screen.findByText(/No memories match your current filters/)).toBeInTheDocument();
+  });
+
+  it('handles empty string error gracefully', async () => {
+    searchMemoriesSpy.mockResolvedValue({ isSuccess: false, error: '' });
+
+    render(<SearchMemoriesContent />);
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }));
+
+    const errorMsg = await screen.findByText(/Something went wrong while searching your memories/);
+    expect(errorMsg).toBeInTheDocument();
+  });
+
+  it('uses default fallback "unknown error" when error field is undefined', async () => {
+    searchMemoriesSpy.mockResolvedValue({ isSuccess: false } as unknown as ApiResult<Memory[]>);
+
+    render(<SearchMemoriesContent />);
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }));
+
+    expect(
+      await screen.findByText(/Something went wrong while searching your memories\. unknown error/),
+    ).toBeInTheDocument();
   });
 });

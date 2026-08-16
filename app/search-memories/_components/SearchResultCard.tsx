@@ -6,61 +6,75 @@ import { Memory } from '../../_shared/_types/memory';
 import { CldImage } from 'next-cloudinary';
 import polaroid from '../../../public/images/polaroid.png';
 import Image from 'next/image';
-
-const truncateMessage = (message: string, maxLength = 180): string =>
-  message.length > maxLength ? `${message.slice(0, maxLength).trimEnd()}…` : message;
+import { MemoryHashtags } from '../../_shared/_components/MemoryHashtags';
+import { MemoryDate } from '../../_shared/_components/MemoryDate';
+import { MemoryTitle } from '../../_shared/_components/MemoryTitle';
 
 export const SearchResultCard: FC<{
   readonly memory: Memory;
-  readonly onOpen: () => void;
-}> = ({ memory, onOpen }) => (
-  <button
-    type="button"
-    onClick={onOpen}
-    className="w-full max-w-xl mx-auto text-left bg-white rounded-xl shadow-md overflow-hidden border border-neutral-200 hover:shadow-lg transition-shadow duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-  >
-    <div className="flex flex-col sm:flex-row">
-      <div className="relative w-full sm:w-1/3 h-56 sm:h-64 bg-black">
+  readonly onOpen?: () => void;
+  readonly fullMessage?: boolean;
+  readonly className?: string;
+}> = ({ memory, onOpen, fullMessage = false, className }) => {
+  const containerClasses = className ?? 'w-[320px] md:w-[400px] lg:w-[480px]';
+
+  return (
+    <div
+      onClick={onOpen}
+      className={`relative group z-10 pt-6 flex flex-col ${containerClasses} ${
+        onOpen ? 'cursor-pointer' : ''
+      }`}
+    >
+      {/* Overlapping Title Badge */}
+      <MemoryTitle
+        title={memory.title}
+        as="h3"
+        className="absolute top-0 left-3 z-20 max-w-[90%] truncate"
+      />
+
+      <article
+        className={`w-full bg-white rounded-2xl overflow-hidden shadow-lg flex flex-col flex-1 text-left ${
+          onOpen ? 'transition-transform hover:-translate-y-2 duration-300' : ''
+        }`}
+      >
         {memory.imageId ? (
-          <CldImage
-            src={memory.imageId}
-            sizes="100vw"
-            alt="memory image"
-            className="w-full h-full object-contain bg-black"
-            fill
-          />
+          <div className="relative h-64 lg:h-80 overflow-hidden">
+            <CldImage
+              src={memory.imageId}
+              sizes="(max-width: 768px) 320px, (max-width: 1024px) 400px, 480px"
+              alt={memory.title}
+              className={`w-full h-full object-cover transition-transform duration-700 ${
+                onOpen ? 'group-hover:scale-105' : ''
+              }`}
+              fill
+            />
+            {onOpen && (
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            )}
+          </div>
         ) : (
-          <Image
-            src={polaroid.src}
-            alt="memory placeholder"
-            className="w-full h-full object-contain bg-white"
-            fill
-          />
-        )}
-      </div>
-      <div className="flex-1 p-4 flex flex-col gap-3">
-        <div>
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900 line-clamp-2">
-            {memory.title}
-          </h3>
-          <p className="text-xs text-gray-500 mt-0.5">
-            {new Date(memory.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-          </p>
-        </div>
-        <p className="text-sm text-gray-700">{truncateMessage(memory.message)}</p>
-        {memory.hashtags.length > 0 && (
-          <div className="mt-auto flex flex-wrap gap-2">
-            {memory.hashtags.map((tag) => (
-              <span
-                key={tag}
-                className="px-2 py-1 text-xs sm:text-sm text-indigo-800 bg-indigo-100 rounded-md"
-              >
-                #{tag}
-              </span>
-            ))}
+          <div className="relative h-64 lg:h-80 overflow-hidden">
+            <Image
+              src={polaroid.src}
+              alt="polaroid icon"
+              className="h-full w-full bg-white object-scale-down p-10"
+              fill
+            />
           </div>
         )}
-      </div>
+
+        <div className="p-8 flex-1 flex flex-col">
+          <MemoryDate date={memory.createdAt} className="mb-4" />
+          <p
+            className={`font-hind text-on-surface-variant leading-relaxed mb-6 flex-1 ${
+              fullMessage ? 'whitespace-pre-line' : 'line-clamp-3'
+            }`}
+          >
+            {memory.message}
+          </p>
+          <MemoryHashtags hashtags={memory.hashtags} className="mt-auto" />
+        </div>
+      </article>
     </div>
-  </button>
-);
+  );
+};

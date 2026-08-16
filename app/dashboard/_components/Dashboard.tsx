@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { match, P } from 'ts-pattern';
 import { FullComponentSpinner } from '../../_shared/_components/FullComponentSpinner';
 import { Memory } from '../../_shared/_types/memory';
@@ -103,17 +103,10 @@ export const Dashboard: FC = () => {
     });
   }, []);
 
-  const hasLoadedRef = useRef(false);
-
   useEffect(() => {
-    if (hasLoadedRef.current) {
-      return;
-    }
-
     loadMemory();
     loadStats();
     loadCurations();
-    hasLoadedRef.current = true;
   }, [loadMemory, loadStats, loadCurations]);
 
   return (

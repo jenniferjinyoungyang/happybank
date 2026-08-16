@@ -34,4 +34,17 @@ describe('MemoryStatsCard', () => {
     expect(screen.getAllByText('—')).toHaveLength(2);
     expect(screen.getByText('TIMELINE')).toBeInTheDocument();
   });
+
+  it('should render placeholder for invalid dates', () => {
+    render(
+      <MemoryStatsCard
+        memoryCount={0}
+        hashtagCount={0}
+        oldestMemoryDate="invalid-date"
+        latestMemoryDate="invalid-date"
+      />,
+    );
+
+    expect(screen.getAllByText('—')).toHaveLength(2);
+  });
 });

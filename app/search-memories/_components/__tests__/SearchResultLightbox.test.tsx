@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { makeMemoryMock } from '../../../_shared/__mocks__/memory.mock';
-import { SearchResultLightbox } from '../SearchResultLighbox';
+import { SearchResultLightbox } from '../SearchResultLightbox';
 
 jest.mock('next-cloudinary', () => ({
   CldImage: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} />,
@@ -28,19 +28,19 @@ describe('SearchResultLightbox', () => {
     render(<SearchResultLightbox memory={memory} onClose={() => {}} />);
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 2, name: 'Lightbox memory' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Lightbox memory' })).toBeInTheDocument();
     expect(screen.getByText('Full message here')).toBeInTheDocument();
-    expect(screen.getByText(/Dec 30, 2024/)).toBeInTheDocument();
+    expect(screen.getByText(/December 30, 2024/i)).toBeInTheDocument();
     expect(screen.getByText('#tag1')).toBeInTheDocument();
   });
 
-  it('renders a close button with z-10 and text-white for visibility', () => {
+  it('renders a close button with z-30 and text-white for visibility', () => {
     const memory = makeMemoryMock();
     render(<SearchResultLightbox memory={memory} onClose={() => {}} />);
 
     const closeButton = screen.getByRole('button', { name: 'Close' });
     expect(closeButton).toBeInTheDocument();
-    expect(closeButton).toHaveClass('z-10');
+    expect(closeButton).toHaveClass('z-30');
     expect(closeButton).toHaveClass('text-white');
   });
 
@@ -75,12 +75,12 @@ describe('SearchResultLightbox', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it('renders memory date in medium format', () => {
+  it('renders memory date in long format', () => {
     const memory = makeMemoryMock({
       createdAt: new Date('2025-03-15T12:00:00.000Z'),
     });
     render(<SearchResultLightbox memory={memory} onClose={() => {}} />);
 
-    expect(screen.getByText(/Mar 15, 2025/)).toBeInTheDocument();
+    expect(screen.getByText(/March 15, 2025/i)).toBeInTheDocument();
   });
 });
