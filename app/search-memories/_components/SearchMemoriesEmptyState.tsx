@@ -22,7 +22,7 @@ export const SearchMemoriesEmptyState: FC<SearchMemoriesEmptyStateProps> = ({ on
             alt="Illustration of searching for memories"
             className="w-full h-full object-cover opacity-90"
             data-alt="A soft, highly detailed 3D illustration of a magnifying glass gently resting over a softly glowing, blank polaroid photo frame. The style is warm, minimal, and optimistic, using light indigo and soft amber tones on a clean white background. Soft studio lighting creates gentle shadows, emphasizing a premium, uplifting editorial feel."
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ2Ud3X0cbYr8gNDD1pQPeSAwoTW_EJWYiEjIy4v3J8g_YB_bG28-5Jd3BiKP-wq5X3e4K5aaaZOpfjQb8AfPv4SzWAY-lCrqjuSZQJtLr1gd9Koitdu8yVjItHl6n3Wz7g7c6Qt737bOKY8RVqvQXoNUBbBggbPWT_zvP8aWk3w7PwzUSisCpE_EYa6R7o172lBaFbHb76IegbnLJuMK6qWM7CiBT-GJFP3DIl6BLydeQQ85vQGUbLw"
+            src="/images/empty-search.png"
           />
         </div>
         {/* Floating Icon Accent */}
