@@ -9,6 +9,7 @@ import { FullComponentSpinner } from '../../_shared/_components/FullComponentSpi
 import { Memory } from '../../_shared/_types/memory';
 import { ApiData, getInitialApiDataStatus, setLoadingStatus } from '../../_shared/_utils/apiData';
 import { searchMemories } from '../_api/searchMemories';
+import { SearchMemoriesEmptyState } from './SearchMemoriesEmptyState';
 import { SearchResultCard } from './SearchResultCard';
 import { SearchResultLightbox } from './SearchResultLightbox';
 
@@ -236,12 +237,7 @@ export const SearchMemoriesContent: FC = () => {
           .with({ status: 'loaded' }, ({ data }) => {
             const memories = data ?? [];
             if (memories.length === 0) {
-              return (
-                <p className="font-hind text-lg text-slate-500">
-                  No memories match your current filters. Try removing a tag or widening the date
-                  range.
-                </p>
-              );
+              return <SearchMemoriesEmptyState onClearFilters={resetFilters} />;
             }
 
             return (

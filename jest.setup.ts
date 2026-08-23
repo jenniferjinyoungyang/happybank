@@ -36,6 +36,10 @@ if (typeof HTMLFormElement !== 'undefined') {
   });
 }
 
+if (typeof Element !== 'undefined' && typeof Element.prototype.getAnimations !== 'function') {
+  Element.prototype.getAnimations = () => [];
+}
+
 const originalConsoleError = console.error.bind(console);
 console.error = (...args: unknown[]) => {
   // jsdom currently logs an unimplemented requestSubmit warning when
