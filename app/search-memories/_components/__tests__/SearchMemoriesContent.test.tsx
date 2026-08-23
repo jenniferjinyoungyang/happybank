@@ -98,7 +98,7 @@ describe('SearchMemoriesContent', () => {
     render(<SearchMemoriesContent />);
     await userEvent.click(screen.getByRole('button', { name: 'Search' }));
 
-    expect(await screen.findByText(/No memories match your current filters/)).toBeInTheDocument();
+    expect(await screen.findByText('Where did that joy go?')).toBeInTheDocument();
   });
 
   it('shows error message when search fails', async () => {
@@ -122,7 +122,7 @@ describe('SearchMemoriesContent', () => {
     render(<SearchMemoriesContent />);
     await userEvent.type(screen.getByPlaceholderText('Search in titles and messages'), 'test');
     await userEvent.click(screen.getByRole('button', { name: 'Search' }));
-    await screen.findByText(/No memories match/);
+    await screen.findByText('Where did that joy go?');
 
     await userEvent.click(screen.getByRole('button', { name: 'Reset filters' }));
 
@@ -255,7 +255,7 @@ describe('SearchMemoriesContent', () => {
     render(<SearchMemoriesContent />);
     await userEvent.click(screen.getByRole('button', { name: 'Search' }));
 
-    expect(await screen.findByText(/No memories match your current filters/)).toBeInTheDocument();
+    expect(await screen.findByText('Where did that joy go?')).toBeInTheDocument();
   });
 
   it('handles empty string error gracefully', async () => {
