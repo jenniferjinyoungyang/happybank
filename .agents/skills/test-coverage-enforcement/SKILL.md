@@ -105,6 +105,13 @@ For frontend UI components in React:
 *   Verify that error validation states are rendered when invalid inputs are provided.
 *   Verify loading states and transitions when submitting forms.
 
+### E. Avoiding 'any' Types in Tests
+To prevent ESLint `@typescript-eslint/no-explicit-any` errors:
+*   Do not use the `any` type.
+*   Use `unknown` for variables containing raw parsed payloads, request bodies, or dynamic mock inputs.
+*   Use standard TypeScript casting (`as typeof someFunction` or specific types like `jest.Mock`) instead of casting objects or functions to `any`.
+*   Type cast process.env overrides using `(process.env as Record<string, string | undefined>)` rather than `(process.env as any)`.
+
 ---
 
 ## 4. Verification Checklist

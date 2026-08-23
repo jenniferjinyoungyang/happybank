@@ -1,5 +1,21 @@
 import '@testing-library/jest-dom';
 import 'whatwg-fetch';
+import { TextEncoder, TextDecoder } from 'util';
+
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder as unknown as typeof global.TextDecoder;
+
+if (typeof Response.json !== 'function') {
+  Response.json = (data: unknown, init?: ResponseInit) => {
+    const response = new Response(JSON.stringify(data), init);
+    Object.defineProperty(response, 'json', {
+      value: async () => data,
+      writable: true,
+      configurable: true,
+    });
+    return response;
+  };
+}
 import makeResizeObserverMock from './test-helper/resizeObserver.mock';
 
 makeResizeObserverMock();

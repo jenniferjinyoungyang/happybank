@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as NextAuthModule from 'next-auth/react';
+import { demoUserEmail, demoUserPassword } from '../../../../test-helper/demoUser';
 import SignIn from '../SignIn';
 
 jest.mock('next-auth/react');
@@ -43,5 +44,19 @@ describe('SignIn', () => {
       password: 'password',
       callbackUrl: '/dashboard',
     });
+  });
+
+  it('fills email and password fields when Try as a demo user button is clicked', async () => {
+    render(<SignIn />);
+    const emailInput = screen.getByLabelText('Email');
+    const passwordInput = screen.getByLabelText('Password');
+
+    expect(emailInput).toHaveValue('');
+    expect(passwordInput).toHaveValue('');
+
+    await userEvent.click(screen.getByRole('button', { name: 'Try as a demo user' }));
+
+    expect(emailInput).toHaveValue(demoUserEmail);
+    expect(passwordInput).toHaveValue(demoUserPassword);
   });
 });

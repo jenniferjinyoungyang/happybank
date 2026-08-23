@@ -79,4 +79,16 @@ describe('/api/memories/curations', () => {
     expect(data.message).toContain('Oops! Something went wrong');
     expect(data.message).toContain('Database error');
   });
+
+  it('should return 500 when the database throws a non-Error', async () => {
+    mockGetTopHashtags.mockRejectedValue('String db exception');
+
+    const request = createMockRequest();
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(data.message).toContain('Oops! Something went wrong');
+    expect(data.message).toContain('String db exception');
+  });
 });
