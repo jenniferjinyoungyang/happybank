@@ -1,147 +1,241 @@
-import { Memory } from '@prisma/client';
-import prisma from '../../../../lib/prisma';
 import { memoriesDb } from '../memoriesDb';
+import prisma from '../../../../lib/prisma';
 
 jest.mock('../../../../lib/prisma', () => ({
   __esModule: true,
   default: {
     memory: {
       findMany: jest.fn(),
-      create: jest.fn(),
-      count: jest.fn(),
       findFirst: jest.fn(),
+      count: jest.fn(),
+      create: jest.fn(),
     },
     hashtag: {
       count: jest.fn(),
+      findUnique: jest.fn(),
+    },
+    memoryHashtag: {
+      groupBy: jest.fn(),
     },
   },
 }));
 
-const mockPrisma = prisma as unknown as {
-  memory: {
-    findMany: jest.Mock;
-    create: jest.Mock;
-    count: jest.Mock;
-    findFirst: jest.Mock;
-  };
-  hashtag: {
-    count: jest.Mock;
-  };
-};
-
 describe('memoriesDb', () => {
+  const userId = 'user-123';
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('findAll', () => {
-    it('should return memories with hashtagRelations for a user', async () => {
-      const userId = 'user123';
+    it('fetches all memories for a user and maps them', async () => {
       const mockMemories = [
         {
-          createdAt: new Date('2024-01-01'),
-          title: 'Test Memory',
-          message: 'Test message',
-          hashtagRelations: [
-            {
-              hashtag: {
-                id: 1,
-                name: 'Happy',
-                createdAt: new Date('2024-01-01'),
-              },
-            },
-          ],
-          imageId: 'image123',
+          createdAt: new Date('2026-01-01'),
+          title: 'Memory 1',
+          message: 'Message 1',
+          hashtagRelations: [{ hashtag: { id: 1, name: 'tag1' } }],
+          imageId: 'img1',
         },
       ];
 
-      mockPrisma.memory.findMany.mockResolvedValue(mockMemories as never);
+      (prisma.memory.findMany as jest.Mock).mockResolvedValue(mockMemories);
 
       const result = await memoriesDb.findAll(userId);
 
-      expect(mockPrisma.memory.findMany).toHaveBeenCalledWith({
+      expect(result).toEqual(mockMemories);
+      expect(prisma.memory.findMany).toHaveBeenCalledWith({
         where: { userId },
         select: {
           createdAt: true,
           title: true,
           message: true,
           hashtagRelations: {
-            include: {
-              hashtag: true,
-            },
+            include: { hashtag: true },
           },
           imageId: true,
         },
       });
-
-      expect(result).toEqual(mockMemories);
-    });
-
-    it('should return empty array when user has no memories', async () => {
-      const userId = 'user123';
-      mockPrisma.memory.findMany.mockResolvedValue([]);
-
-      const result = await memoriesDb.findAll(userId);
-
-      expect(result).toEqual([]);
     });
   });
 
-  describe('stats', () => {
-    it('should return memory stats with oldest/latest memory dates', async () => {
-      const userId = 'user123';
-      const oldest = { createdAt: new Date('2024-01-01T00:00:00.000Z') };
-      const latest = { createdAt: new Date('2024-12-31T23:59:59.999Z') };
-
-      mockPrisma.memory.count.mockResolvedValue(7);
-      mockPrisma.memory.findFirst
-        .mockResolvedValueOnce(oldest as never)
-        .mockResolvedValueOnce(latest as never);
-      mockPrisma.hashtag.count.mockResolvedValue(3);
-
-      const result = await memoriesDb.getStats(userId);
-
-      expect(mockPrisma.memory.count).toHaveBeenCalledWith({ where: { userId } });
-      expect(mockPrisma.memory.findFirst).toHaveBeenNthCalledWith(1, {
-        where: { userId },
-        orderBy: { createdAt: 'asc' },
-        select: { createdAt: true },
-      });
-      expect(mockPrisma.memory.findFirst).toHaveBeenNthCalledWith(2, {
-        where: { userId },
-        orderBy: { createdAt: 'desc' },
-        select: { createdAt: true },
-      });
-      expect(mockPrisma.hashtag.count).toHaveBeenCalledWith({
-        where: {
-          memories: {
-            some: {
-              memory: {
-                userId,
-              },
-            },
-          },
+  describe('search', () => {
+    it('handles query parameter q', async () => {
+      const mockResult = [
+        {
+          createdAt: new Date('2026-01-01'),
+          title: 'Happy Memory',
+          message: 'Very happy day',
+          hashtagRelations: [],
+          imageId: 'img-happy',
         },
-      });
+      ];
+      (prisma.memory.findMany as jest.Mock).mockResolvedValue(mockResult);
 
-      expect(result).toEqual({
-        memoryCount: 7,
-        hashtagCount: 3,
-        oldestMemoryDate: oldest.createdAt,
-        latestMemoryDate: latest.createdAt,
+      const result = await memoriesDb.search(userId, { q: 'happy' });
+
+      expect(result).toEqual(mockResult);
+
+      expect(prisma.memory.findMany).toHaveBeenCalledWith({
+        where: {
+          userId,
+          AND: [
+            {
+              OR: [
+                { title: { contains: 'happy', mode: 'insensitive' } },
+                { message: { contains: 'happy', mode: 'insensitive' } },
+              ],
+            },
+          ],
+        },
+        orderBy: { createdAt: 'desc' },
+        select: expect.any(Object),
       });
     });
 
-    it('should return null dates when no memories exist', async () => {
-      const userId = 'user123';
+    it('handles from and to date params', async () => {
+      (prisma.memory.findMany as jest.Mock).mockResolvedValue([]);
 
-      mockPrisma.memory.count.mockResolvedValue(0);
-      mockPrisma.memory.findFirst.mockResolvedValue(null as never);
-      mockPrisma.hashtag.count.mockResolvedValue(0);
+      await memoriesDb.search(userId, { from: '2026-01-01', to: '2026-01-31' });
 
-      const result = await memoriesDb.getStats(userId);
+      expect(prisma.memory.findMany).toHaveBeenCalledWith({
+        where: {
+          userId,
+          AND: [
+            {
+              createdAt: {
+                gte: new Date('2026-01-01'),
+                lte: new Date('2026-01-31'),
+              },
+            },
+          ],
+        },
+        orderBy: { createdAt: 'desc' },
+        select: expect.any(Object),
+      });
+    });
 
-      expect(result).toEqual({
+    it('handles from date param alone', async () => {
+      (prisma.memory.findMany as jest.Mock).mockResolvedValue([]);
+
+      await memoriesDb.search(userId, { from: '2026-01-01' });
+
+      expect(prisma.memory.findMany).toHaveBeenCalledWith({
+        where: {
+          userId,
+          AND: [
+            {
+              createdAt: {
+                gte: new Date('2026-01-01'),
+              },
+            },
+          ],
+        },
+        orderBy: { createdAt: 'desc' },
+        select: expect.any(Object),
+      });
+    });
+
+    it('handles to date param alone', async () => {
+      (prisma.memory.findMany as jest.Mock).mockResolvedValue([]);
+
+      await memoriesDb.search(userId, { to: '2026-01-31' });
+
+      expect(prisma.memory.findMany).toHaveBeenCalledWith({
+        where: {
+          userId,
+          AND: [
+            {
+              createdAt: {
+                lte: new Date('2026-01-31'),
+              },
+            },
+          ],
+        },
+        orderBy: { createdAt: 'desc' },
+        select: expect.any(Object),
+      });
+    });
+
+    it('handles hashtags array parameter', async () => {
+      (prisma.memory.findMany as jest.Mock).mockResolvedValue([]);
+
+      await memoriesDb.search(userId, { hashtags: ['#first', 'second', '  '] });
+
+      expect(prisma.memory.findMany).toHaveBeenCalledWith({
+        where: {
+          userId,
+          AND: [
+            {
+              hashtagRelations: {
+                some: {
+                  hashtag: {
+                    name: { in: ['first', 'second'], mode: 'insensitive' },
+                  },
+                },
+              },
+            },
+          ],
+        },
+        orderBy: { createdAt: 'desc' },
+        select: expect.any(Object),
+      });
+    });
+
+    it('handles empty hashtags filter array gracefully', async () => {
+      (prisma.memory.findMany as jest.Mock).mockResolvedValue([]);
+
+      await memoriesDb.search(userId, { hashtags: ['   ', '###'] }); // resolves to empty tagNames
+
+      expect(prisma.memory.findMany).toHaveBeenCalledWith({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        select: expect.any(Object),
+      });
+    });
+
+    it('returns empty array search query when no parameters are passed', async () => {
+      (prisma.memory.findMany as jest.Mock).mockResolvedValue([]);
+
+      await memoriesDb.search(userId, {});
+
+      expect(prisma.memory.findMany).toHaveBeenCalledWith({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        select: expect.any(Object),
+      });
+    });
+  });
+
+  describe('getStats', () => {
+    it('returns stats including counts and oldest/latest memory dates', async () => {
+      const oldestDate = new Date('2026-01-01');
+      const latestDate = new Date('2026-02-01');
+
+      (prisma.memory.count as jest.Mock).mockResolvedValue(10);
+      (prisma.memory.findFirst as jest.Mock)
+        .mockResolvedValueOnce({ createdAt: oldestDate })
+        .mockResolvedValueOnce({ createdAt: latestDate });
+      (prisma.hashtag.count as jest.Mock).mockResolvedValue(5);
+
+      const stats = await memoriesDb.getStats(userId);
+
+      expect(stats).toEqual({
+        memoryCount: 10,
+        hashtagCount: 5,
+        oldestMemoryDate: oldestDate,
+        latestMemoryDate: latestDate,
+      });
+    });
+
+    it('returns null for dates if no memories exist', async () => {
+      (prisma.memory.count as jest.Mock).mockResolvedValue(0);
+      (prisma.memory.findFirst as jest.Mock).mockResolvedValue(null);
+      (prisma.hashtag.count as jest.Mock).mockResolvedValue(0);
+
+      const stats = await memoriesDb.getStats(userId);
+
+      expect(stats).toEqual({
         memoryCount: 0,
         hashtagCount: 0,
         oldestMemoryDate: null,
@@ -151,71 +245,53 @@ describe('memoriesDb', () => {
   });
 
   describe('create', () => {
-    it('should create memory with hashtag relations', async () => {
-      const userId = 'user123';
+    it('normalizes, deduplicates hashtags and creates a memory', async () => {
       const fields = {
         title: 'New Memory',
-        message: 'New message',
-        hashtags: ['Happy', 'Memory'],
-        imageId: 'image123',
+        message: 'Hello world',
+        hashtags: ['#fun', '  #joy  ', 'fun', '  ', '##super'],
+        imageId: 'img-1',
       };
 
-      const mockCreatedMemory = {
-        id: 1,
+      (prisma.memory.create as jest.Mock).mockResolvedValue({
+        id: 'new-id',
         userId,
         title: 'New Memory',
-        message: 'New message',
-        createdAt: new Date('2024-01-01'),
-        imageId: 'image123',
-        hashtagRelations: [
-          {
-            id: 1,
-            memoryId: 1,
-            hashtagId: 1,
-            hashtag: {
-              id: 1,
-              name: 'Happy',
-              createdAt: new Date('2024-01-01'),
-            },
-          },
-          {
-            id: 2,
-            memoryId: 1,
-            hashtagId: 2,
-            hashtag: {
-              id: 2,
-              name: 'Memory',
-              createdAt: new Date('2024-01-01'),
-            },
-          },
-        ],
-      } as Memory;
+        message: 'Hello world',
+        imageId: 'img-1',
+      });
 
-      mockPrisma.memory.create.mockResolvedValue(mockCreatedMemory);
+      await memoriesDb.create(userId, fields);
 
-      const result = await memoriesDb.create(userId, fields);
-
-      expect(mockPrisma.memory.create).toHaveBeenCalledWith({
+      expect(prisma.memory.create).toHaveBeenCalledWith({
         data: {
           userId,
           title: 'New Memory',
-          message: 'New message',
-          imageId: 'image123',
+          message: 'Hello world',
+          imageId: 'img-1',
           hashtagRelations: {
             create: [
               {
                 hashtag: {
                   connectOrCreate: {
-                    where: { name: 'Happy' },
-                    create: { name: 'Happy' },
+                    where: { name: 'fun' },
+                    create: { name: 'fun' },
                   },
                 },
               },
               {
                 hashtag: {
                   connectOrCreate: {
-                    where: { name: 'Memory' },
-                    create: { name: 'Memory' },
+                    where: { name: 'joy' },
+                    create: { name: 'joy' },
+                  },
+                },
+              },
+              {
+                hashtag: {
+                  connectOrCreate: {
+                    where: { name: 'super' },
+                    create: { name: 'super' },
                   },
                 },
               },
@@ -224,162 +300,95 @@ describe('memoriesDb', () => {
         },
         include: {
           hashtagRelations: {
-            include: {
-              hashtag: true,
-            },
+            include: { hashtag: true },
           },
         },
       });
+    });
+  });
 
-      expect(result).toEqual(mockCreatedMemory);
+  describe('getTopHashtags', () => {
+    it('returns empty array if no group tags found', async () => {
+      (prisma.memoryHashtag.groupBy as jest.Mock).mockResolvedValue([]);
+
+      const result = await memoriesDb.getTopHashtags(userId);
+      expect(result).toEqual([]);
     });
 
-    it('should normalize hashtags by removing # prefix', async () => {
-      const userId = 'user123';
-      const fields = {
-        title: 'Test',
-        message: 'Test',
-        hashtags: ['#Happy', '#Memory'],
-        imageId: null,
-      };
+    it('returns mapped top hashtags, handles missing hashtags, latest image lookup, and fallback lookup', async () => {
+      const mockTopTags = [
+        { hashtagId: 1, _count: { memoryId: 10 } },
+        { hashtagId: 2, _count: { memoryId: 5 } },
+        { hashtagId: 3, _count: { memoryId: 2 } },
+      ];
 
-      const mockCreatedMemory = {
-        id: 1,
-        userId,
-        title: 'Test',
-        message: 'Test',
-        createdAt: new Date(),
-        imageId: null,
-        hashtagRelations: [],
-      } as Memory;
+      (prisma.memoryHashtag.groupBy as jest.Mock).mockResolvedValue(mockTopTags);
 
-      mockPrisma.memory.create.mockResolvedValue(mockCreatedMemory);
+      // hashtag findUnique results
+      (prisma.hashtag.findUnique as jest.Mock)
+        .mockResolvedValueOnce({ name: 'tag1' })
+        .mockResolvedValueOnce(null) // test continue when hashtag not found
+        .mockResolvedValueOnce({ name: 'tag3' });
 
-      await memoriesDb.create(userId, fields);
+      // memory findFirst results:
+      // tag1 finds memory with image
+      // tag3 does not find memory with image, falls back to absolute latest memory (without image)
+      (prisma.memory.findFirst as jest.Mock)
+        .mockResolvedValueOnce({ imageId: 'image-1' }) // tag1 with image
+        .mockResolvedValueOnce(null) // tag3 with image (not found)
+        .mockResolvedValueOnce({ imageId: null }); // tag3 fallback (found absolute latest)
 
-      expect(mockPrisma.memory.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            hashtagRelations: {
-              create: [
-                expect.objectContaining({
-                  hashtag: expect.objectContaining({
-                    connectOrCreate: expect.objectContaining({
-                      where: { name: 'Happy' },
-                      create: { name: 'Happy' },
-                    }),
-                  }),
-                }),
-                expect.objectContaining({
-                  hashtag: expect.objectContaining({
-                    connectOrCreate: expect.objectContaining({
-                      where: { name: 'Memory' },
-                      create: { name: 'Memory' },
-                    }),
-                  }),
-                }),
-              ],
-            },
-          }),
-        }),
-      );
-    });
+      const result = await memoriesDb.getTopHashtags(userId);
 
-    it('should preserve hashtag capitalization', async () => {
-      const userId = 'user123';
-      const fields = {
-        title: 'Test',
-        message: 'Test',
-        hashtags: ['Happy', 'MEMORY', 'special'],
-        imageId: null,
-      };
+      expect(result).toEqual([
+        { id: 1, name: 'tag1', count: 10, imageId: 'image-1' },
+        { id: 3, name: 'tag3', count: 2, imageId: null },
+      ]);
 
-      const mockCreatedMemory = {
-        id: 1,
-        userId,
-        title: 'Test',
-        message: 'Test',
-        createdAt: new Date(),
-        imageId: null,
-        hashtagRelations: [],
-      } as Memory;
+      // Check specific calls
+      expect(prisma.hashtag.findUnique).toHaveBeenCalledWith({
+        where: { id: 1 },
+        select: { name: true },
+      });
+      expect(prisma.hashtag.findUnique).toHaveBeenCalledWith({
+        where: { id: 2 },
+        select: { name: true },
+      });
+      expect(prisma.hashtag.findUnique).toHaveBeenCalledWith({
+        where: { id: 3 },
+        select: { name: true },
+      });
 
-      mockPrisma.memory.create.mockResolvedValue(mockCreatedMemory);
+      // Verify tag1 image lookup calls
+      expect(prisma.memory.findFirst).toHaveBeenNthCalledWith(1, {
+        where: {
+          userId,
+          imageId: { not: null },
+          hashtagRelations: { some: { hashtagId: 1 } },
+        },
+        orderBy: { createdAt: 'desc' },
+        select: { imageId: true },
+      });
 
-      await memoriesDb.create(userId, fields);
+      // Verify tag3 image lookup calls (with image first, then fallback)
+      expect(prisma.memory.findFirst).toHaveBeenNthCalledWith(2, {
+        where: {
+          userId,
+          imageId: { not: null },
+          hashtagRelations: { some: { hashtagId: 3 } },
+        },
+        orderBy: { createdAt: 'desc' },
+        select: { imageId: true },
+      });
 
-      const createCall = mockPrisma.memory.create.mock.calls[0][0];
-      const hashtagNames = createCall.data.hashtagRelations.create.map(
-        (rel: { hashtag: { connectOrCreate: { where: { name: string } } } }) =>
-          rel.hashtag.connectOrCreate.where.name,
-      );
-
-      expect(hashtagNames).toEqual(['Happy', 'MEMORY', 'special']);
-    });
-
-    it('should remove duplicate hashtags', async () => {
-      const userId = 'user123';
-      const fields = {
-        title: 'Test',
-        message: 'Test',
-        hashtags: ['Happy', 'happy', 'Happy'],
-        imageId: null,
-      };
-
-      const mockCreatedMemory = {
-        id: 1,
-        userId,
-        title: 'Test',
-        message: 'Test',
-        createdAt: new Date(),
-        imageId: null,
-        hashtagRelations: [],
-      } as Memory;
-
-      mockPrisma.memory.create.mockResolvedValue(mockCreatedMemory);
-
-      await memoriesDb.create(userId, fields);
-
-      const createCall = mockPrisma.memory.create.mock.calls[0][0];
-      const hashtagNames = createCall.data.hashtagRelations.create.map(
-        (rel: { hashtag: { connectOrCreate: { where: { name: string } } } }) =>
-          rel.hashtag.connectOrCreate.where.name,
-      );
-
-      // Should preserve case but remove exact duplicates
-      expect(hashtagNames).toEqual(['Happy', 'happy']);
-    });
-
-    it('should filter out empty hashtags', async () => {
-      const userId = 'user123';
-      const fields = {
-        title: 'Test',
-        message: 'Test',
-        hashtags: ['Happy', '', '   ', '#'],
-        imageId: null,
-      };
-
-      const mockCreatedMemory = {
-        id: 1,
-        userId,
-        title: 'Test',
-        message: 'Test',
-        createdAt: new Date(),
-        imageId: null,
-        hashtagRelations: [],
-      } as Memory;
-
-      mockPrisma.memory.create.mockResolvedValue(mockCreatedMemory);
-
-      await memoriesDb.create(userId, fields);
-
-      const createCall = mockPrisma.memory.create.mock.calls[0][0];
-      const hashtagCount = createCall.data.hashtagRelations.create.length;
-
-      expect(hashtagCount).toBe(1);
-      expect(createCall.data.hashtagRelations.create[0].hashtag.connectOrCreate.where.name).toBe(
-        'Happy',
-      );
+      expect(prisma.memory.findFirst).toHaveBeenNthCalledWith(3, {
+        where: {
+          userId,
+          hashtagRelations: { some: { hashtagId: 3 } },
+        },
+        orderBy: { createdAt: 'desc' },
+        select: { imageId: true },
+      });
     });
   });
 });

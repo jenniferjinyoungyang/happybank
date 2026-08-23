@@ -1,10 +1,25 @@
 import { NextRequest } from 'next/server';
+import * as z from 'zod';
 import makeNextServerMock from '../../../../test-helper/nextServer.mock';
 
 jest.mock('next/server', () => makeNextServerMock());
 // Provide manual mocks using doMock (not hoisted) so we can reference variables safely
 const mockGetToken = jest.fn();
 const mockGoogleGenAI = jest.fn();
+const actualZod = jest.requireActual('zod');
+let chatRequestSchemaInstance: z.ZodType;
+jest.doMock('zod', () => ({
+  __esModule: true,
+  ...actualZod,
+  object: (shape: Parameters<typeof actualZod.object>[0]) => {
+    const schema = actualZod.object(shape);
+    const shapeObj = shape as Record<string, unknown>;
+    if (shapeObj && shapeObj.message) {
+      chatRequestSchemaInstance = schema;
+    }
+    return schema;
+  },
+}));
 jest.doMock('@google/genai', () => ({
   __esModule: true,
   GoogleGenAI: mockGoogleGenAI,
@@ -264,6 +279,52 @@ describe('/api/chat', () => {
       expect(data).toEqual({
         response: 'Sorry, I could not generate a response.',
       });
+    });
+
+    test('returns detailed error message and logs error when Gemini API throws and NODE_ENV is development', async () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      (process.env as Record<string, string | undefined>).NODE_ENV = 'development';
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      const mockGenerateContent = jest.fn().mockRejectedValue(new Error('API Connection Timeout'));
+      mockGoogleGenAI.mockImplementation(() => ({
+        models: {
+          generateContent: mockGenerateContent,
+        },
+      }));
+
+      const request = createMockRequest({
+        message: 'Hello',
+      });
+
+      const response = await POST(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data).toEqual({ message: 'API Connection Timeout' });
+      expect(consoleSpy).toHaveBeenCalledWith('Error calling Gemini API:', expect.any(Error));
+
+      consoleSpy.mockRestore();
+      (process.env as Record<string, string | undefined>).NODE_ENV = originalNodeEnv;
+    });
+
+    test('returns fallback error message when ZodError has no issues', async () => {
+      const originalParse = chatRequestSchemaInstance.parse;
+      chatRequestSchemaInstance.parse = jest.fn(() => {
+        throw new z.ZodError([]);
+      });
+
+      const request = createMockRequest({
+        message: 'Hello',
+      });
+
+      const response = await POST(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(data).toEqual({ message: 'Invalid request format' });
+
+      chatRequestSchemaInstance.parse = originalParse;
     });
   });
 });

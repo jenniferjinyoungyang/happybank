@@ -48,20 +48,12 @@ describe('/api/memories', () => {
     }) as unknown as NextRequest;
 
   describe('GET', () => {
-    it('should return a random memory when memories exist', async () => {
+    it('should return a memory with empty hashtags when hashtagRelations is undefined', async () => {
       const mockMemories = [
         {
           createdAt: new Date('2024-01-01'),
           title: 'Memory 1',
           message: 'Message 1',
-          hashtags: [],
-          imageId: null,
-        },
-        {
-          createdAt: new Date('2024-01-02'),
-          title: 'Memory 2',
-          message: 'Message 2',
-          hashtags: [],
           imageId: null,
         },
       ];
@@ -74,7 +66,44 @@ describe('/api/memories', () => {
 
       expect(response.status).toBe(200);
       expect(mockFindAll).toHaveBeenCalledWith('user-123');
-      expect(mockMemories).toContainEqual(data);
+      expect(data).toEqual({
+        title: 'Memory 1',
+        createdAt: mockMemories[0].createdAt,
+        message: 'Message 1',
+        imageId: null,
+        hashtags: [],
+      });
+    });
+
+    it('should return mapped hashtags when hashtagRelations is defined', async () => {
+      const mockMemories = [
+        {
+          createdAt: new Date('2024-01-02'),
+          title: 'Memory 2',
+          message: 'Message 2',
+          imageId: null,
+          hashtagRelations: [
+            { hashtag: { id: 1, name: 'happy' } },
+            { hashtag: { id: 2, name: 'bank' } },
+          ],
+        },
+      ];
+
+      mockFindAll.mockResolvedValue(mockMemories);
+
+      const request = createMockRequest();
+      const response = await GET(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(mockFindAll).toHaveBeenCalledWith('user-123');
+      expect(data).toEqual({
+        title: 'Memory 2',
+        createdAt: mockMemories[0].createdAt,
+        message: 'Message 2',
+        imageId: null,
+        hashtags: ['happy', 'bank'],
+      });
     });
 
     it('should return null when no memories exist', async () => {
