@@ -103,7 +103,7 @@ async function main() {
     });
 
     // Bob's memories from memories-data.json
-    const bobMemory1 = await prisma.memory.create({
+    const bobMemory01 = await prisma.memory.create({
       data: {
         userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
         title: 'Surprise Birthday Party',
@@ -114,7 +114,7 @@ async function main() {
       },
     });
 
-    const bobMemory2 = await prisma.memory.create({
+    const bobMemory02 = await prisma.memory.create({
       data: {
         userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
         title: 'A Perfect Summer Day',
@@ -135,7 +135,7 @@ async function main() {
       },
     });
 
-    const bobMemory3 = await prisma.memory.create({
+    const bobMemory03 = await prisma.memory.create({
       data: {
         userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
         title: 'Family Pizza Night',
@@ -146,7 +146,7 @@ async function main() {
       },
     });
 
-    const bobMemory4 = await prisma.memory.create({
+    const bobMemory04 = await prisma.memory.create({
       data: {
         userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
         title: "Liam's First Soccer Goal",
@@ -167,7 +167,7 @@ async function main() {
       },
     });
 
-    const bobMemory5 = await prisma.memory.create({
+    const bobMemory05 = await prisma.memory.create({
       data: {
         userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
         title: "Emily's First Time Ice Skating",
@@ -178,7 +178,7 @@ async function main() {
       },
     });
 
-    const bobMemory6 = await prisma.memory.create({
+    const bobMemory06 = await prisma.memory.create({
       data: {
         userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
         title: 'Snowy Sledding Adventure',
@@ -209,7 +209,7 @@ async function main() {
       },
     });
 
-    const bobMemory7 = await prisma.memory.create({
+    const bobMemory07 = await prisma.memory.create({
       data: {
         userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
         title: 'Christmas Magic',
@@ -220,6 +220,277 @@ async function main() {
       },
     });
 
+    const bobMemory08 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: 'Sunset over Humber Bay',
+        message:
+          'A perfect solo ride along the waterfront. The humidity finally broke. Stopped on the Humber Bay Arch Bridge as the sun dipped. The downtown Toronto skyline looked magnificent against the purple and orange light. Just me, my bike, and the city. Pure peace.',
+        createdAt: new Date('2025-08-15T22:10:00.000Z'),
+        imageId: 'bob_waterfront_bike_lzinuv',
+        hashtagRelations: {
+          create: {
+            hashtag: {
+              connectOrCreate: {
+                where: { name: 'activities' },
+                create: { name: 'activities' },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const bobMemory09 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: 'The Office Supervisor',
+        message:
+          "Some days are just perfect. Deep work in the afternoon on a tough deployment. Whiskers usually supervises from his tower, but today he decided my shoulder was the best spot. He just purred while I debugged for two hours straight. Best co-worker I've ever had.",
+        createdAt: new Date('2025-10-02T19:30:00.000Z'),
+        imageId: 'bob_whiskers_office_jop2rs',
+        hashtagRelations: {
+          create: [
+            {
+              hashtag: {
+                connectOrCreate: {
+                  where: { name: 'pets' },
+                  create: { name: 'pets' },
+                },
+              },
+            },
+            {
+              hashtag: {
+                connectOrCreate: {
+                  where: { name: 'activities' },
+                  create: { name: 'activities' },
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    const bobMemory10 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: "Liam's First Checkmate",
+        message:
+          "A landmark day! Liam has been studying tactics so hard. Today, using the openings I taught him, he finally set up a beautiful sequence and trapped my King. His face just lit up when he said 'Checkmate, Dad!'. My pride as a teacher is overwhelming. Time to raise his difficulty!",
+        createdAt: new Date('2025-11-20T16:00:00.000Z'),
+        imageId: 'bob_liam_chess_s98q4d',
+        hashtagRelations: {
+          create: {
+            hashtag: {
+              connectOrCreate: {
+                where: { name: 'family' },
+                create: { name: 'family' },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const bobMemory11 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: 'Nightmare in the Kitchen',
+        message:
+          " Disaster struck! I was attempting that complicated sous-vide recipe for the dinner party. Everything was going smoothly until I realized I left the oven on self-clean mode with a roast inside. The smoke alarm started blaring, and I had to evacuate the kitchen. Sarah wasn't thrilled, but hey, at least we ordered pizza. Lesson learned: read recipes thoroughly.",
+        createdAt: new Date('2026-01-10T01:05:00.000Z'),
+        imageId: 'bob_kitchen_disaster_qlszfn',
+      },
+    });
+
+    const bobMemory12 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: 'Smoky Rib Triumph',
+        message:
+          'The annual neighborhood cookout was a massive success. The weather held up perfectly. I pulled off my best batch of ribs yet—they absolutely fell off the bone. I loved seeing everyone enjoying my food. My secret glaze is a secret no more!',
+        createdAt: new Date('2026-07-10T18:45:00.000Z'),
+        imageId: 'bob_bbq_grill_aptwo2',
+        hashtagRelations: {
+          create: [
+            {
+              hashtag: {
+                connectOrCreate: {
+                  where: { name: 'activities' },
+                  create: { name: 'activities' },
+                },
+              },
+            },
+            {
+              hashtag: {
+                connectOrCreate: {
+                  where: { name: 'food' },
+                  create: { name: 'food' },
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    const bobMemory13 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: 'Indie Pop & Dance Battles',
+        message:
+          "Sarah initiated a family music night on Friday. We blasted some great new indie-pop, and the living room turned into an absolute dance floor. Watching Liam and Emily compete in dance-offs with Whiskers judging from a distance was pure chaos. I can't stop smiling when I think of their laughs.",
+        createdAt: new Date('2026-02-10T21:00:00.000Z'),
+        imageId: 'bob_family_dance_die8o0',
+        hashtagRelations: {
+          create: {
+            hashtag: {
+              connectOrCreate: {
+                where: { name: 'family' },
+                create: { name: 'family' },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const bobMemory14 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: 'Final Code Deployment Success',
+        message:
+          "A moment of intense professional happiness. The massive re-architecture project I've been leading was deployed today. I watched the final deployment logs turn green across all our dashboards. The relief is immense. So proud of my team. Celebrating with pizza tonight!",
+        createdAt: new Date('2026-03-20T17:15:00.000Z'),
+        imageId: 'bob_code_deployment_xadjal',
+        hashtagRelations: {
+          create: {
+            hashtag: {
+              connectOrCreate: {
+                where: { name: 'work' },
+                create: { name: 'work' },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const bobMemory15 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: 'Sushi Date in Downtown',
+        message:
+          "Finally, a rare date night alone with Sarah! We took the TTC to that new place near the St. Lawrence Market. The atmosphere was incredible, the sushi was divine (especially the unagi!), and it was just so wonderful to talk and laugh without hearing 'Dad, can I...'. I love her more than words.",
+        createdAt: new Date('2026-04-05T20:30:00.000Z'),
+        imageId: 'bob_sarah_date_olkozu',
+        hashtagRelations: {
+          create: [
+            {
+              hashtag: {
+                connectOrCreate: {
+                  where: { name: 'coupleTime' },
+                  create: { name: 'coupleTime' },
+                },
+              },
+            },
+            {
+              hashtag: {
+                connectOrCreate: {
+                  where: { name: 'food' },
+                  create: { name: 'food' },
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    const bobMemory16 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: "Emily's Piggyback Adventure",
+        message:
+          'A simple memory, but it filled me with joy. Walking back through the neighborhood on a beautiful evening after ice cream. Emily insisted I carry her. Watching her little smile in the reflection as we passed shop windows—just pure, innocent happiness.',
+        createdAt: new Date('2026-05-12T19:00:00.000Z'),
+        imageId: 'bob_emily_piggyback_imvnwl',
+        hashtagRelations: {
+          create: [
+            {
+              hashtag: {
+                connectOrCreate: {
+                  where: { name: 'family' },
+                  create: { name: 'family' },
+                },
+              },
+            },
+            {
+              hashtag: {
+                connectOrCreate: {
+                  where: { name: 'activities' },
+                  create: { name: 'activities' },
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    const bobMemory17 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: 'Toronto Island Family Dusk',
+        message:
+          'A stunning finish to a great family day. We took the ferry over to Toronto Island and spent the whole day exploring. We watched dusk fall over the downtown skyline from the shore. Standing together as a family, pointing out landmarks, the entire city lit up across the water. A perfect, quiet family moment.',
+        createdAt: new Date('2026-06-30T21:15:00.000Z'),
+        imageId: 'bob_toronto_island_zo0uck',
+        hashtagRelations: {
+          create: [
+            {
+              hashtag: {
+                connectOrCreate: {
+                  where: { name: 'family' },
+                  create: { name: 'family' },
+                },
+              },
+            },
+            {
+              hashtag: {
+                connectOrCreate: {
+                  where: { name: 'activities' },
+                  create: { name: 'activities' },
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    const bobMemory18 = await prisma.memory.create({
+      data: {
+        userId: 'cm7v7x3qs0000ya8wu3sh1tb9',
+        title: 'First Apartment Kitchen Surprise',
+        message:
+          "Found this entry from my diary 11 years ago. A surprise visit from Sarah's parents! They came to see our very first apartment after we moved in. I was a nervous wreck showing them around the tiny kitchen, but they were so proud of us. It wasn't fancy, but it was ours, and their encouragement meant the world. We celebrated with cheap wine and takeout on the floor.",
+        createdAt: new Date('2026-07-10T18:00:00.000Z'),
+        imageId: 'bob_first_apartment_voofza',
+        hashtagRelations: {
+          create: {
+            hashtag: {
+              connectOrCreate: {
+                where: { name: 'family' },
+                create: { name: 'family' },
+              },
+            },
+          },
+        },
+      },
+    });
+
     console.log('seeding : ', {
       barbie,
       bob,
@@ -227,13 +498,24 @@ async function main() {
         barbieMemory1,
         barbieMemory2,
         barbieMemory3,
-        bobMemory1,
-        bobMemory2,
-        bobMemory3,
-        bobMemory4,
-        bobMemory5,
-        bobMemory6,
-        bobMemory7,
+        bobMemory01,
+        bobMemory02,
+        bobMemory03,
+        bobMemory04,
+        bobMemory05,
+        bobMemory06,
+        bobMemory07,
+        bobMemory08,
+        bobMemory09,
+        bobMemory10,
+        bobMemory11,
+        bobMemory12,
+        bobMemory13,
+        bobMemory14,
+        bobMemory15,
+        bobMemory16,
+        bobMemory17,
+        bobMemory18,
       ],
     });
   }
