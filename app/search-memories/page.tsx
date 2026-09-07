@@ -24,7 +24,7 @@ const SearchMemoriesPage: React.FC = () => {
             </p>
             <Link
               href="/sign-in"
-              className="tracking-wide font-semibold bg-indigo-400 text-gray-100 py-3 px-6 rounded-lg hover:bg-indigo-600 transition-all duration-300 ease-in-out focus:shadow-outline focus:outline-none"
+              className="tracking-wide font-semibold bg-primary text-on-primary py-3 px-6 rounded-xl hover:bg-primary-dim transition-all duration-300 ease-in-out focus:shadow-outline focus:outline-none"
             >
               Sign in
             </Link>

@@ -36,7 +36,7 @@ describe('ChatWidgetLauncher', () => {
     const { container } = render(<ChatWidgetLauncher onOpen={jest.fn()} />);
 
     const button = container.querySelector('button');
-    expect(button).toHaveClass('rounded-full', 'bg-indigo-600', 'shadow-lg');
+    expect(button).toHaveClass('rounded-full', 'bg-primary', 'shadow-lg');
   });
 
   it('should be a button type element', () => {

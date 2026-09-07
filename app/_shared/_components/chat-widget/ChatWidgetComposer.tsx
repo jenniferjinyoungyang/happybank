@@ -30,7 +30,7 @@ export const ChatWidgetComposer: React.FC<ChatWidgetComposerProps> = ({
         onChange={(e) => setDraft(e.target.value)}
         placeholder="Type a message…"
         rows={2}
-        className="flex-1 resize-none rounded-xl border border-neutral-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+        className="flex-1 resize-none rounded-xl border border-neutral-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
         disabled={isSending}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
@@ -45,7 +45,7 @@ export const ChatWidgetComposer: React.FC<ChatWidgetComposerProps> = ({
         label="Send message"
         ariaLabel="Send message"
         disabled={!canSend}
-        cssWrapper="inline-flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:hover:bg-indigo-600 p-3"
+        cssWrapper="inline-flex items-center justify-center rounded-xl bg-primary hover:bg-primary-dim text-on-primary disabled:hover:bg-primary p-3"
         dataTestId="chat-widget-send"
       >
         <PaperAirplaneIcon className="h-5 w-5" aria-hidden="true" />
