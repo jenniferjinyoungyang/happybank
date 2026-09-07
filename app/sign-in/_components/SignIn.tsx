@@ -108,7 +108,7 @@ const SignIn: React.FC = () => {
                 <Button
                   type="button"
                   label="Try as a demo user"
-                  cssWrapper="mt-8 h-lg:mt-16 bg-transparent text-s text-indigo-500 text-center outline-none hover:bg-transparent hover:text-red-500"
+                  cssWrapper="mt-8 h-lg:mt-16 bg-transparent text-s text-primary text-center outline-none hover:bg-primary/10 hover:text-primary-dim"
                   onClick={inputDemoUser}
                 />
               </div>

@@ -46,7 +46,7 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle, isLoadi
       <div className="my-4 lg:my-10 text-center font-permanent_marker text-3xl">{memoryTitle}</div>
       <CldUploadButton
         uploadPreset="ml_default"
-        className="mt-auto tracking-wide font-semibold bg-indigo-400 text-gray-100 py-3 rounded-lg hover:bg-indigo-600 transition-all duration-300 ease-in-out focus:shadow-outline focus:outline-none"
+        className="mt-auto tracking-wide font-semibold bg-primary text-on-primary py-3 rounded-xl hover:bg-primary-dim transition-all duration-300 ease-in-out focus:shadow-outline focus:outline-none"
         signatureEndpoint="/api/sign-cloudinary-params"
         onSuccess={(result) => {
           const imageInfo = result?.info as CloudinaryUploadWidgetInfo;

@@ -11,7 +11,7 @@ export const ChatWidgetLauncher: React.FC<ChatWidgetLauncherProps> = ({ onOpen }
     label="Open chat"
     ariaLabel="Open chat"
     onClick={onOpen}
-    cssWrapper="rounded-full bg-indigo-600 hover:bg-indigo-700 shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 p-4"
+    cssWrapper="rounded-full bg-primary hover:bg-primary-dim text-on-primary shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 p-4"
     dataTestId="chat-widget-launcher"
   >
     <ChatBubbleLeftRightIcon className="h-6 w-6" aria-hidden="true" />
