@@ -90,7 +90,7 @@ const PageHeader: React.FC = () => {
                 )}
               </div>
             </Popover.Button>
-            <Popover.Panel className="absolute right-0 mt-2 w-40 overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
+            <Popover.Panel className="absolute right-0 mt-2 w-40 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-900/5">
               <button
                 type="button"
                 onClick={handleSignOut}
