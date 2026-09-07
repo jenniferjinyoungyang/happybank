@@ -19,12 +19,12 @@ export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleReca
       Quick Actions
     </h3>
 
-    <div className="flex flex-col gap-3 rounded-3xl bg-surface-container p-3">
+    <div className="flex flex-col gap-3 rounded-2xl bg-surface-container p-3">
       <Link
         href="/create-memory"
         className={`${quickActionButtonClass} bg-gradient-to-r from-primary to-primary-fixed-dim focus-visible:ring-primary`}
       >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-dim/40">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-dim/40">
           <PhotoIcon aria-hidden="true" className="h-5 w-5 text-on-primary" />
         </span>
         <span className="min-w-0 flex-1">
@@ -43,7 +43,7 @@ export const DashboardActionPanel: FC<DashboardActionPanelProps> = ({ handleReca
         disabled={!handleRecallMemory}
         onClick={handleRecallMemory}
       >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary-fixed-dim/50">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary-fixed-dim/50">
           <SparklesIcon aria-hidden="true" className="h-5 w-5 text-on-surface" />
         </span>
         <span className="min-w-0 flex-1">

@@ -40,7 +40,7 @@ const SignIn: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
-                  className="w-full inline-flex items-center justify-center py-4 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:ring-4 focus:ring-gray-200"
+                  className="w-full inline-flex items-center justify-center py-4 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-xl border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:ring-4 focus:ring-gray-200"
                 >
                   <GoogleLogo />
                   Continue with Google
@@ -65,7 +65,7 @@ const SignIn: React.FC = () => {
                 >
                   <div className="relative">
                     <input
-                      className="block p-4 w-full text-sm text-gray-900 bg-gray-100 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-0 peer"
+                      className="block p-4 w-full text-sm text-gray-900 bg-gray-100 rounded-xl appearance-none focus:outline-none focus:ring-0 focus:border-0 peer"
                       {...register('email')}
                       type="email"
                       id="email-sign-in"
@@ -81,7 +81,7 @@ const SignIn: React.FC = () => {
 
                   <div className="relative mt-5">
                     <input
-                      className="block p-4 w-full text-sm text-gray-900 bg-gray-100 rounded-lg appearance-none focus:outline-none focus:ring-0 focus:border-0 peer"
+                      className="block p-4 w-full text-sm text-gray-900 bg-gray-100 rounded-xl appearance-none focus:outline-none focus:ring-0 focus:border-0 peer"
                       {...register('password')}
                       type="password"
                       id="password-sign-in"

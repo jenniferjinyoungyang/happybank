@@ -25,7 +25,7 @@ export const Button: FC<ButtonProps> = ({
     aria-label={ariaLabel ?? label}
     disabled={disabled}
     data-testid={dataTestId}
-    className={`tracking-wide font-semibold bg-indigo-400 text-gray-100 py-3 rounded-lg hover:bg-indigo-600 disabled:opacity-50 disabled:hover:bg-indigo-400 transition-all duration-300 ease-in-out focus:shadow-outline focus:outline-none ${cssWrapper}`}
+    className={`tracking-wide font-semibold bg-indigo-400 text-gray-100 py-3 rounded-xl hover:bg-indigo-600 disabled:opacity-50 disabled:hover:bg-indigo-400 transition-all duration-300 ease-in-out focus:shadow-outline focus:outline-none ${cssWrapper}`}
     onClick={onClick}
   >
     {children ?? label}
