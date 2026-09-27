@@ -29,19 +29,17 @@
     font-family: var(--font-montserrat);
   }
 
+  .text-fluid-h1 {
+    font-size: clamp(2.25rem, 4vw + 1rem, 3.75rem);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
   /* Soft editorial card shadow (invalid `shadow:` from source HTML corrected to box-shadow). */
   .editorial-shadow {
     box-shadow: 0 25px 50px -12px rgba(46, 47, 45, 0.06);
   }
-}
-
-/* Material Symbols — use when loading the icon font */
-.material-symbols-outlined {
-  font-variation-settings:
-    'FILL' 0,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24;
 }
 
 html {
@@ -61,18 +59,23 @@ p {
   h1 {
     @apply text-4xl font-semibold;
   }
+
   h2 {
     @apply text-3xl font-semibold;
   }
+
   h3 {
     @apply text-2xl font-medium;
   }
+
   h4 {
     @apply text-xl font-medium;
   }
+
   h5 {
     @apply text-lg;
   }
+
   h6 {
     @apply text-base;
   }

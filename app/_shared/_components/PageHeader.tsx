@@ -41,13 +41,13 @@ const PageHeader: React.FC = () => {
               height={32}
               className="h-8 w-8 object-contain"
             />
-            <span className="text-2xl font-bold tracking-tighter text-primary font-headline">
+            <span className="text-2xl font-bold tracking-tighter text-primary font-montserrat">
               Happy Bank
             </span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <Link
-              className={`font-headline text-sm font-medium tracking-tight pb-1 ${
+              className={`font-montserrat text-sm font-medium tracking-tight pb-1 ${
                 isDashboard
                   ? 'text-primary border-b-2 border-primary'
                   : 'text-[#2e2f2d]/70 hover:text-primary transition-colors'
@@ -57,7 +57,7 @@ const PageHeader: React.FC = () => {
               Dashboard
             </Link>
             <Link
-              className={`font-headline text-sm font-medium tracking-tight pb-1 ${
+              className={`font-montserrat text-sm font-medium tracking-tight pb-1 ${
                 isMemories
                   ? 'text-primary border-b-2 border-primary'
                   : 'text-[#2e2f2d]/70 hover:text-primary transition-colors'

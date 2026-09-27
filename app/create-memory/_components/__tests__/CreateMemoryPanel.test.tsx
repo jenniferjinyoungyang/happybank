@@ -21,8 +21,8 @@ describe('CreateMemoryPanel', () => {
   it('should call createMemory api when memory data is submitted', async () => {
     render(<CreateMemoryPanel />);
 
-    const titleInputBox = screen.getByLabelText('Title');
-    const messageTextBox = screen.getByLabelText('Message');
+    const titleInputBox = screen.getByLabelText('The Memory Title');
+    const messageTextBox = screen.getByLabelText('Tell the Story');
     const hashtagsInputBox = screen.getByLabelText('Hashtags');
 
     await user.type(titleInputBox, 'Ginger day');
@@ -39,7 +39,7 @@ describe('CreateMemoryPanel', () => {
     const withinUploadImageCard = within(screen.getByTestId('upload-image-card'));
     expect(withinUploadImageCard.getByText('Ginger day')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Submit' }));
+    await user.click(screen.getByRole('button', { name: 'Deposit to Vault' }));
 
     expect(createMemorySpy).toHaveBeenCalledTimes(1);
     expect(createMemorySpy).toHaveBeenCalledWith({
@@ -63,15 +63,15 @@ describe('CreateMemoryPanel', () => {
 
     render(<CreateMemoryPanel />);
 
-    const titleInputBox = screen.getByLabelText('Title');
-    const messageTextBox = screen.getByLabelText('Message');
+    const titleInputBox = screen.getByLabelText('The Memory Title');
+    const messageTextBox = screen.getByLabelText('Tell the Story');
     const hashtagsInputBox = screen.getByLabelText('Hashtags');
 
     await user.type(titleInputBox, 'Ginger day');
     await user.type(messageTextBox, 'I met Ginger today!');
     await user.type(hashtagsInputBox, 'ginger{Enter}');
 
-    await user.click(screen.getByRole('button', { name: 'Submit' }));
+    await user.click(screen.getByRole('button', { name: 'Deposit to Vault' }));
 
     expect(createMemorySpy).toHaveBeenCalledTimes(1);
 
@@ -89,14 +89,14 @@ describe('CreateMemoryPanel', () => {
     // so no fallback is needed
     render(<CreateMemoryPanel />);
 
-    const titleInputBox = screen.getByLabelText('Title');
-    const messageTextBox = screen.getByLabelText('Message');
+    const titleInputBox = screen.getByLabelText('The Memory Title');
+    const messageTextBox = screen.getByLabelText('Tell the Story');
 
     await user.type(titleInputBox, 'Test memory');
     await user.type(messageTextBox, 'Test message');
 
     // Submit form without adding any hashtags
-    await user.click(screen.getByRole('button', { name: 'Submit' }));
+    await user.click(screen.getByRole('button', { name: 'Deposit to Vault' }));
 
     expect(createMemorySpy).toHaveBeenCalledTimes(1);
     // Verify hashtags is always an array (from defaultValues, no fallback needed)

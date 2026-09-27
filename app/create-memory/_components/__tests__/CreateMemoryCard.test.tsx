@@ -25,10 +25,10 @@ describe('CreateMemoryCard', () => {
         </FormWrapper>,
       );
 
-      expect(screen.getByLabelText('Title')).toBeInTheDocument();
-      expect(screen.getByLabelText('Message')).toBeInTheDocument();
+      expect(screen.getByLabelText('The Memory Title')).toBeInTheDocument();
+      expect(screen.getByLabelText('Tell the Story')).toBeInTheDocument();
       expect(screen.getByLabelText('Hashtags')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Deposit to Vault' })).toBeInTheDocument();
     });
 
     it('should show character counters for title and message', () => {
@@ -63,7 +63,9 @@ describe('CreateMemoryCard', () => {
         </FormWrapper>,
       );
 
-      const hashtagInput = screen.getByPlaceholderText('e.g., happy');
+      const hashtagInput = screen.getByPlaceholderText(
+        '#gratitude, #weekend, #family (separated by commas)',
+      );
       expect(hashtagInput).toBeInTheDocument();
     });
 
@@ -81,7 +83,9 @@ describe('CreateMemoryCard', () => {
         </FormWrapper>,
       );
 
-      expect(screen.queryByPlaceholderText('e.g., happy')).not.toBeInTheDocument();
+      expect(
+        screen.queryByPlaceholderText('#gratitude, #weekend, #family (separated by commas)'),
+      ).not.toBeInTheDocument();
     });
 
     it('should display hashtag chips', () => {
@@ -169,7 +173,7 @@ describe('CreateMemoryCard', () => {
 
       render(<FormWrapperWithSubmit />);
 
-      const submitButton = screen.getByRole('button', { name: 'Submit' });
+      const submitButton = screen.getByRole('button', { name: 'Deposit to Vault' });
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -209,11 +213,11 @@ describe('CreateMemoryCard', () => {
 
       render(<FormWrapperWithSubmit />);
 
-      const titleInput = screen.getByLabelText('Title');
+      const titleInput = screen.getByLabelText('The Memory Title');
       const longTitle = 'a'.repeat(MEMORY_VALIDATION.TITLE_MAX_LENGTH + 1);
 
       await user.type(titleInput, longTitle);
-      const submitButton = screen.getByRole('button', { name: 'Submit' });
+      const submitButton = screen.getByRole('button', { name: 'Deposit to Vault' });
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -253,7 +257,7 @@ describe('CreateMemoryCard', () => {
 
       render(<FormWrapperWithSubmit />);
 
-      const submitButton = screen.getByRole('button', { name: 'Submit' });
+      const submitButton = screen.getByRole('button', { name: 'Deposit to Vault' });
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -289,11 +293,11 @@ describe('CreateMemoryCard', () => {
 
       render(<FormWrapperWithSubmit />);
 
-      const messageInput = screen.getByLabelText('Message');
+      const messageInput = screen.getByLabelText('Tell the Story');
       const longMessage = 'a'.repeat(MEMORY_VALIDATION.MESSAGE_MAX_LENGTH + 1);
 
       fireEvent.change(messageInput, { target: { value: longMessage } });
-      const submitButton = screen.getByRole('button', { name: 'Submit' });
+      const submitButton = screen.getByRole('button', { name: 'Deposit to Vault' });
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -400,7 +404,9 @@ describe('CreateMemoryCard', () => {
 
       // Component should render without errors
       expect(screen.getByLabelText('Hashtags')).toBeInTheDocument();
-      expect(screen.getByPlaceholderText('e.g., happy')).toBeInTheDocument();
+      expect(
+        screen.getByPlaceholderText('#gratitude, #weekend, #family (separated by commas)'),
+      ).toBeInTheDocument();
     });
 
     it('should validate successfully when hashtags is empty array', async () => {
@@ -432,7 +438,7 @@ describe('CreateMemoryCard', () => {
 
       render(<FormWrapperWithEmptyHashtags />);
 
-      const submitButton = screen.getByRole('button', { name: 'Submit' });
+      const submitButton = screen.getByRole('button', { name: 'Deposit to Vault' });
       await user.click(submitButton);
 
       // Should not show hashtag validation error when value is empty array
@@ -489,6 +495,30 @@ describe('CreateMemoryCard', () => {
       const hashtagInput = document.getElementById('memory-hashtags') as HTMLInputElement;
 
       await user.type(hashtagInput, 'happy ');
+
+      await waitFor(() => {
+        expect(screen.getByText('#happy')).toBeInTheDocument();
+      });
+      expect(hashtagInput).toHaveValue('');
+    });
+
+    it('should add hashtag when comma key is pressed', async () => {
+      render(
+        <FormWrapper<MemoryCreationFields>
+          defaultValues={{
+            title: '',
+            message: '',
+            hashtags: [],
+            imageId: null,
+          }}
+        >
+          <CreateMemoryCard isLoading={false} />
+        </FormWrapper>,
+      );
+
+      const hashtagInput = document.getElementById('memory-hashtags') as HTMLInputElement;
+
+      await user.type(hashtagInput, 'happy,');
 
       await waitFor(() => {
         expect(screen.getByText('#happy')).toBeInTheDocument();
@@ -746,8 +776,8 @@ describe('CreateMemoryCard', () => {
       expect(hashtagInput).toHaveValue('test');
 
       // Fill required fields and submit to trigger success
-      await user.type(screen.getByLabelText('Title'), 'Test Title');
-      await user.type(screen.getByLabelText('Message'), 'Test Message');
+      await user.type(screen.getByLabelText('The Memory Title'), 'Test Title');
+      await user.type(screen.getByLabelText('Tell the Story'), 'Test Message');
       await user.click(screen.getByRole('button', { name: 'Simulate Success' }));
 
       // The input should be cleared when form successfully submits (via useEffect watching isSubmitSuccessful)
