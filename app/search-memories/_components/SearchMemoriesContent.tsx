@@ -118,7 +118,7 @@ export const SearchMemoriesContent: FC = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="mx-auto flex max-w-6xl flex-col w-full">
       {/* Search & Filter Section */}
       <section className="mb-20">
         <div className="flex flex-col gap-12">
@@ -224,7 +224,7 @@ export const SearchMemoriesContent: FC = () => {
 
       {/* Memory Gallery */}
       <section
-        className="w-full max-w-[2000px] mx-auto pb-24 flex-1 flex flex-col"
+        className="w-full mx-auto pb-24 flex-1 flex flex-col"
         data-purpose="carousel-section"
       >
         {match(searchStatus)

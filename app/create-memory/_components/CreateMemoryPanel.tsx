@@ -59,33 +59,37 @@ export const CreateMemoryPanel: FC = () => {
   );
 
   return (
-    <main className="flex-1 min-h-0 overflow-auto bg-background pt-8 lg:pt-12 4xl:pt-24 pb-20 px-6 sm:px-8 4xl:px-16 max-w-[2400px] mx-auto w-full">
-      <div className="max-w-3xl mb-10 4xl:mb-16">
-        <h1 className="font-black text-4xl md:text-4xl mb-6 tracking-tighter">Deposit a New Joy</h1>
-        <p className="font-hind leading-relaxed opacity-80">
-          Every small moment of happiness is a treasure. Describe it, tag it, and lock it away in
-          your vault of memories.
-        </p>
-      </div>
-      <FormProvider {...methods}>
-        <form
-          aria-label="create-memory-form"
-          className="grid grid-cols-1 lg:grid-cols-12 gap-12 4xl:gap-24 items-stretch"
-          onSubmit={methods.handleSubmit(onSubmit)}
-        >
-          <CreateMemoryCard isLoading={isLoadingStatus(createMemoryStatus)} />
-          <UploadImageCard
-            memoryTitle={methods.watch('title') ?? ''}
-            isLoading={isLoadingStatus(createMemoryStatus)}
-          />
-        </form>
-        {/* TODO create better alert component which user can close */}
-        {createMemoryStatus.status === 'error' && (
-          <p className="mt-6 text-center text-error font-medium font-hind text-lg">
-            Error creating memory
+    <main className="flex-1 min-h-0 overflow-auto bg-background px-4 py-4 pb-24 lg:px-12 lg:py-8 lg:pb-28">
+      <div className="mx-auto flex max-w-6xl flex-col">
+        <div className="max-w-3xl mb-10">
+          <h1 className="font-black text-4xl md:text-4xl mb-6 tracking-tighter">
+            Deposit a New Joy
+          </h1>
+          <p className="font-hind leading-relaxed opacity-80">
+            Every small moment of happiness is a treasure. Describe it, tag it, and lock it away in
+            your vault of memories.
           </p>
-        )}
-      </FormProvider>
+        </div>
+        <FormProvider {...methods}>
+          <form
+            aria-label="create-memory-form"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch"
+            onSubmit={methods.handleSubmit(onSubmit)}
+          >
+            <CreateMemoryCard isLoading={isLoadingStatus(createMemoryStatus)} />
+            <UploadImageCard
+              memoryTitle={methods.watch('title') ?? ''}
+              isLoading={isLoadingStatus(createMemoryStatus)}
+            />
+          </form>
+          {/* TODO create better alert component which user can close */}
+          {createMemoryStatus.status === 'error' && (
+            <p className="mt-6 text-center text-error font-medium font-hind text-lg">
+              Error creating memory
+            </p>
+          )}
+        </FormProvider>
+      </div>
     </main>
   );
 };

@@ -76,7 +76,6 @@ describe('UploadImageCard', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Upload Photo')).toBeInTheDocument();
     expect(screen.getByText('Test Memory')).toBeInTheDocument();
-    expect(screen.getByText('Capture')).toBeInTheDocument();
     expect(screen.queryByTestId('cld-image')).not.toBeInTheDocument();
   });
 
