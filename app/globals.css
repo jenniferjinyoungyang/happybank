@@ -21,12 +21,31 @@
     font-family: var(--font-permanent-marker);
   }
 
+  .font-marker {
+    font-family: var(--font-permanent-marker);
+  }
+
   .font-hind {
     font-family: var(--font-hind);
   }
 
   .font-montserrat {
     font-family: var(--font-montserrat);
+  }
+
+  .font-headline {
+    font-family: var(--font-montserrat);
+  }
+
+  .font-label {
+    font-family: var(--font-montserrat);
+  }
+
+  .text-fluid-h1 {
+    font-size: clamp(2.25rem, 4vw + 1rem, 3.75rem);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 
   /* Soft editorial card shadow (invalid `shadow:` from source HTML corrected to box-shadow). */

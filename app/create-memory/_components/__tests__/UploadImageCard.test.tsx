@@ -53,7 +53,7 @@ type MemoryFormData = {
 };
 
 describe('UploadImageCard', () => {
-  it('should render polaroid icon when imageId is null', () => {
+  it('should render visual memory placeholder and upload button when imageId is null', () => {
     render(
       <FormWrapper<MemoryFormData>
         defaultValues={{
@@ -68,15 +68,37 @@ describe('UploadImageCard', () => {
     );
 
     expect(screen.getByTestId('upload-image-card')).toBeInTheDocument();
-    expect(screen.getByTestId('next-image')).toBeInTheDocument();
-    expect(screen.getByTestId('next-image')).toHaveAttribute('alt', 'polaroid icon');
-    expect(screen.queryByTestId('cld-image')).not.toBeInTheDocument();
+    expect(screen.getByText('Add a Visual Memory')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Drag and drop a photo that captures this moment, or click to browse your files.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Upload Photo')).toBeInTheDocument();
     expect(screen.getByText('Test Memory')).toBeInTheDocument();
-    expect(screen.getByText('Upload image')).toBeInTheDocument();
+    expect(screen.getByText('Capture')).toBeInTheDocument();
+    expect(screen.queryByTestId('cld-image')).not.toBeInTheDocument();
+  });
+
+  it('should not render memoryTitle in placeholder when memoryTitle is empty', () => {
+    render(
+      <FormWrapper<MemoryFormData>
+        defaultValues={{
+          imageId: null,
+          title: '',
+          message: '',
+          hashtags: [],
+        }}
+      >
+        <UploadImageCard memoryTitle="" isLoading={false} />
+      </FormWrapper>,
+    );
+
+    expect(screen.getByTestId('upload-image-card')).toBeInTheDocument();
+    expect(screen.getByText('Add a Visual Memory')).toBeInTheDocument();
   });
 
   it('should render CldImage when imageId is a string', () => {
-    // Test lines 28-35: CldImage rendering when imageId is a string
     render(
       <FormWrapper<MemoryFormData>
         defaultValues={{
@@ -94,19 +116,67 @@ describe('UploadImageCard', () => {
     expect(screen.getByTestId('cld-image')).toBeInTheDocument();
     expect(screen.getByTestId('cld-image')).toHaveAttribute('src', 'test-image-id');
     expect(screen.getByTestId('cld-image')).toHaveAttribute('alt', 'uploaded image');
-    expect(screen.queryByTestId('next-image')).not.toBeInTheDocument();
     expect(screen.getByText('Test Memory')).toBeInTheDocument();
+    expect(screen.getByText('Change Photo')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Remove' })).toBeInTheDocument();
   });
 
-  it('should call setValue with public_id when upload succeeds', () => {
-    // Test lines 52-54: onSuccess callback sets imageId
+  it('should not render memoryTitle when image is uploaded and memoryTitle is empty', () => {
+    render(
+      <FormWrapper<MemoryFormData>
+        defaultValues={{
+          imageId: 'test-image-id',
+          title: '',
+          message: '',
+          hashtags: [],
+        }}
+      >
+        <UploadImageCard memoryTitle="" isLoading={false} />
+      </FormWrapper>,
+    );
+
+    expect(screen.getByTestId('cld-image')).toBeInTheDocument();
+    expect(screen.getByText('Change Photo')).toBeInTheDocument();
+  });
+
+  it('should reset imageId to null when Remove button is clicked', () => {
+    const setValueSpy = jest.fn();
+    const watchSpy = jest.fn().mockReturnValue('test-image-id');
+
+    const TestWrapper = () => {
+      const methods = useFormContext();
+      methods.setValue = setValueSpy;
+      methods.watch = watchSpy;
+
+      return <UploadImageCard memoryTitle="Test Memory" isLoading={false} />;
+    };
+
+    render(
+      <FormWrapper<MemoryFormData>
+        defaultValues={{
+          imageId: 'test-image-id',
+          title: '',
+          message: '',
+          hashtags: [],
+        }}
+      >
+        <TestWrapper />
+      </FormWrapper>,
+    );
+
+    const removeButton = screen.getByRole('button', { name: 'Remove' });
+    removeButton.click();
+
+    expect(setValueSpy).toHaveBeenCalledWith('imageId', null);
+  });
+
+  it('should call setValue with public_id when upload succeeds in placeholder state', () => {
     const setValueSpy = jest.fn();
     const watchSpy = jest.fn().mockReturnValue(null);
 
     const TestWrapper = () => {
       const methods = useFormContext();
 
-      // Override setValue and watch
       methods.setValue = setValueSpy;
       methods.watch = watchSpy;
 
@@ -129,19 +199,47 @@ describe('UploadImageCard', () => {
     const uploadButton = screen.getByTestId('cld-upload-button');
     uploadButton.click();
 
-    // Verify setValue was called with imageId and public_id
+    expect(setValueSpy).toHaveBeenCalledTimes(1);
+    expect(setValueSpy).toHaveBeenCalledWith('imageId', 'test-image-id');
+  });
+
+  it('should call setValue with public_id when Change Photo upload succeeds', () => {
+    const setValueSpy = jest.fn();
+    const watchSpy = jest.fn().mockReturnValue('initial-image-id');
+
+    const TestWrapper = () => {
+      const methods = useFormContext();
+
+      methods.setValue = setValueSpy;
+      methods.watch = watchSpy;
+
+      return <UploadImageCard memoryTitle="Test Memory" isLoading={false} />;
+    };
+
+    render(
+      <FormWrapper<MemoryFormData>
+        defaultValues={{
+          imageId: 'initial-image-id',
+          title: '',
+          message: '',
+          hashtags: [],
+        }}
+      >
+        <TestWrapper />
+      </FormWrapper>,
+    );
+
+    const uploadButton = screen.getByTestId('cld-upload-button');
+    uploadButton.click();
+
     expect(setValueSpy).toHaveBeenCalledTimes(1);
     expect(setValueSpy).toHaveBeenCalledWith('imageId', 'test-image-id');
   });
 
   it('should handle onSuccess when result.info.public_id is undefined', () => {
-    // Test lines 52-54: onSuccess callback handles undefined public_id
-    // When imageInfo?.public_id is undefined, setValue is called with undefined
     const setValueSpy = jest.fn();
     const watchSpy = jest.fn().mockReturnValue(null);
 
-    // Create a custom mock for this test that returns undefined public_id
-    // jest.requireMock is a Jest API (not CommonJS require) for accessing mocked modules
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mockedNextCloudinary = jest.requireMock('next-cloudinary') as typeof nextCloudinary;
 
@@ -197,7 +295,6 @@ describe('UploadImageCard', () => {
     const uploadButton = screen.getByTestId('cld-upload-button');
     uploadButton.click();
 
-    // Should handle undefined public_id gracefully (setValue called with undefined)
     expect(setValueSpy).toHaveBeenCalledTimes(1);
     expect(setValueSpy).toHaveBeenCalledWith('imageId', undefined);
   });
@@ -216,8 +313,6 @@ describe('UploadImageCard', () => {
       </FormWrapper>,
     );
 
-    // Overlay should be rendered (checking via test-id from Overlay component)
-    // The Overlay component should be present when isLoading is true
     expect(screen.getByTestId('upload-image-card')).toBeInTheDocument();
   });
 

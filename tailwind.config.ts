@@ -6,6 +6,10 @@ const config: Config = {
   content: ['app/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
+      screens: {
+        '3xl': '1920px',
+        '4xl': '2560px',
+      },
       borderRadius: {
         sm: '0.25rem',
         DEFAULT: '0.375rem',
