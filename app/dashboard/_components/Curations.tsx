@@ -17,7 +17,7 @@ export const Curations: FC<CurationsProps> = ({ curations }) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="font-headline text-sm font-bold uppercase tracking-widest text-on-surface-variant">
+        <h2 className="font-montserrat text-sm font-bold uppercase tracking-widest text-on-surface-variant">
           Curations
         </h2>
         <Link className="text-xs font-bold text-primary hover:underline" href="/search-memories">
@@ -54,7 +54,7 @@ export const Curations: FC<CurationsProps> = ({ curations }) => {
                 )}
               </div>
               <div>
-                <h4 className="font-headline font-bold text-sm text-on-surface group-hover:text-primary transition-colors">
+                <h4 className="font-montserrat font-bold text-sm text-on-surface group-hover:text-primary transition-colors">
                   {formattedName}
                 </h4>
                 <span className="text-xs text-on-surface-variant">

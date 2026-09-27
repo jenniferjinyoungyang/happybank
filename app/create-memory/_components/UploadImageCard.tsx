@@ -3,6 +3,7 @@ import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { match, P } from 'ts-pattern';
 import { Overlay } from '../../_shared/_components/Overlay';
+import { PhotoIcon } from '@heroicons/react/24/outline';
 
 type UploadImageCardProps = {
   readonly memoryTitle: string;
@@ -40,7 +41,7 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle, isLoadi
             <div className="mt-4 flex gap-4 items-center">
               <CldUploadButton
                 uploadPreset="ml_default"
-                className="px-6 py-2.5 border-2 border-primary text-primary rounded-full font-label font-bold hover:bg-primary hover:text-white transition-all text-sm 4xl:text-lg cursor-pointer"
+                className="px-6 py-2.5 border-2 border-primary text-primary rounded-full font-montserrat font-bold hover:bg-primary hover:text-white transition-all text-sm 4xl:text-lg cursor-pointer"
                 signatureEndpoint="/api/sign-cloudinary-params"
                 onSuccess={(result) => {
                   const imageInfo = result?.info as CloudinaryUploadWidgetInfo;
@@ -52,7 +53,7 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle, isLoadi
               <button
                 type="button"
                 onClick={() => setValue('imageId', null)}
-                className="px-6 py-2.5 border border-outline-variant text-outline hover:text-error hover:border-error rounded-full font-label font-bold transition-all text-sm 4xl:text-lg cursor-pointer"
+                className="px-6 py-2.5 border border-outline-variant text-outline hover:text-error hover:border-error rounded-full font-montserrat font-bold transition-all text-sm 4xl:text-lg cursor-pointer"
               >
                 Remove
               </button>
@@ -61,10 +62,11 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle, isLoadi
         ))
         .with(null, () => (
           <div className="text-center space-y-4 4xl:space-y-8 px-8 z-10">
-            <span className="material-symbols-outlined text-outline-variant text-7xl 4xl:text-9xl select-none">
-              add_photo_alternate
+            <span className="flex justify-center">
+              <PhotoIcon className="h-10 w-10 text-gray-500" />
             </span>
-            <h3 className="font-headline text-2xl 4xl:text-4xl text-on-surface-variant font-bold">
+
+            <h3 className="font-montserrat text-2xl 4xl:text-4xl text-on-surface-variant font-bold">
               Add a Visual Memory
             </h3>
             <p className="text-on-surface-variant/70 text-base 4xl:text-2xl max-w-lg mx-auto font-hind leading-relaxed">
@@ -77,7 +79,7 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle, isLoadi
             ) : null}
             <CldUploadButton
               uploadPreset="ml_default"
-              className="mt-4 inline-block px-8 4xl:px-12 py-3 4xl:py-5 border-2 border-primary text-primary rounded-full font-label font-bold hover:bg-primary hover:text-white transition-all text-base 4xl:text-xl cursor-pointer shadow-sm hover:shadow-md"
+              className="mt-4 inline-block px-8 4xl:px-12 py-3 4xl:py-5 border-2 border-primary text-primary rounded-full font-montserrat font-bold hover:bg-primary hover:text-white transition-all text-base 4xl:text-xl cursor-pointer shadow-sm hover:shadow-md"
               signatureEndpoint="/api/sign-cloudinary-params"
               onSuccess={(result) => {
                 const imageInfo = result?.info as CloudinaryUploadWidgetInfo;

@@ -81,7 +81,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
           <div className="flex items-center justify-between">
             <label
               htmlFor="memory-title"
-              className="block font-label font-semibold text-on-surface text-base 4xl:text-2xl"
+              className="block font-montserrat font-semibold text-on-surface text-base 4xl:text-2xl"
             >
               The Memory Title
             </label>
@@ -114,7 +114,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
           <div className="flex items-center justify-between">
             <label
               htmlFor="memory-message"
-              className="block font-label font-semibold text-on-surface text-base 4xl:text-2xl"
+              className="block font-montserrat font-semibold text-on-surface text-base 4xl:text-2xl"
             >
               Tell the Story
             </label>
@@ -147,7 +147,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
           <div className="flex items-center justify-between">
             <label
               htmlFor="memory-hashtags"
-              className="block font-label font-semibold text-on-surface text-base 4xl:text-2xl"
+              className="block font-montserrat font-semibold text-on-surface text-base 4xl:text-2xl"
             >
               Hashtags
             </label>
@@ -197,7 +197,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
         <Button
           type="submit"
           label="Deposit to Vault"
-          cssWrapper="w-full bg-primary text-white py-5 4xl:py-8 rounded-2xl font-headline text-xl 4xl:text-3xl hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98] cursor-pointer"
+          cssWrapper="w-full bg-primary text-white py-5 4xl:py-8 rounded-2xl font-montserrat text-xl 4xl:text-3xl hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98] cursor-pointer"
         />
       </div>
     </div>

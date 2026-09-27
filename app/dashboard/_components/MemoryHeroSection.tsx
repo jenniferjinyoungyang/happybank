@@ -9,7 +9,7 @@ type MemoryHeroSectionProps = {
 
 export const MemoryHeroSection: FC<MemoryHeroSectionProps> = ({ memory }) => (
   <div>
-    <h2 className="mb-4 font-headline text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+    <h2 className="mb-4 font-montserrat text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant">
       Memory of the Moment
     </h2>
     <div className="relative">
