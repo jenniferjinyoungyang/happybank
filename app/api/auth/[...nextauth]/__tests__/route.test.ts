@@ -108,6 +108,7 @@ describe('/api/auth/[...nextauth]', () => {
         id: 'user-123',
         name: 'John Doe',
         email: 'john@example.com',
+        image: null,
         exp: 0,
         iat: 0,
         jti: '',
@@ -116,6 +117,34 @@ describe('/api/auth/[...nextauth]', () => {
         where: { email: 'john@example.com' },
       });
       expect(bcrypt.compareSync).toHaveBeenCalledWith('correct-password', 'hashed-password');
+    });
+
+    it('returns user with empty string name if user.name is null in DB', async () => {
+      const mockUser = {
+        id: 'user-123',
+        name: null,
+        email: 'john@example.com',
+        password: 'hashed-password',
+        authType: AuthType.CREDENTIALS,
+      };
+
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
+      (bcrypt.compareSync as jest.Mock).mockReturnValue(true);
+
+      const result = await authorize({
+        email: 'john@example.com',
+        password: 'correct-password',
+      });
+
+      expect(result).toEqual({
+        id: 'user-123',
+        name: '',
+        email: 'john@example.com',
+        image: null,
+        exp: 0,
+        iat: 0,
+        jti: '',
+      });
     });
 
     it('throws error if user is not found in database', async () => {
@@ -319,6 +348,30 @@ describe('/api/auth/[...nextauth]', () => {
       expect(result).toEqual({
         name: 'TokenName',
         email: 'user@example.com',
+      });
+    });
+
+    it('merges session into token when trigger is update', async () => {
+      const capturedOptions = (global as typeof globalThis & { capturedOptions?: AuthOptions })
+        .capturedOptions;
+      const jwt = capturedOptions?.callbacks?.jwt;
+      if (!jwt) {
+        throw new Error('callbacks.jwt not found');
+      }
+      const result = await jwt({
+        token: { name: 'TokenName', email: 'user@example.com' },
+        user: {} as unknown as User,
+        account: null,
+        profile: undefined,
+        isNewUser: false,
+        trigger: 'update',
+        session: { image: 'https://example.com/new-avatar.jpg' },
+      });
+
+      expect(result).toEqual({
+        name: 'TokenName',
+        email: 'user@example.com',
+        image: 'https://example.com/new-avatar.jpg',
       });
     });
   });

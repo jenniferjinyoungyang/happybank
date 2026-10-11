@@ -11,6 +11,7 @@ model User {
   name          String?
   email         String          @unique
   password      String?
+  image         String?
   authType      AuthType
   memories      Memory[]
 
