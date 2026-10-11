@@ -18,18 +18,10 @@ export const updateProfileImage = async (image: string | null): Promise<ApiResul
     });
 
     if (!response.ok) {
-      let errorMessage = 'Failed to update profile image';
-      try {
-        const body = (await response.json()) as { message?: string };
-        if (body.message) {
-          errorMessage = body.message;
-        }
-      } catch {
-        // Fallback to default message if json parsing fails
-      }
+      const { message } = (await response.json()) as { message: string };
       return {
         isSuccess: false,
-        error: errorMessage,
+        error: message,
       };
     }
 

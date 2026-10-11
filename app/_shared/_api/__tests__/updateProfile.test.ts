@@ -50,20 +50,6 @@ describe('updateProfileImage', () => {
     });
   });
 
-  it('returns fallback error result when response is not ok and json parse fails', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: false,
-      json: jest.fn().mockRejectedValue(new Error('Invalid JSON')),
-    } as unknown as Response);
-
-    const result = await updateProfileImage('https://example.com/avatar.jpg');
-
-    expect(result).toEqual({
-      isSuccess: false,
-      error: 'Failed to update profile image',
-    });
-  });
-
   it('returns error result when fetch throws an exception', async () => {
     global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
 
