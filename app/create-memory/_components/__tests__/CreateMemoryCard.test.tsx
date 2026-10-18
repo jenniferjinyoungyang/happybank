@@ -49,6 +49,23 @@ describe('CreateMemoryCard', () => {
       expect(screen.getByText('0/1500')).toBeInTheDocument();
     });
 
+    it('should handle undefined title and message values gracefully', () => {
+      render(
+        <FormWrapper<MemoryCreationFields>
+          defaultValues={
+            {
+              hashtags: [],
+            } as unknown as MemoryCreationFields
+          }
+        >
+          <CreateMemoryCard isLoading={false} />
+        </FormWrapper>,
+      );
+
+      expect(screen.getByText('0/30')).toBeInTheDocument();
+      expect(screen.getByText('0/1500')).toBeInTheDocument();
+    });
+
     it('should render hashtag input placeholder when no hashtags exist', () => {
       render(
         <FormWrapper<MemoryCreationFields>
@@ -63,9 +80,7 @@ describe('CreateMemoryCard', () => {
         </FormWrapper>,
       );
 
-      const hashtagInput = screen.getByPlaceholderText(
-        '#gratitude, #weekend, #family (separated by commas)',
-      );
+      const hashtagInput = screen.getByPlaceholderText('gratitude, weekend, family');
       expect(hashtagInput).toBeInTheDocument();
     });
 
@@ -83,9 +98,7 @@ describe('CreateMemoryCard', () => {
         </FormWrapper>,
       );
 
-      expect(
-        screen.queryByPlaceholderText('#gratitude, #weekend, #family (separated by commas)'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByPlaceholderText('gratitude, weekend, family')).not.toBeInTheDocument();
     });
 
     it('should display hashtag chips', () => {
@@ -404,9 +417,7 @@ describe('CreateMemoryCard', () => {
 
       // Component should render without errors
       expect(screen.getByLabelText('Hashtags')).toBeInTheDocument();
-      expect(
-        screen.getByPlaceholderText('#gratitude, #weekend, #family (separated by commas)'),
-      ).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('gratitude, weekend, family')).toBeInTheDocument();
     });
 
     it('should validate successfully when hashtags is empty array', async () => {

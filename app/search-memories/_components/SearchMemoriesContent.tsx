@@ -6,6 +6,11 @@ import { FC, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { match } from 'ts-pattern';
 import { FullComponentSpinner } from '../../_shared/_components/FullComponentSpinner';
+import {
+  appendUniqueTags,
+  HashtagsInput,
+  parseHashtags,
+} from '../../_shared/_components/HashtagsInput';
 import { Memory } from '../../_shared/_types/memory';
 import { ApiData, getInitialApiDataStatus, setLoadingStatus } from '../../_shared/_utils/apiData';
 import { searchMemories } from '../_api/searchMemories';
@@ -14,14 +19,14 @@ import { SearchResultCard } from './SearchResultCard';
 import { SearchResultLightbox } from './SearchResultLightbox';
 
 type SearchFormState = {
-  readonly hashtagsInput: string;
+  readonly hashtags: string[];
   readonly query: string;
   readonly from: string;
   readonly to: string;
 };
 
 const initialFormState: SearchFormState = {
-  hashtagsInput: '',
+  hashtags: [],
   query: '',
   from: '',
   to: '',
@@ -33,6 +38,7 @@ type CarouselState = {
 
 export const SearchMemoriesContent: FC = () => {
   const [formState, setFormState] = useState<SearchFormState>(initialFormState);
+  const [tagInputValue, setTagInputValue] = useState('');
   const [searchStatus, setSearchStatus] =
     useState<ApiData<Memory[]>>(getInitialApiDataStatus<Memory[]>());
   const [, setHasSearched] = useState(false);
@@ -46,13 +52,8 @@ export const SearchMemoriesContent: FC = () => {
     setHasSearched(true);
     setSearchStatus((currentStatus) => setLoadingStatus(currentStatus));
 
-    const hashtags = params.hashtagsInput
-      .split(',')
-      .map((tag) => tag.trim().replace(/^#+/, ''))
-      .filter((tag) => tag.length > 0);
-
     const result = await searchMemories({
-      hashtags,
+      hashtags: params.hashtags,
       query: params.query || undefined,
       from: params.from || undefined,
       to: params.to || undefined,
@@ -77,21 +78,24 @@ export const SearchMemoriesContent: FC = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await executeSearch(formState);
+    let currentHashtags = formState.hashtags;
+    if (tagInputValue.trim()) {
+      currentHashtags = appendUniqueTags(currentHashtags, tagInputValue);
+      setFormState((prev) => ({ ...prev, hashtags: currentHashtags }));
+      setTagInputValue('');
+    }
+    await executeSearch({ ...formState, hashtags: currentHashtags });
   };
 
   useEffect(() => {
     const hashtagsParam = searchParams.get('hashtags');
     if (hashtagsParam && hashtagsParam !== lastHashtagParamRef.current) {
       lastHashtagParamRef.current = hashtagsParam;
-      const initialTags = decodeURIComponent(hashtagsParam)
-        .split(',')
-        .map((t) => t.trim().replace(/^#+/, ''))
-        .join(', ');
+      const initialTags = Array.from(new Set(parseHashtags(decodeURIComponent(hashtagsParam))));
 
       const prefilledState = {
         ...initialFormState,
-        hashtagsInput: initialTags,
+        hashtags: initialTags,
       };
       setFormState(prefilledState);
       executeSearch(prefilledState);
@@ -101,6 +105,7 @@ export const SearchMemoriesContent: FC = () => {
   const resetFilters = () => {
     lastHashtagParamRef.current = null;
     setFormState(initialFormState);
+    setTagInputValue('');
     setSearchStatus(getInitialApiDataStatus<Memory[]>());
     setHasSearched(false);
     setCarouselState({ currentIndex: 0 });
@@ -136,17 +141,20 @@ export const SearchMemoriesContent: FC = () => {
             <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
               {/* Row 1: Tags */}
               <div className="flex flex-col gap-2">
-                <label className="font-montserrat font-bold text-sm text-on-background">
-                  Tags (comma-separated)
+                <label
+                  htmlFor="search-hashtags"
+                  className="font-montserrat font-bold text-sm text-on-background"
+                >
+                  Tags
                 </label>
-                <input
-                  type="text"
-                  className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
-                  placeholder="e.g. gratitude, family, weekend"
-                  value={formState.hashtagsInput}
-                  onChange={(event) =>
-                    setFormState((prev) => ({ ...prev, hashtagsInput: event.target.value }))
+                <HashtagsInput
+                  id="search-hashtags"
+                  hashtags={formState.hashtags}
+                  onChange={(newHashtags) =>
+                    setFormState((prev) => ({ ...prev, hashtags: newHashtags }))
                   }
+                  inputValue={tagInputValue}
+                  onInputValueChange={setTagInputValue}
                 />
                 <p className="text-slate-500 text-xs font-hind">
                   We&apos;ll match memories that use any of these tags.
@@ -160,7 +168,7 @@ export const SearchMemoriesContent: FC = () => {
                 </label>
                 <input
                   type="text"
-                  className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
+                  className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base placeholder:text-outline-variant/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
                   placeholder="Search in titles and messages"
                   value={formState.query}
                   onChange={(event) =>
@@ -178,7 +186,7 @@ export const SearchMemoriesContent: FC = () => {
                   <div className="relative">
                     <input
                       type="date"
-                      className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
+                      className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base placeholder:text-outline-variant/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
                       value={formState.from}
                       onChange={(event) =>
                         setFormState((prev) => ({ ...prev, from: event.target.value }))
@@ -191,7 +199,7 @@ export const SearchMemoriesContent: FC = () => {
                   <div className="relative">
                     <input
                       type="date"
-                      className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
+                      className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base placeholder:text-outline-variant/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
                       value={formState.to}
                       onChange={(event) =>
                         setFormState((prev) => ({ ...prev, to: event.target.value }))

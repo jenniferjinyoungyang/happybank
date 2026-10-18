@@ -1,8 +1,8 @@
-import { XMarkIcon } from '@heroicons/react/20/solid';
-import { FC, KeyboardEvent, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Button } from '../../_shared/_components/Button';
 import { FullComponentSpinner } from '../../_shared/_components/FullComponentSpinner';
+import { HashtagsInput } from '../../_shared/_components/HashtagsInput';
 import { Overlay } from '../../_shared/_components/Overlay';
 import { MEMORY_VALIDATION } from '../../_shared/_constants/memory';
 
@@ -43,27 +43,8 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
     }
   }, [isSubmitSuccessful]);
 
-  const handleKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ' ' || e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      const trimmed = inputValue.trim().replace(/^#+/, '').replace(/,+$/, '');
-      if (trimmed) {
-        if (!hashtags.includes(trimmed)) {
-          setValue('hashtags', [...hashtags, trimmed]);
-          await trigger('hashtags');
-        }
-        setInputValue('');
-      }
-    } else if (e.key === 'Backspace' && !inputValue && hashtags.length > 0) {
-      setValue('hashtags', hashtags.slice(0, -1));
-    }
-  };
-
-  const removeTag = async (tagToRemove: string) => {
-    setValue(
-      'hashtags',
-      hashtags.filter((tag: string) => tag !== tagToRemove),
-    );
+  const handleHashtagsChange = async (newHashtags: string[]) => {
+    setValue('hashtags', newHashtags);
     await trigger('hashtags');
   };
 
@@ -92,7 +73,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
           <input
             type="text"
             id="memory-title"
-            placeholder="e.g. Morning coffee in the sun"
+            placeholder="Morning coffee in the sun"
             className="w-full px-6 4xl:px-8 py-4 4xl:py-6 rounded-xl border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-lg 4xl:text-2xl placeholder:text-outline-variant/60 font-hind transition-all"
             {...register('title', {
               required: 'This field is required.',
@@ -155,35 +136,15 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
               {hashtags.length}/{MEMORY_VALIDATION.HASHTAG_MAX_COUNT}
             </span>
           </div>
-          <div className="flex flex-wrap items-center gap-2 px-6 4xl:px-8 py-3 4xl:py-5 rounded-xl border border-outline-variant focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all bg-white min-h-[58px] 4xl:min-h-[76px]">
-            {hashtags.map((tag) => (
-              <span
-                key={tag}
-                className="flex items-center gap-1.5 px-3 py-1 text-base 4xl:text-xl text-primary bg-primary/10 rounded-lg font-medium"
-              >
-                #{tag}
-                <button
-                  type="button"
-                  aria-label={`Remove #${tag}`}
-                  onClick={() => removeTag(tag)}
-                  className="text-primary hover:text-primary-dim transition-colors cursor-pointer"
-                >
-                  <XMarkIcon className="w-4 h-4 4xl:w-6 4xl:h-6" />
-                </button>
-              </span>
-            ))}
-            <input
-              type="text"
-              id="memory-hashtags"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={
-                hashtags.length === 0 ? '#gratitude, #weekend, #family (separated by commas)' : ''
-              }
-              className="flex-1 min-w-[140px] bg-transparent outline-none text-on-surface text-lg 4xl:text-2xl placeholder:text-outline-variant/60 font-hind"
-            />
-          </div>
+          <HashtagsInput
+            id="memory-hashtags"
+            hashtags={hashtags}
+            onChange={handleHashtagsChange}
+            inputValue={inputValue}
+            onInputValueChange={setInputValue}
+            containerClassName="flex flex-wrap items-center gap-2 px-6 4xl:px-8 py-3 4xl:py-5 rounded-xl border border-outline-variant focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all bg-white min-h-[58px] 4xl:min-h-[76px] cursor-text"
+            inputClassName="flex-1 min-w-[140px] bg-transparent outline-none text-on-surface text-lg 4xl:text-2xl placeholder:text-outline-variant/60 font-hind"
+          />
           {errors.hashtags && (
             <p className="mt-2 text-sm 4xl:text-lg text-error font-hind">
               {errors.hashtags.message?.toString()}
