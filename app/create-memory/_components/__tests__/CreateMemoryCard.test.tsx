@@ -49,6 +49,23 @@ describe('CreateMemoryCard', () => {
       expect(screen.getByText('0/1500')).toBeInTheDocument();
     });
 
+    it('should handle undefined title and message values gracefully', () => {
+      render(
+        <FormWrapper<MemoryCreationFields>
+          defaultValues={
+            {
+              hashtags: [],
+            } as unknown as MemoryCreationFields
+          }
+        >
+          <CreateMemoryCard isLoading={false} />
+        </FormWrapper>,
+      );
+
+      expect(screen.getByText('0/30')).toBeInTheDocument();
+      expect(screen.getByText('0/1500')).toBeInTheDocument();
+    });
+
     it('should render hashtag input placeholder when no hashtags exist', () => {
       render(
         <FormWrapper<MemoryCreationFields>

@@ -1,21 +1,16 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 'use client';
 
-import { XMarkIcon } from '@heroicons/react/20/solid';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import {
-  ChangeEvent,
-  FC,
-  FormEvent,
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { FC, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { match } from 'ts-pattern';
 import { FullComponentSpinner } from '../../_shared/_components/FullComponentSpinner';
+import {
+  appendUniqueTags,
+  HashtagsInput,
+  parseHashtags,
+} from '../../_shared/_components/HashtagsInput';
 import { Memory } from '../../_shared/_types/memory';
 import { ApiData, getInitialApiDataStatus, setLoadingStatus } from '../../_shared/_utils/apiData';
 import { searchMemories } from '../_api/searchMemories';
@@ -44,7 +39,6 @@ type CarouselState = {
 export const SearchMemoriesContent: FC = () => {
   const [formState, setFormState] = useState<SearchFormState>(initialFormState);
   const [tagInputValue, setTagInputValue] = useState('');
-  const tagInputRef = useRef<HTMLInputElement | null>(null);
   const [searchStatus, setSearchStatus] =
     useState<ApiData<Memory[]>>(getInitialApiDataStatus<Memory[]>());
   const [, setHasSearched] = useState(false);
@@ -53,64 +47,6 @@ export const SearchMemoriesContent: FC = () => {
   const searchParams = useSearchParams();
   const lastHashtagParamRef = useRef<string | null>(null);
   const carouselContainerRef = useRef<HTMLDivElement | null>(null);
-
-  const addTagsFromString = (rawInput: string) => {
-    const validTags = rawInput
-      .split(',')
-      .map((t) => t.trim().replace(/^#+/, '').replace(/,+$/, ''))
-      .filter((t) => t.length > 0);
-
-    if (validTags.length === 0) {
-      return;
-    }
-
-    setFormState((prev) => {
-      const nextHashtags = [...prev.hashtags];
-      for (const tag of validTags) {
-        if (!nextHashtags.includes(tag)) {
-          nextHashtags.push(tag);
-        }
-      }
-      return { ...prev, hashtags: nextHashtags };
-    });
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    setFormState((prev) => ({
-      ...prev,
-      hashtags: prev.hashtags.filter((tag) => tag !== tagToRemove),
-    }));
-  };
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ' ' || e.key === 'Enter' || e.key === ',') {
-      const trimmed = tagInputValue.trim().replace(/^#+/, '').replace(/,+$/, '');
-      if (trimmed) {
-        e.preventDefault();
-        addTagsFromString(trimmed);
-        setTagInputValue('');
-      } else if (e.key === ' ' || e.key === ',') {
-        e.preventDefault();
-      }
-    } else if (e.key === 'Backspace' && !tagInputValue && formState.hashtags.length > 0) {
-      setFormState((prev) => ({
-        ...prev,
-        hashtags: prev.hashtags.slice(0, -1),
-      }));
-    }
-  };
-
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    if (value.includes(',')) {
-      const parts = value.split(',');
-      const lastPart = parts.pop() as string;
-      addTagsFromString(parts.join(','));
-      setTagInputValue(lastPart);
-    } else {
-      setTagInputValue(value);
-    }
-  };
 
   const executeSearch = useCallback(async (params: SearchFormState) => {
     setHasSearched(true);
@@ -143,20 +79,8 @@ export const SearchMemoriesContent: FC = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     let currentHashtags = formState.hashtags;
-    const trimmed = tagInputValue.trim().replace(/^#+/, '').replace(/,+$/, '');
-    if (trimmed) {
-      const validTags = trimmed
-        .split(',')
-        .map((t) => t.trim().replace(/^#+/, '').replace(/,+$/, ''))
-        .filter((t) => t.length > 0);
-
-      const next = [...currentHashtags];
-      for (const tag of validTags) {
-        if (!next.includes(tag)) {
-          next.push(tag);
-        }
-      }
-      currentHashtags = next;
+    if (tagInputValue.trim()) {
+      currentHashtags = appendUniqueTags(currentHashtags, tagInputValue);
       setFormState((prev) => ({ ...prev, hashtags: currentHashtags }));
       setTagInputValue('');
     }
@@ -167,14 +91,7 @@ export const SearchMemoriesContent: FC = () => {
     const hashtagsParam = searchParams.get('hashtags');
     if (hashtagsParam && hashtagsParam !== lastHashtagParamRef.current) {
       lastHashtagParamRef.current = hashtagsParam;
-      const initialTags = Array.from(
-        new Set(
-          decodeURIComponent(hashtagsParam)
-            .split(',')
-            .map((t) => t.trim().replace(/^#+/, ''))
-            .filter((t) => t.length > 0),
-        ),
-      );
+      const initialTags = Array.from(new Set(parseHashtags(decodeURIComponent(hashtagsParam))));
 
       const prefilledState = {
         ...initialFormState,
@@ -230,43 +147,15 @@ export const SearchMemoriesContent: FC = () => {
                 >
                   Tags
                 </label>
-                <div
-                  className="flex flex-wrap items-center gap-2 w-full bg-white border border-slate-300 rounded-lg py-2.5 px-4 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all min-h-[50px] cursor-text"
-                  onClick={() => tagInputRef.current?.focus()}
-                >
-                  {formState.hashtags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="flex items-center gap-1.5 px-3 py-1 text-base 4xl:text-xl text-primary bg-primary/10 rounded-lg font-medium"
-                    >
-                      #{tag}
-                      <button
-                        type="button"
-                        aria-label={`Remove #${tag}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeTag(tag);
-                        }}
-                        className="text-primary hover:text-primary-dim transition-colors cursor-pointer"
-                      >
-                        <XMarkIcon className="w-4 h-4 4xl:w-6 4xl:h-6" />
-                      </button>
-                    </span>
-                  ))}
-                  <input
-                    ref={tagInputRef}
-                    type="text"
-                    id="search-hashtags"
-                    value={tagInputValue}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder={
-                      formState.hashtags.length === 0 ? 'gratitude, weekend, family' : ''
-                    }
-                    autoComplete="off"
-                    className="flex-1 min-w-[140px] bg-transparent outline-none text-on-surface text-base font-hind placeholder:text-outline-variant/60"
-                  />
-                </div>
+                <HashtagsInput
+                  id="search-hashtags"
+                  hashtags={formState.hashtags}
+                  onChange={(newHashtags) =>
+                    setFormState((prev) => ({ ...prev, hashtags: newHashtags }))
+                  }
+                  inputValue={tagInputValue}
+                  onInputValueChange={setTagInputValue}
+                />
                 <p className="text-slate-500 text-xs font-hind">
                   We&apos;ll match memories that use any of these tags.
                 </p>
