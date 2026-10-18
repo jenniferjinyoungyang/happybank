@@ -93,7 +93,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
             type="text"
             id="memory-title"
             placeholder="e.g. Morning coffee in the sun"
-            className="w-full px-6 4xl:px-8 py-4 4xl:py-6 rounded-xl border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-lg 4xl:text-2xl placeholder:text-outline-variant/60 font-hind transition-all"
+            className="w-full px-6 4xl:px-8 py-4 4xl:py-6 rounded-xl border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-lg 4xl:text-2xl placeholder:text-outline-variant/60 font-hind transition-all"
             {...register('title', {
               required: 'This field is required.',
               maxLength: {
@@ -126,7 +126,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
             id="memory-message"
             rows={6}
             placeholder="What happened? How did it feel?"
-            className="w-full px-6 4xl:px-8 py-4 4xl:py-6 rounded-xl border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-lg 4xl:text-2xl placeholder:text-outline-variant/60 font-hind transition-all resize-y"
+            className="w-full px-6 4xl:px-8 py-4 4xl:py-6 rounded-xl border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-lg 4xl:text-2xl placeholder:text-outline-variant/60 font-hind transition-all resize-y"
             {...register('message', {
               required: 'This field is required.',
               maxLength: {
@@ -155,7 +155,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
               {hashtags.length}/{MEMORY_VALIDATION.HASHTAG_MAX_COUNT}
             </span>
           </div>
-          <div className="flex flex-wrap items-center gap-2 px-6 4xl:px-8 py-3 4xl:py-5 rounded-xl border border-outline-variant focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition-all bg-white min-h-[58px] 4xl:min-h-[76px]">
+          <div className="flex flex-wrap items-center gap-2 px-6 4xl:px-8 py-3 4xl:py-5 rounded-xl border border-outline-variant focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all bg-white min-h-[58px] 4xl:min-h-[76px]">
             {hashtags.map((tag) => (
               <span
                 key={tag}
