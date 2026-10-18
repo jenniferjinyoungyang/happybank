@@ -92,7 +92,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
           <input
             type="text"
             id="memory-title"
-            placeholder="e.g. Morning coffee in the sun"
+            placeholder="Morning coffee in the sun"
             className="w-full px-6 4xl:px-8 py-4 4xl:py-6 rounded-xl border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-lg 4xl:text-2xl placeholder:text-outline-variant/60 font-hind transition-all"
             {...register('title', {
               required: 'This field is required.',
@@ -178,9 +178,8 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={
-                hashtags.length === 0 ? '#gratitude, #weekend, #family (separated by commas)' : ''
-              }
+              placeholder={hashtags.length === 0 ? 'gratitude, weekend, family' : ''}
+              autoComplete="off"
               className="flex-1 min-w-[140px] bg-transparent outline-none text-on-surface text-lg 4xl:text-2xl placeholder:text-outline-variant/60 font-hind"
             />
           </div>

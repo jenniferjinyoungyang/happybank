@@ -1,8 +1,18 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 'use client';
 
+import { XMarkIcon } from '@heroicons/react/20/solid';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import { FC, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  FormEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useSearchParams } from 'next/navigation';
 import { match } from 'ts-pattern';
 import { FullComponentSpinner } from '../../_shared/_components/FullComponentSpinner';
@@ -14,14 +24,14 @@ import { SearchResultCard } from './SearchResultCard';
 import { SearchResultLightbox } from './SearchResultLightbox';
 
 type SearchFormState = {
-  readonly hashtagsInput: string;
+  readonly hashtags: string[];
   readonly query: string;
   readonly from: string;
   readonly to: string;
 };
 
 const initialFormState: SearchFormState = {
-  hashtagsInput: '',
+  hashtags: [],
   query: '',
   from: '',
   to: '',
@@ -33,6 +43,8 @@ type CarouselState = {
 
 export const SearchMemoriesContent: FC = () => {
   const [formState, setFormState] = useState<SearchFormState>(initialFormState);
+  const [tagInputValue, setTagInputValue] = useState('');
+  const tagInputRef = useRef<HTMLInputElement | null>(null);
   const [searchStatus, setSearchStatus] =
     useState<ApiData<Memory[]>>(getInitialApiDataStatus<Memory[]>());
   const [, setHasSearched] = useState(false);
@@ -42,17 +54,70 @@ export const SearchMemoriesContent: FC = () => {
   const lastHashtagParamRef = useRef<string | null>(null);
   const carouselContainerRef = useRef<HTMLDivElement | null>(null);
 
+  const addTagsFromString = (rawInput: string) => {
+    const validTags = rawInput
+      .split(',')
+      .map((t) => t.trim().replace(/^#+/, '').replace(/,+$/, ''))
+      .filter((t) => t.length > 0);
+
+    if (validTags.length === 0) {
+      return;
+    }
+
+    setFormState((prev) => {
+      const nextHashtags = [...prev.hashtags];
+      for (const tag of validTags) {
+        if (!nextHashtags.includes(tag)) {
+          nextHashtags.push(tag);
+        }
+      }
+      return { ...prev, hashtags: nextHashtags };
+    });
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      hashtags: prev.hashtags.filter((tag) => tag !== tagToRemove),
+    }));
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === ' ' || e.key === 'Enter' || e.key === ',') {
+      const trimmed = tagInputValue.trim().replace(/^#+/, '').replace(/,+$/, '');
+      if (trimmed) {
+        e.preventDefault();
+        addTagsFromString(trimmed);
+        setTagInputValue('');
+      } else if (e.key === ' ' || e.key === ',') {
+        e.preventDefault();
+      }
+    } else if (e.key === 'Backspace' && !tagInputValue && formState.hashtags.length > 0) {
+      setFormState((prev) => ({
+        ...prev,
+        hashtags: prev.hashtags.slice(0, -1),
+      }));
+    }
+  };
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (value.includes(',')) {
+      const parts = value.split(',');
+      const lastPart = parts.pop() as string;
+      addTagsFromString(parts.join(','));
+      setTagInputValue(lastPart);
+    } else {
+      setTagInputValue(value);
+    }
+  };
+
   const executeSearch = useCallback(async (params: SearchFormState) => {
     setHasSearched(true);
     setSearchStatus((currentStatus) => setLoadingStatus(currentStatus));
 
-    const hashtags = params.hashtagsInput
-      .split(',')
-      .map((tag) => tag.trim().replace(/^#+/, ''))
-      .filter((tag) => tag.length > 0);
-
     const result = await searchMemories({
-      hashtags,
+      hashtags: params.hashtags,
       query: params.query || undefined,
       from: params.from || undefined,
       to: params.to || undefined,
@@ -77,21 +142,43 @@ export const SearchMemoriesContent: FC = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await executeSearch(formState);
+    let currentHashtags = formState.hashtags;
+    const trimmed = tagInputValue.trim().replace(/^#+/, '').replace(/,+$/, '');
+    if (trimmed) {
+      const validTags = trimmed
+        .split(',')
+        .map((t) => t.trim().replace(/^#+/, '').replace(/,+$/, ''))
+        .filter((t) => t.length > 0);
+
+      const next = [...currentHashtags];
+      for (const tag of validTags) {
+        if (!next.includes(tag)) {
+          next.push(tag);
+        }
+      }
+      currentHashtags = next;
+      setFormState((prev) => ({ ...prev, hashtags: currentHashtags }));
+      setTagInputValue('');
+    }
+    await executeSearch({ ...formState, hashtags: currentHashtags });
   };
 
   useEffect(() => {
     const hashtagsParam = searchParams.get('hashtags');
     if (hashtagsParam && hashtagsParam !== lastHashtagParamRef.current) {
       lastHashtagParamRef.current = hashtagsParam;
-      const initialTags = decodeURIComponent(hashtagsParam)
-        .split(',')
-        .map((t) => t.trim().replace(/^#+/, ''))
-        .join(', ');
+      const initialTags = Array.from(
+        new Set(
+          decodeURIComponent(hashtagsParam)
+            .split(',')
+            .map((t) => t.trim().replace(/^#+/, ''))
+            .filter((t) => t.length > 0),
+        ),
+      );
 
       const prefilledState = {
         ...initialFormState,
-        hashtagsInput: initialTags,
+        hashtags: initialTags,
       };
       setFormState(prefilledState);
       executeSearch(prefilledState);
@@ -101,6 +188,7 @@ export const SearchMemoriesContent: FC = () => {
   const resetFilters = () => {
     lastHashtagParamRef.current = null;
     setFormState(initialFormState);
+    setTagInputValue('');
     setSearchStatus(getInitialApiDataStatus<Memory[]>());
     setHasSearched(false);
     setCarouselState({ currentIndex: 0 });
@@ -136,18 +224,49 @@ export const SearchMemoriesContent: FC = () => {
             <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
               {/* Row 1: Tags */}
               <div className="flex flex-col gap-2">
-                <label className="font-montserrat font-bold text-sm text-on-background">
-                  Tags (comma-separated)
+                <label
+                  htmlFor="search-hashtags"
+                  className="font-montserrat font-bold text-sm text-on-background"
+                >
+                  Tags
                 </label>
-                <input
-                  type="text"
-                  className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
-                  placeholder="e.g. gratitude, family, weekend"
-                  value={formState.hashtagsInput}
-                  onChange={(event) =>
-                    setFormState((prev) => ({ ...prev, hashtagsInput: event.target.value }))
-                  }
-                />
+                <div
+                  className="flex flex-wrap items-center gap-2 w-full bg-white border border-slate-300 rounded-lg py-2.5 px-4 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all min-h-[50px] cursor-text"
+                  onClick={() => tagInputRef.current?.focus()}
+                >
+                  {formState.hashtags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="flex items-center gap-1.5 px-3 py-1 text-base 4xl:text-xl text-primary bg-primary/10 rounded-lg font-medium"
+                    >
+                      #{tag}
+                      <button
+                        type="button"
+                        aria-label={`Remove #${tag}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeTag(tag);
+                        }}
+                        className="text-primary hover:text-primary-dim transition-colors cursor-pointer"
+                      >
+                        <XMarkIcon className="w-4 h-4 4xl:w-6 4xl:h-6" />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    ref={tagInputRef}
+                    type="text"
+                    id="search-hashtags"
+                    value={tagInputValue}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    placeholder={
+                      formState.hashtags.length === 0 ? 'gratitude, weekend, family' : ''
+                    }
+                    autoComplete="off"
+                    className="flex-1 min-w-[140px] bg-transparent outline-none text-on-surface text-base font-hind placeholder:text-outline-variant/60"
+                  />
+                </div>
                 <p className="text-slate-500 text-xs font-hind">
                   We&apos;ll match memories that use any of these tags.
                 </p>
@@ -160,7 +279,7 @@ export const SearchMemoriesContent: FC = () => {
                 </label>
                 <input
                   type="text"
-                  className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
+                  className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base placeholder:text-outline-variant/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
                   placeholder="Search in titles and messages"
                   value={formState.query}
                   onChange={(event) =>
@@ -178,7 +297,7 @@ export const SearchMemoriesContent: FC = () => {
                   <div className="relative">
                     <input
                       type="date"
-                      className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
+                      className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base placeholder:text-outline-variant/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
                       value={formState.from}
                       onChange={(event) =>
                         setFormState((prev) => ({ ...prev, from: event.target.value }))
@@ -191,7 +310,7 @@ export const SearchMemoriesContent: FC = () => {
                   <div className="relative">
                     <input
                       type="date"
-                      className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
+                      className="w-full bg-white border border-slate-300 rounded-lg py-3 px-4 font-hind text-base placeholder:text-outline-variant/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all focus:outline-none"
                       value={formState.to}
                       onChange={(event) =>
                         setFormState((prev) => ({ ...prev, to: event.target.value }))

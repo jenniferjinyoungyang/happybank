@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ApiResult } from '../../../_shared/_types/apiResult';
 import { Memory } from '../../../_shared/_types/memory';
@@ -28,7 +28,7 @@ describe('SearchMemoriesContent', () => {
     const { container } = render(<SearchMemoriesContent />);
 
     expect(screen.getByRole('heading', { level: 1, name: 'Relive your joy' })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('e.g. gratitude, family, weekend')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('gratitude, weekend, family')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Search in titles and messages')).toBeInTheDocument();
     const dateInputs = container.querySelectorAll('input[type="date"]');
     expect(dateInputs).toHaveLength(2);
@@ -47,7 +47,7 @@ describe('SearchMemoriesContent', () => {
 
     const { container } = render(<SearchMemoriesContent />);
     await userEvent.type(
-      screen.getByPlaceholderText('e.g. gratitude, family, weekend'),
+      screen.getByPlaceholderText('gratitude, weekend, family'),
       '#tag1, tag2 , tag3',
     );
     await userEvent.type(screen.getByPlaceholderText('Search in titles and messages'), 'beach');
@@ -180,9 +180,8 @@ describe('SearchMemoriesContent', () => {
 
     render(<SearchMemoriesContent />);
 
-    // Verify input gets prefilled with formatting
-    const tagsInput = screen.getByPlaceholderText('e.g. gratitude, family, weekend');
-    expect(tagsInput).toHaveValue('travel');
+    // Verify hashtag button is rendered
+    expect(screen.getByText('#travel')).toBeInTheDocument();
 
     // Verify search was triggered automatically on mount
     await screen.findByRole('heading', { level: 3, name: 'Tag search memory' });
@@ -238,7 +237,7 @@ describe('SearchMemoriesContent', () => {
     searchMemoriesSpy.mockResolvedValue({ isSuccess: true, data: [] });
 
     render(<SearchMemoriesContent />);
-    await userEvent.type(screen.getByPlaceholderText('e.g. gratitude, family, weekend'), ' ,  , ');
+    await userEvent.type(screen.getByPlaceholderText('gratitude, weekend, family'), ' ,  , ');
     await userEvent.click(screen.getByRole('button', { name: 'Search' }));
 
     expect(searchMemoriesSpy).toHaveBeenCalledWith({
@@ -277,5 +276,185 @@ describe('SearchMemoriesContent', () => {
     expect(
       await screen.findByText(/Something went wrong while searching your memories\. unknown error/),
     ).toBeInTheDocument();
+  });
+
+  describe('Hashtag Buttons & Input Behavior', () => {
+    it('adds hashtag button when Enter key is pressed', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, 'happy{Enter}');
+
+      expect(screen.getByText('#happy')).toBeInTheDocument();
+      expect(input).toHaveValue('');
+    });
+
+    it('adds hashtag button when Space key is pressed', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, 'grateful ');
+
+      expect(screen.getByText('#grateful')).toBeInTheDocument();
+      expect(input).toHaveValue('');
+    });
+
+    it('adds hashtag button when comma key is pressed', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, 'family,');
+
+      expect(screen.getByText('#family')).toBeInTheDocument();
+      expect(input).toHaveValue('');
+    });
+
+    it('removes # prefix and trims whitespace when adding hashtag', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, ' #vacation  {Enter}');
+
+      expect(screen.getByText('#vacation')).toBeInTheDocument();
+    });
+
+    it('does not add duplicate hashtags', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, 'summer{Enter}');
+      expect(screen.getAllByText('#summer')).toHaveLength(1);
+
+      await userEvent.type(input, 'summer{Enter}');
+      expect(screen.getAllByText('#summer')).toHaveLength(1);
+    });
+
+    it('removes hashtag when clicking remove button', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, 'summer{Enter}');
+      await userEvent.type(input, 'winter{Enter}');
+
+      expect(screen.getByText('#summer')).toBeInTheDocument();
+      expect(screen.getByText('#winter')).toBeInTheDocument();
+
+      const removeSummerBtn = screen.getByRole('button', { name: 'Remove #summer' });
+      await userEvent.click(removeSummerBtn);
+
+      expect(screen.queryByText('#summer')).not.toBeInTheDocument();
+      expect(screen.getByText('#winter')).toBeInTheDocument();
+    });
+
+    it('removes last hashtag when Backspace is pressed on empty input', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, 'spring{Enter}');
+      await userEvent.type(input, 'fall{Enter}');
+
+      expect(screen.getByText('#fall')).toBeInTheDocument();
+      expect(input).toHaveValue('');
+
+      await userEvent.keyboard('{Backspace}');
+
+      expect(screen.queryByText('#fall')).not.toBeInTheDocument();
+      expect(screen.getByText('#spring')).toBeInTheDocument();
+    });
+
+    it('does not remove hashtag when Backspace is pressed on non-empty input', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, 'spring{Enter}');
+      await userEvent.type(input, 'fal');
+      await userEvent.keyboard('{Backspace}');
+
+      expect(screen.getByText('#spring')).toBeInTheDocument();
+      expect(input).toHaveValue('fa');
+    });
+
+    it('does nothing when Backspace is pressed on empty input with no hashtags', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      input.focus();
+      await userEvent.keyboard('{Backspace}');
+
+      expect(input).toBeInTheDocument();
+    });
+
+    it('handles pasted comma-separated tags in input', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      fireEvent.change(input, { target: { value: 'sun, sea, sand' } });
+
+      expect(screen.getByText('#sun')).toBeInTheDocument();
+      expect(screen.getByText('#sea')).toBeInTheDocument();
+      expect(input).toHaveValue(' sand');
+    });
+
+    it('focuses the tag input when clicking on hashtag container', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+      const container = input.closest('div');
+
+      expect(document.activeElement).not.toBe(input);
+      await userEvent.click(container!);
+      expect(document.activeElement).toBe(input);
+    });
+
+    it('clears hashtags and tag input when Reset filters is clicked', async () => {
+      searchMemoriesSpy.mockResolvedValue({ isSuccess: true, data: [] });
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, 'joy{Enter}');
+      await userEvent.type(input, 'uncommitted');
+      expect(screen.getByText('#joy')).toBeInTheDocument();
+      expect(input).toHaveValue('uncommitted');
+
+      await userEvent.click(screen.getByRole('button', { name: 'Reset filters' }));
+
+      expect(screen.queryByText('#joy')).not.toBeInTheDocument();
+      expect(input).toHaveValue('');
+    });
+
+    it('submits search when Enter is pressed on empty tag input', async () => {
+      searchMemoriesSpy.mockResolvedValue({ isSuccess: true, data: [] });
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, '{Enter}');
+
+      expect(searchMemoriesSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles submitting with an uncommitted duplicate tag', async () => {
+      searchMemoriesSpy.mockResolvedValue({ isSuccess: true, data: [] });
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      await userEvent.type(input, 'beach{Enter}');
+      await userEvent.type(input, 'beach');
+      await userEvent.click(screen.getByRole('button', { name: 'Search' }));
+
+      expect(searchMemoriesSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          hashtags: ['beach'],
+        }),
+      );
+    });
+
+    it('handles change event with only commas gracefully', async () => {
+      render(<SearchMemoriesContent />);
+      const input = document.getElementById('search-hashtags') as HTMLInputElement;
+
+      fireEvent.change(input, { target: { value: ',,' } });
+
+      expect(input).toHaveValue('');
+      expect(screen.queryByText(/#/)).not.toBeInTheDocument();
+    });
   });
 });
