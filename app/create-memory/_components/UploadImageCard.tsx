@@ -73,7 +73,7 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({ memoryTitle, isLoadi
               Drag and drop a photo that captures this moment, or click to browse your files.
             </p>
             {memoryTitle ? (
-              <div className="font-permanent_marker text-xl 4xl:text-3xl text-primary py-1">
+              <div className="my-4 text-center font-permanent_marker text-2xl 4xl:text-4xl text-on-surface">
                 {memoryTitle}
               </div>
             ) : null}

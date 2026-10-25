@@ -39,7 +39,7 @@ describe('CreateMemoryPanel', () => {
     const withinUploadImageCard = within(screen.getByTestId('upload-image-card'));
     expect(withinUploadImageCard.getByText('Ginger day')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Deposit to Vault' }));
+    await user.click(screen.getByRole('button', { name: 'Deposit to Bank' }));
 
     expect(createMemorySpy).toHaveBeenCalledTimes(1);
     expect(createMemorySpy).toHaveBeenCalledWith({
@@ -71,7 +71,7 @@ describe('CreateMemoryPanel', () => {
     await user.type(messageTextBox, 'I met Ginger today!');
     await user.type(hashtagsInputBox, 'ginger{Enter}');
 
-    await user.click(screen.getByRole('button', { name: 'Deposit to Vault' }));
+    await user.click(screen.getByRole('button', { name: 'Deposit to Bank' }));
 
     expect(createMemorySpy).toHaveBeenCalledTimes(1);
 
@@ -96,7 +96,7 @@ describe('CreateMemoryPanel', () => {
     await user.type(messageTextBox, 'Test message');
 
     // Submit form without adding any hashtags
-    await user.click(screen.getByRole('button', { name: 'Deposit to Vault' }));
+    await user.click(screen.getByRole('button', { name: 'Deposit to Bank' }));
 
     expect(createMemorySpy).toHaveBeenCalledTimes(1);
     // Verify hashtags is always an array (from defaultValues, no fallback needed)

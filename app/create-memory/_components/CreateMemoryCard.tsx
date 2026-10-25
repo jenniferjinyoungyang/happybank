@@ -157,7 +157,7 @@ export const CreateMemoryCard: FC<CreateMemoryCardProps> = ({ isLoading }) => {
       <div className="pt-8 4xl:pt-12">
         <Button
           type="submit"
-          label="Deposit to Vault"
+          label="Deposit to Bank"
           cssWrapper="w-full bg-primary text-white py-5 4xl:py-8 rounded-2xl font-montserrat text-xl 4xl:text-3xl hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98] cursor-pointer"
         />
       </div>

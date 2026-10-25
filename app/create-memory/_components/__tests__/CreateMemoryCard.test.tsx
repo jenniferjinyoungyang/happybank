@@ -28,7 +28,7 @@ describe('CreateMemoryCard', () => {
       expect(screen.getByLabelText('The Memory Title')).toBeInTheDocument();
       expect(screen.getByLabelText('Tell the Story')).toBeInTheDocument();
       expect(screen.getByLabelText('Hashtags')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Deposit to Vault' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Deposit to Bank' })).toBeInTheDocument();
     });
 
     it('should show character counters for title and message', () => {
@@ -186,7 +186,7 @@ describe('CreateMemoryCard', () => {
 
       render(<FormWrapperWithSubmit />);
 
-      const submitButton = screen.getByRole('button', { name: 'Deposit to Vault' });
+      const submitButton = screen.getByRole('button', { name: 'Deposit to Bank' });
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -230,7 +230,7 @@ describe('CreateMemoryCard', () => {
       const longTitle = 'a'.repeat(MEMORY_VALIDATION.TITLE_MAX_LENGTH + 1);
 
       await user.type(titleInput, longTitle);
-      const submitButton = screen.getByRole('button', { name: 'Deposit to Vault' });
+      const submitButton = screen.getByRole('button', { name: 'Deposit to Bank' });
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -270,7 +270,7 @@ describe('CreateMemoryCard', () => {
 
       render(<FormWrapperWithSubmit />);
 
-      const submitButton = screen.getByRole('button', { name: 'Deposit to Vault' });
+      const submitButton = screen.getByRole('button', { name: 'Deposit to Bank' });
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -310,7 +310,7 @@ describe('CreateMemoryCard', () => {
       const longMessage = 'a'.repeat(MEMORY_VALIDATION.MESSAGE_MAX_LENGTH + 1);
 
       fireEvent.change(messageInput, { target: { value: longMessage } });
-      const submitButton = screen.getByRole('button', { name: 'Deposit to Vault' });
+      const submitButton = screen.getByRole('button', { name: 'Deposit to Bank' });
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -449,7 +449,7 @@ describe('CreateMemoryCard', () => {
 
       render(<FormWrapperWithEmptyHashtags />);
 
-      const submitButton = screen.getByRole('button', { name: 'Deposit to Vault' });
+      const submitButton = screen.getByRole('button', { name: 'Deposit to Bank' });
       await user.click(submitButton);
 
       // Should not show hashtag validation error when value is empty array
