@@ -82,7 +82,7 @@ const handler = NextAuth({
                 id: user.id,
                 email: user.email!,
                 password: null,
-                name: user.name,
+                name: user.name!,
                 authType: AuthType.GOOGLE,
               },
             });

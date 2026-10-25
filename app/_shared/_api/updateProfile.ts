@@ -2,7 +2,7 @@ import { ApiResult } from '../_types/apiResult';
 
 export type UserProfile = {
   id: string;
-  name: string | null;
+  name: string;
   email: string;
   image: string | null;
 };

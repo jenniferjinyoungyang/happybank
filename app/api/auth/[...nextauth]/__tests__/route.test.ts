@@ -276,6 +276,28 @@ describe('/api/auth/[...nextauth]', () => {
       });
     });
 
+    it('creates a new user with empty string name if user.name is undefined or null', async () => {
+      const mockUser = { id: 'google-uid', email: 'john@example.com' };
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
+
+      const result = await signIn({
+        user: mockUser,
+        account: { provider: 'google' },
+        profile: { email_verified: true },
+      });
+
+      expect(result).toBe(true);
+      expect(prisma.user.create).toHaveBeenCalledWith({
+        data: {
+          id: 'google-uid',
+          email: 'john@example.com',
+          password: null,
+          name: '',
+          authType: AuthType.GOOGLE,
+        },
+      });
+    });
+
     it('does not create user and returns true if user already exists with GOOGLE authType', async () => {
       const mockUser = { id: 'google-uid', email: 'john@example.com', name: 'John' };
       const existingUser = {

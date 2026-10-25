@@ -23,14 +23,12 @@ const PageHeader: React.FC = () => {
   const userEmail = session?.user?.email ?? '';
 
   const userNameArray = userName ? userName.split(' ') : [];
-  const firstNameInitial = userNameArray.at(0)?.[0].toUpperCase();
-  const lastNameInitial = userNameArray.at(-1)?.[0].toUpperCase();
+  const firstNameInitial = userNameArray.at(0)?.[0]?.toUpperCase();
+  const lastNameInitial =
+    userNameArray.length > 1 ? userNameArray.at(-1)?.[0]?.toUpperCase() : undefined;
 
-  const shortName = userName
-    ? userNameArray[0] + (lastNameInitial ? ` ${lastNameInitial}.` : '')
-    : 'HB User';
-
-  const initials = userName ? firstNameInitial + (lastNameInitial ?? '') : 'HB';
+  const shortName = userNameArray[0] + (lastNameInitial ? ` ${lastNameInitial}.` : '');
+  const initials = `${firstNameInitial}${lastNameInitial ?? ''}`;
 
   const handleSignOut = async () => {
     const data = await signOut({ redirect: false, callbackUrl: '/' });
