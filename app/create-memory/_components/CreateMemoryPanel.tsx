@@ -67,7 +67,7 @@ export const CreateMemoryPanel: FC = () => {
           </h1>
           <p className="font-hind leading-relaxed opacity-80">
             Every small moment of happiness is a treasure. Describe it, tag it, and lock it away in
-            your vault of memories.
+            your bank of memories.
           </p>
         </div>
         <FormProvider {...methods}>
