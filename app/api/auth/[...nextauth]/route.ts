@@ -77,12 +77,14 @@ const handler = NextAuth({
           });
           // if the user's google email doesn't exist in DB, should create a new user
           if (!existingUserByEmail) {
+            const resolvedName = user.name?.trim() || user.email!.split('@')[0];
+
             await prisma.user.create({
               data: {
                 id: user.id,
                 email: user.email!,
                 password: null,
-                name: user.name,
+                name: resolvedName,
                 authType: AuthType.GOOGLE,
               },
             });
