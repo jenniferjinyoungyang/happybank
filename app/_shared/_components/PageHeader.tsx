@@ -27,8 +27,10 @@ const PageHeader: React.FC = () => {
   const lastNameInitial =
     userNameArray.length > 1 ? userNameArray.at(-1)?.[0]?.toUpperCase() : undefined;
 
-  const shortName = userNameArray[0] + (lastNameInitial ? ` ${lastNameInitial}.` : '');
-  const initials = `${firstNameInitial}${lastNameInitial ?? ''}`;
+  const shortName = userName
+    ? userNameArray[0] + (lastNameInitial ? ` ${lastNameInitial}.` : '')
+    : 'HB User';
+  const initials = userName ? `${firstNameInitial}${lastNameInitial ?? ''}` : 'HB';
 
   const handleSignOut = async () => {
     const data = await signOut({ redirect: false, callbackUrl: '/' });

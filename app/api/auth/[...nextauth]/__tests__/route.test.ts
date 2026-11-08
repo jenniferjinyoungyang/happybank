@@ -276,8 +276,8 @@ describe('/api/auth/[...nextauth]', () => {
       });
     });
 
-    it('creates a new user with empty string name if user.name is undefined or null', async () => {
-      const mockUser = { id: 'google-uid', email: 'john@example.com' };
+    it('creates a new user with email prefix as name if user.name is undefined, null, or whitespace', async () => {
+      const mockUser = { id: 'google-uid', email: 'john@example.com', name: '   ' };
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
 
       const result = await signIn({
@@ -292,7 +292,7 @@ describe('/api/auth/[...nextauth]', () => {
           id: 'google-uid',
           email: 'john@example.com',
           password: null,
-          name: '',
+          name: 'john',
           authType: AuthType.GOOGLE,
         },
       });
